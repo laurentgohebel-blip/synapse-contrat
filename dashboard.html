@@ -445,7 +445,9 @@ function renderAll(contrats,conges,acomptes,pending){
       </table></div>
     </div>`;
 
-  mk('chartGlobal',{type:'bar',data:{labels:mKeys.length?mKeys:['—'],datasets:[{data:mKeys.map(m=>({...Object.fromEntries([...contrats,...conges,...acomptes].filter(d=>d.dateISO).map(d=>[new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'}),true])))[m]?mKeys.map(k=>([...contrats,...conges,...acomptes].filter(d=>d.dateISO&&new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})===k).length))[mKeys.indexOf(m)]:0),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
+  const allItems=[...contrats,...conges,...acomptes];
+  const mVals=mKeys.map(m=>allItems.filter(d=>d.dateISO&&new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})===m).length);
+  mk('chartGlobal',{type:'bar',data:{labels:mKeys.length?mKeys:['—'],datasets:[{data:mVals,backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
 
   mk('chartRep',{type:'doughnut',data:{labels:['Contrats','Congés','Acomptes'],datasets:[{data:[contrats.length,conges.length,acomptes.length],backgroundColor:['#2E75B6','#059669','#D97706'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
 
