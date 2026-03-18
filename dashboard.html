@@ -9,11 +9,10 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --blue:#2E75B6;--blue-l:#EBF3FC;
-  --green:#059669;--green-l:#D1FAE5;
+  --green:#059669;--green-l:#D1FAE5;--green-d:#065F46;
   --amber:#D97706;--amber-l:#FEF3C7;
-  --red:#DC2626;--red-l:#FEE2E2;
+  --red:#DC2626;--red-l:#FEE2E2;--red-d:#991B1B;
   --purple:#7C3AED;--purple-l:#EDE9FE;
-  --teal:#0D9488;--teal-l:#CCFBF1;
   --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;
   --g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g900:#111827;
   --r:8px;--rl:12px;
@@ -29,15 +28,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .logo-sub{color:var(--g400);font-size:10px}
 .nav{padding:10px 8px;flex:1}
 .nav-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.08em;padding:8px 8px 4px;display:block}
-.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:var(--g400);font-size:12.5px;margin-bottom:2px;text-decoration:none;transition:.15s}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);color:var(--g400);font-size:12.5px;margin-bottom:2px;text-decoration:none;transition:.15s}
 .nav-item:hover{background:rgba(255,255,255,.06);color:white}
 .nav-item.active{background:rgba(255,255,255,.1);color:white}
-.nav-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-badge{background:var(--red);color:white;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:auto}
 .sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.08)}
 .btn-new{display:block;text-align:center;background:var(--blue);color:white;padding:9px;border-radius:var(--r);font-size:12px;font-weight:600;text-decoration:none}
 .btn-new:hover{opacity:.88}
 
-/* Topbar */
+/* Main */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
 .topbar{background:white;border-bottom:1px solid var(--g200);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-title{font-size:15px;font-weight:600}
@@ -45,40 +45,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .live-lbl{font-size:11.5px;color:var(--green);font-weight:500}
-.btn-ref{padding:5px 12px;background:white;border:1px solid var(--g200);border-radius:var(--r);font-size:11.5px;cursor:pointer;color:var(--g500)}
-.btn-ref:hover{border-color:var(--blue);color:var(--blue)}
+.btn-top{padding:5px 12px;background:white;border:1px solid var(--g200);border-radius:var(--r);font-size:11.5px;cursor:pointer;color:var(--g500)}
+.btn-top:hover{border-color:var(--blue);color:var(--blue)}
 
 /* Tabs */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--g200);background:white;padding:0 20px}
-.tab{padding:12px 16px;font-size:13px;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--g200);background:white;padding:0 20px;overflow-x:auto}
+.tab{padding:12px 14px;font-size:12.5px;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .tab:hover{color:var(--g700)}
 .tab.active{color:var(--g900);border-bottom-color:var(--blue);font-weight:500}
-.tab-badge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;margin-left:5px;background:var(--g100);color:var(--g500)}
+.tab-badge{padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;background:var(--g100);color:var(--g500)}
 .tab.active .tab-badge{background:var(--blue-l);color:var(--blue)}
+.tab-badge.alert{background:var(--red-l);color:var(--red)}
 
-.content{padding:18px 20px;overflow-y:auto;flex:1}
+.content{padding:16px 20px;overflow-y:auto;flex:1}
 
-/* KPI grid */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.kpi{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px;position:relative;overflow:hidden}
+/* Alert banner */
+.alert-banner{background:var(--red-l);border:1px solid #FECACA;border-radius:var(--rl);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:13px}
+.alert-banner strong{color:var(--red-d)}
+.alert-banner span{color:var(--red-d)}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:13px 14px;position:relative;overflow:hidden}
 .kpi-accent{position:absolute;top:0;left:0;width:3px;height:100%}
-.kpi-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.kpi-val{font-size:26px;font-weight:700;line-height:1}
-.kpi-sub{font-size:11px;color:var(--g400);margin-top:3px}
+.kpi-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.kpi-val{font-size:24px;font-weight:700;line-height:1}
+.kpi-sub{font-size:10.5px;color:var(--g400);margin-top:3px}
 
 /* Cards */
 .row{display:grid;gap:12px;margin-bottom:12px}
 .r2{grid-template-columns:1fr 1fr}
 .r3{grid-template-columns:2fr 1fr}
-.r4{grid-template-columns:1fr 1fr 1fr 1fr}
 .chart-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:16px}
 .chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
 .chart-title{font-size:12.5px;font-weight:600;color:var(--g700)}
 .chart-sub{font-size:11px;color:var(--g400);margin-top:1px}
-.ctag{font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:500;flex-shrink:0}
 canvas{max-height:200px}
 
-/* Table */
+/* Validation panel */
+.validation-section{margin-bottom:14px}
+.vsec-title{font-size:12px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.vsec-count{background:var(--amber-l);color:var(--amber);padding:1px 8px;border-radius:99px;font-size:11px;font-weight:700}
+
+.demande-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:.15s}
+.demande-card:hover{border-color:var(--g300)}
+.demande-card.validated{opacity:.55;border-style:dashed}
+.dc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.dc-info{flex:1;min-width:0}
+.dc-name{font-size:13.5px;font-weight:600;color:var(--g900)}
+.dc-meta{font-size:11.5px;color:var(--g400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-ref{font-size:10.5px;color:var(--g400);font-family:monospace;margin-top:3px}
+.dc-detail{font-size:12px;color:var(--g500);padding:0 12px;flex-shrink:0;text-align:right;min-width:120px}
+.dc-detail strong{display:block;font-size:13px;color:var(--g900)}
+.dc-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-accept{padding:7px 14px;background:var(--green);color:white;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-accept:hover{background:var(--green-d)}
+.btn-reject{padding:7px 14px;background:white;color:var(--red);border:1.5px solid var(--red);border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-reject:hover{background:var(--red-l)}
+.btn-detail{padding:7px 10px;background:white;color:var(--g500);border:1px solid var(--g200);border-radius:var(--r);font-size:12px;cursor:pointer}
+.btn-detail:hover{border-color:var(--blue);color:var(--blue)}
+.status-chip{padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600}
+.chip-ok{background:var(--green-l);color:var(--green)}
+.chip-ko{background:var(--red-l);color:var(--red)}
+
+/* Tables */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g200);background:var(--g50);white-space:nowrap}
@@ -89,25 +119,22 @@ tr:hover td{background:var(--g50)}
 .p-contrat{background:var(--blue-l);color:var(--blue)}
 .p-conge{background:var(--green-l);color:var(--green)}
 .p-acompte{background:var(--amber-l);color:var(--amber)}
-.p-attente{background:var(--g100);color:var(--g500)}
+.p-attente{background:var(--amber-l);color:var(--amber)}
 .p-ok{background:var(--green-l);color:var(--green)}
 .p-refuse{background:var(--red-l);color:var(--red)}
 .btn-sm{padding:3px 9px;border:1px solid var(--g200);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--g700)}
 .btn-sm:hover{border-color:var(--blue);color:var(--blue)}
+.btn-sm-g{padding:3px 9px;border:1px solid var(--green);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--green);font-weight:600}
+.btn-sm-r{padding:3px 9px;border:1px solid var(--red);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--red);font-weight:600}
 
-/* Progress */
-.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.prog-lbl{font-size:11.5px;color:var(--g700);width:100px;flex-shrink:0}
-.prog-wrap{flex:1;height:7px;background:var(--g100);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;border-radius:99px}
-.prog-cnt{font-size:11px;color:var(--g400);width:24px;text-align:right}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:var(--r);font-size:13px;font-weight:500;color:white;opacity:0;transition:opacity .3s;z-index:200;pointer-events:none}
+.toast.show{opacity:1}
+.toast.ok{background:var(--green)}
+.toast.ko{background:var(--red)}
 
 /* Empty */
-.empty{text-align:center;padding:3rem 1rem;background:white;border:1px solid var(--g200);border-radius:var(--rl)}
-.empty-ico{font-size:40px;margin-bottom:12px}
-.empty-title{font-size:16px;font-weight:600;margin-bottom:6px}
-.empty-sub{font-size:13px;color:var(--g400);margin-bottom:1.5rem}
-.empty-btn{display:inline-block;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;font-weight:500;text-decoration:none}
+.empty-inline{text-align:center;padding:2rem;font-size:13px;color:var(--g400)}
 
 /* Modal */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
@@ -116,9 +143,15 @@ tr:hover td{background:var(--g50)}
 .modal-header{padding:14px 18px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
 .modal-header h3{font-size:14px;font-weight:600}
 .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);padding:4px 8px}
-.modal-body{padding:18px;overflow-y:auto;flex:1;font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:'Georgia',serif}
+.modal-body{padding:18px;overflow-y:auto;flex:1}
+.modal-body pre{font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:'Georgia',serif;color:var(--g900)}
+.modal-detail-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--g100);font-size:13px}
+.modal-detail-row:last-child{border:none}
+.mdr-key{color:var(--g400);width:160px;flex-shrink:0}
+.mdr-val{color:var(--g900);font-weight:500}
+.modal-footer{padding:14px 18px;border-top:1px solid var(--g200);display:flex;gap:8px;justify-content:flex-end}
 
-@media(max-width:900px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.r2,.r3,.r4{grid-template-columns:1fr}}
+@media(max-width:900px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.r2,.r3{grid-template-columns:1fr}.dc-detail{display:none}}
 </style>
 </head>
 <body>
@@ -132,33 +165,33 @@ tr:hover td{background:var(--g50)}
   </div>
   <nav class="nav">
     <span class="nav-label">Tableaux de bord</span>
-    <a class="nav-item active" href="dashboard.html"><span class="dot" style="background:#2E75B6"></span>Vue globale</a>
-    <a class="nav-item" href="dashboard.html"><span class="dot" style="background:#2E75B6"></span>Contrats</a>
-    <a class="nav-item" href="dashboard.html"><span class="dot" style="background:#059669"></span>Congés</a>
-    <a class="nav-item" href="dashboard.html"><span class="dot" style="background:#D97706"></span>Acomptes</a>
+    <a class="nav-item active" href="dashboard.html"><span class="nav-dot" style="background:#2E75B6"></span>Vue globale</a>
+    <a class="nav-item" href="dashboard.html" onclick="switchTab('validation',this);return false"><span class="nav-dot" style="background:#DC2626"></span>À valider <span class="alert-badge" id="sidebar-pending">0</span></a>
+    <a class="nav-item" href="dashboard.html"><span class="nav-dot" style="background:#059669"></span>Congés</a>
+    <a class="nav-item" href="dashboard.html"><span class="nav-dot" style="background:#D97706"></span>Acomptes</a>
     <span class="nav-label" style="margin-top:10px">Formulaires</span>
     <a class="nav-item" href="contrat.html">📄 Nouveau contrat</a>
     <a class="nav-item" href="conges.html">🏖️ Demande congés</a>
     <a class="nav-item" href="acompte.html">💶 Demande acompte</a>
     <a class="nav-item" href="index.html">🏠 Accueil</a>
   </nav>
-  <div class="sidebar-footer">
-    <a class="btn-new" href="index.html">+ Nouvelle demande</a>
-  </div>
+  <div class="sidebar-footer"><a class="btn-new" href="index.html">+ Nouvelle demande</a></div>
 </div>
 
 <!-- Main -->
 <div class="main">
   <div class="topbar">
-    <div class="topbar-title">Dashboard BI — Vue consolidée</div>
+    <div class="topbar-title">Dashboard RH — Vue consolidée</div>
     <div class="topbar-right">
       <div class="live-dot"></div><span class="live-lbl">Temps réel</span>
-      <button class="btn-ref" onclick="init()">↻ Actualiser</button>
+      <button class="btn-top" onclick="clearAll()" style="color:var(--red)">🗑 Tout effacer</button>
+      <button class="btn-top" onclick="init()">↻ Actualiser</button>
     </div>
   </div>
 
   <div class="tabs">
     <div class="tab active" onclick="switchTab('all',this)">Toutes <span class="tab-badge" id="badge-all">0</span></div>
+    <div class="tab" onclick="switchTab('validation',this)">🔔 À valider <span class="tab-badge alert" id="badge-pending">0</span></div>
     <div class="tab" onclick="switchTab('contrats',this)">📄 Contrats <span class="tab-badge" id="badge-contrats">0</span></div>
     <div class="tab" onclick="switchTab('conges',this)">🏖️ Congés <span class="tab-badge" id="badge-conges">0</span></div>
     <div class="tab" onclick="switchTab('acomptes',this)">💶 Acomptes <span class="tab-badge" id="badge-acomptes">0</span></div>
@@ -176,8 +209,12 @@ tr:hover td{background:var(--g50)}
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
   </div>
 </div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
 Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
@@ -185,71 +222,192 @@ Chart.defaults.font.size=11;Chart.defaults.color='#6B7280';
 const GRID='rgba(0,0,0,.04)';
 let charts={};let currentTab='all';
 
-function mk(id,cfg){if(charts[id])charts[id].destroy();const c=document.getElementById(id);if(!c)return;charts[id]=new Chart(c.getContext('2d'),cfg);}
+// ── Storage helpers ────────────────────────────────────────────────────────
 function load(key){return JSON.parse(localStorage.getItem('synapse_'+key)||'[]');}
+function save(key,arr){localStorage.setItem('synapse_'+key,JSON.stringify(arr));}
 function fmtDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});}catch{return iso;}}
-function fmtMoney(n){return n?n.toLocaleString('fr-FR')+' €':'—';}
+function fmtMoney(n){return n?Number(n).toLocaleString('fr-FR')+' €':'—';}
 
-function openModal(id,type){
-  if(type==='contrat'){
-    const d=load('contrats').find(x=>x.id===id);
-    if(!d)return;
-    document.getElementById('modal-title').textContent='Contrat — '+d.employe+' · '+d.type;
-    document.getElementById('modal-body').textContent=d.contratTexte||'Texte non disponible.';
+// ── Toast ──────────────────────────────────────────────────────────────────
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.className='toast',2500);
+}
+
+// ── Validate / Reject ──────────────────────────────────────────────────────
+function validate(source,id,decision){
+  const arr=load(source);
+  const idx=arr.findIndex(d=>d.id===id);
+  if(idx===-1)return;
+  arr[idx].statut=decision==='ok'?'Accordé':'Refusé';
+  arr[idx].dateDecision=new Date().toISOString();
+  save(source,arr);
+  toast(decision==='ok'?'✓ Demande accordée':'✗ Demande refusée',decision==='ok'?'ok':'ko');
+  init();
+}
+
+function clearAll(){
+  if(!confirm('Effacer toutes les données ? Cette action est irréversible.'))return;
+  ['contrats','conges','acomptes'].forEach(k=>localStorage.removeItem('synapse_'+k));
+  init();
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function openModal(id,source){
+  const arr=load(source);
+  const d=arr.find(x=>x.id===id);
+  if(!d)return;
+  document.getElementById('modal-title').textContent=(source==='contrats'?'Contrat':'source'==='conges'?'Congé':'Acompte')+' — '+d.employe+(d.ref?' · '+d.ref:'');
+
+  let bodyHtml='';
+  if(source==='contrats'&&d.contratTexte){
+    bodyHtml=`<pre>${d.contratTexte}</pre>`;
   }else{
-    const src=type==='conge'?'conges':'acomptes';
-    const d=load(src).find(x=>x.id===id);
-    if(!d)return;
-    document.getElementById('modal-title').textContent=(type==='conge'?'Congé':'Acompte')+' — '+d.employe+' · '+(d.type||d.motif||'');
-    const rows=Object.entries(d).filter(([k])=>!['id','contratTexte','dateISO'].includes(k)).map(([k,v])=>`${k} : ${v}`).join('\n');
-    document.getElementById('modal-body').textContent=rows;
+    const skip=['id','contratTexte','dateISO','dateDecision'];
+    const labels={employe:'Collaborateur',employeur:'Employeur',type:'Type',poste:'Poste',service:'Service',salaireBrut:'Salaire brut',dateDebut:'Date début',dateFin:'Date fin',duree:'Durée',motif:'Motif',motifDetail:'Précisions',montant:'Montant',remboursement:'Remboursement',statut:'Statut',manager:'Manager',ref:'Référence',date:'Date demande'};
+    bodyHtml=Object.entries(d).filter(([k])=>!skip.includes(k)).map(([k,v])=>{
+      const label=labels[k]||k;
+      const val=k==='salaireBrut'?fmtMoney(v):k==='montant'?fmtMoney(v):v||'—';
+      return `<div class="modal-detail-row"><span class="mdr-key">${label}</span><span class="mdr-val">${val}</span></div>`;
+    }).join('');
+  }
+  document.getElementById('modal-body').innerHTML=bodyHtml;
+
+  // Footer : boutons de validation si en attente
+  const footer=document.getElementById('modal-footer');
+  if(source!=='contrats'&&d.statut==='En attente'){
+    footer.innerHTML=`
+      <button class="btn-sm" onclick="closeModal()">Fermer</button>
+      <button class="btn-reject" onclick="validate('${source}',${id},'ko');closeModal()">✗ Refuser</button>
+      <button class="btn-accept" onclick="validate('${source}',${id},'ok');closeModal()">✓ Accorder</button>`;
+  }else{
+    footer.innerHTML=`<button class="btn-sm" onclick="closeModal()">Fermer</button>`;
   }
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');}
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
+// ── Charts ─────────────────────────────────────────────────────────────────
+function mk(id,cfg){if(charts[id])charts[id].destroy();const c=document.getElementById(id);if(!c)return;charts[id]=new Chart(c.getContext('2d'),cfg);}
+const COLORS=['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF'];
+
+// ── Tab switch ─────────────────────────────────────────────────────────────
 function switchTab(tab,el){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
+  if(el)el.classList.add('active');
   init();
 }
 
-const COLORS=['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF'];
+// ── Pending summary ────────────────────────────────────────────────────────
+function getPending(){
+  const conges=load('conges').filter(d=>d.statut==='En attente');
+  const acomptes=load('acomptes').filter(d=>d.statut==='En attente');
+  return{conges,acomptes,total:conges.length+acomptes.length};
+}
 
+// ── Main render ────────────────────────────────────────────────────────────
 function init(){
   const contrats=load('contrats');
   const conges=load('conges');
   const acomptes=load('acomptes');
   const total=contrats.length+conges.length+acomptes.length;
+  const pending=getPending();
 
-  // Badges
+  // Update badges
   document.getElementById('badge-all').textContent=total;
   document.getElementById('badge-contrats').textContent=contrats.length;
   document.getElementById('badge-conges').textContent=conges.length;
   document.getElementById('badge-acomptes').textContent=acomptes.length;
+  document.getElementById('badge-pending').textContent=pending.total;
+  document.getElementById('sidebar-pending').textContent=pending.total;
 
-  const content=document.getElementById('main-content');
-
-  if(total===0){
-    content.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-title">Aucune donnée pour l'instant</div><div class="empty-sub">Soumettez votre première demande pour voir les statistiques apparaître ici.</div><a class="empty-btn" href="index.html">Commencer →</a></div>`;
-    return;
-  }
-
-  if(currentTab==='all') renderAll(contrats,conges,acomptes);
+  if(currentTab==='all') renderAll(contrats,conges,acomptes,pending);
+  else if(currentTab==='validation') renderValidation(pending);
   else if(currentTab==='contrats') renderContrats(contrats);
   else if(currentTab==='conges') renderConges(conges);
   else renderAcomptes(acomptes);
 }
 
-function renderAll(contrats,conges,acomptes){
-  const total=contrats.length+conges.length+acomptes.length;
-  const totalSalaires=contrats.reduce((s,d)=>s+(d.salaireBrut||0),0);
-  const totalAcomptes=acomptes.reduce((s,d)=>s+(d.montant||0),0);
-  const pendingConges=conges.filter(d=>d.statut==='En attente').length;
+// ── VALIDATION TAB ─────────────────────────────────────────────────────────
+function renderValidation(pending){
+  const content=document.getElementById('main-content');
+  if(pending.total===0){
+    content.innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem">
+      <div style="font-size:48px;margin-bottom:1rem">✅</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:6px">Tout est à jour !</div>
+      <div style="font-size:13px;color:var(--g400)">Aucune demande en attente de validation.</div>
+    </div>`;
+    return;
+  }
 
-  // Évolution combinée par mois
+  let html=``;
+  if(pending.total>0){
+    html+=`<div style="background:var(--amber-l);border:1px solid #FCD34D;border-radius:var(--rl);padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E">
+      🔔 <strong>${pending.total} demande(s) en attente</strong> de validation — cliquez sur ✓ Accorder ou ✗ Refuser pour traiter chaque demande.
+    </div>`;
+  }
+
+  if(pending.conges.length>0){
+    html+=`<div class="validation-section">
+      <div class="vsec-title">🏖️ Demandes de congés <span class="vsec-count">${pending.conges.length}</span></div>`;
+    html+=pending.conges.map(d=>`
+      <div class="demande-card" id="dc-conge-${d.id}">
+        <div class="dc-icon" style="background:var(--green-l)">🏖️</div>
+        <div class="dc-info">
+          <div class="dc-name">${d.employe}</div>
+          <div class="dc-meta">${d.type} · ${d.service||'—'} · Manager : ${d.manager||'—'}</div>
+          <div class="dc-ref">${d.ref||''}</div>
+        </div>
+        <div class="dc-detail">
+          <strong>${d.type}</strong>
+          ${d.dateDebut||'—'} → ${d.dateFin||'—'}<br>
+          <span style="font-weight:600;color:var(--green)">${d.duree||'—'}</span>
+        </div>
+        <div class="dc-actions">
+          <button class="btn-detail" onclick="openModal(${d.id},'conges')">Détail</button>
+          <button class="btn-reject" onclick="validate('conges',${d.id},'ko')">✗ Refuser</button>
+          <button class="btn-accept" onclick="validate('conges',${d.id},'ok')">✓ Accorder</button>
+        </div>
+      </div>`).join('');
+    html+=`</div>`;
+  }
+
+  if(pending.acomptes.length>0){
+    html+=`<div class="validation-section">
+      <div class="vsec-title">💶 Demandes d'acompte <span class="vsec-count">${pending.acomptes.length}</span></div>`;
+    html+=pending.acomptes.map(d=>`
+      <div class="demande-card" id="dc-acompte-${d.id}">
+        <div class="dc-icon" style="background:var(--amber-l)">💶</div>
+        <div class="dc-info">
+          <div class="dc-name">${d.employe}</div>
+          <div class="dc-meta">${d.motif||'—'} · ${d.service||'—'} · RH : ${d.manager||'—'}</div>
+          <div class="dc-ref">${d.ref||''}</div>
+        </div>
+        <div class="dc-detail">
+          <strong>${fmtMoney(d.montant)}</strong>
+          ${d.remboursement||'—'}
+        </div>
+        <div class="dc-actions">
+          <button class="btn-detail" onclick="openModal(${d.id},'acomptes')">Détail</button>
+          <button class="btn-reject" onclick="validate('acomptes',${d.id},'ko')">✗ Refuser</button>
+          <button class="btn-accept" onclick="validate('acomptes',${d.id},'ok')">✓ Accorder</button>
+        </div>
+      </div>`).join('');
+    html+=`</div>`;
+  }
+
+  content.innerHTML=html;
+}
+
+// ── ALL TAB ────────────────────────────────────────────────────────────────
+function renderAll(contrats,conges,acomptes,pending){
+  const total=contrats.length+conges.length+acomptes.length;
+  const totalAcomptes=acomptes.reduce((s,d)=>s+(d.montant||0),0);
+  const accordes=conges.filter(d=>d.statut==='Accordé').length+acomptes.filter(d=>d.statut==='Accordé').length;
+
   const byMonth={};
   [...contrats,...conges,...acomptes].forEach(d=>{
     if(!d.dateISO)return;
@@ -257,98 +415,72 @@ function renderAll(contrats,conges,acomptes){
     byMonth[m]=(byMonth[m]||0)+1;
   });
   const mKeys=Object.keys(byMonth).slice(-8);
-  const mVals=mKeys.map(k=>byMonth[k]);
-
-  // Par service
-  const svcAll={};
-  [...contrats,...conges,...acomptes].forEach(d=>{const s=d.service||'Autre';svcAll[s]=(svcAll[s]||0)+1;});
-  const svcEntries=Object.entries(svcAll).sort((a,b)=>b[1]-a[1]);
 
   document.getElementById('main-content').innerHTML=`
+    ${pending.total>0?`<div class="alert-banner">🔔 <span><strong>${pending.total} demande(s) en attente</strong> de validation —</span> <a href="#" onclick="switchTab('validation',document.querySelector('.tab:nth-child(2)'));return false" style="color:var(--red-d);font-weight:600;margin-left:4px">Traiter maintenant →</a></div>`:''}
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--blue)">${total}</div><div class="kpi-sub">tous formulaires</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Congés en attente</div><div class="kpi-val" style="color:var(--green)">${pendingConges}</div><div class="kpi-sub">à traiter</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Acomptes demandés</div><div class="kpi-val" style="color:var(--amber)">${fmtMoney(totalAcomptes)}</div><div class="kpi-sub">montant total</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Masse salariale</div><div class="kpi-val" style="color:var(--purple)">${totalSalaires?(totalSalaires/1000).toFixed(0)+'k€':'—'}</div><div class="kpi-sub">brut mensuel contrats</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--blue)">${total}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--red)">${pending.total}</div><div class="kpi-sub">à traiter</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordées</div><div class="kpi-val" style="color:var(--green)">${accordes}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Acomptes demandés</div><div class="kpi-val" style="color:var(--amber)">${fmtMoney(totalAcomptes)}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Contrats générés</div><div class="kpi-val" style="color:var(--purple)">${contrats.length}</div></div>
     </div>
 
     <div class="row r3">
       <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Activité globale</div><div class="chart-sub">Toutes demandes par mois</div></div><span class="ctag" style="background:var(--blue-l);color:var(--blue)">Consolidé</span></div>
+        <div class="chart-header"><div><div class="chart-title">Activité globale</div><div class="chart-sub">Toutes demandes par mois</div></div></div>
         <canvas id="chartGlobal"></canvas>
       </div>
       <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Répartition</div><div class="chart-sub">Par type de formulaire</div></div></div>
+        <div class="chart-header"><div><div class="chart-title">Répartition</div></div></div>
         <canvas id="chartRep"></canvas>
-      </div>
-    </div>
-
-    <div class="row r2">
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Volume par service</div></div></div>
-        <div id="progSvc"></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Tendance par formulaire</div><div class="chart-sub">Évolution mensuelle</div></div></div>
-        <canvas id="chartTrend"></canvas>
       </div>
     </div>
 
     <div class="chart-card" style="margin-bottom:12px">
       <div class="chart-header"><div><div class="chart-title">Toutes les demandes</div><div class="chart-sub">${total} entrée(s)</div></div></div>
       <div class="table-wrap"><table>
-        <thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Détail</th><th>Statut</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Détail</th><th>Statut</th><th>Actions</th></tr></thead>
         <tbody id="tableAll"></tbody>
       </table></div>
-    </div>
-  `;
+    </div>`;
 
-  mk('chartGlobal',{type:'bar',data:{labels:mKeys.length?mKeys:['—'],datasets:[{data:mVals.length?mVals:[0],backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
+  mk('chartGlobal',{type:'bar',data:{labels:mKeys.length?mKeys:['—'],datasets:[{data:mKeys.map(m=>({...Object.fromEntries([...contrats,...conges,...acomptes].filter(d=>d.dateISO).map(d=>[new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'}),true])))[m]?mKeys.map(k=>([...contrats,...conges,...acomptes].filter(d=>d.dateISO&&new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})===k).length))[mKeys.indexOf(m)]:0),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
 
   mk('chartRep',{type:'doughnut',data:{labels:['Contrats','Congés','Acomptes'],datasets:[{data:[contrats.length,conges.length,acomptes.length],backgroundColor:['#2E75B6','#059669','#D97706'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
 
-  const maxSvc=svcEntries[0]?.[1]||1;
-  document.getElementById('progSvc').innerHTML=svcEntries.length?svcEntries.map(([k,vv],i)=>`<div class="prog-row"><span class="prog-lbl">${k}</span><div class="prog-wrap"><div class="prog-fill" style="width:${Math.round(vv/maxSvc*100)}%;background:${COLORS[i%COLORS.length]}"></div></div><span class="prog-cnt">${vv}</span></div>`).join(''):'<p style="font-size:12px;color:var(--g400)">—</p>';
-
-  // Tendance par type
-  const months8=mKeys.length?mKeys:['—'];
-  const cntByMonth=(arr)=>months8.map(m=>arr.filter(d=>{if(!d.dateISO)return false;return new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})===m;}).length);
-  mk('chartTrend',{type:'line',data:{labels:months8,datasets:[
-    {label:'Contrats',data:cntByMonth(contrats),borderColor:'#2E75B6',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-    {label:'Congés',data:cntByMonth(conges),borderColor:'#059669',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-    {label:'Acomptes',data:cntByMonth(acomptes),borderColor:'#D97706',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-  ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
-
-  // Table unifiée
+  const sClass={'Généré':'p-ok','En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
   const allRows=[
-    ...contrats.map(d=>({id:d.id,dateISO:d.dateISO,employe:d.employe,service:d.service,cat:'contrat',type:'Contrat '+d.type,detail:d.poste,statut:'Généré',pillCat:'p-contrat'})),
-    ...conges.map(d=>({id:d.id,dateISO:d.dateISO,employe:d.employe,service:d.service,cat:'conge',type:'Congés',detail:d.type+' · '+d.duree,statut:d.statut,pillCat:'p-conge'})),
-    ...acomptes.map(d=>({id:d.id,dateISO:d.dateISO,employe:d.employe,service:d.service,cat:'acompte',type:'Acompte',detail:fmtMoney(d.montant),statut:d.statut,pillCat:'p-acompte'})),
+    ...contrats.map(d=>({id:d.id,src:'contrats',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-contrat',typeLabel:'Contrat '+d.type,detail:d.poste,statut:'Généré'})),
+    ...conges.map(d=>({id:d.id,src:'conges',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-conge',typeLabel:'Congés',detail:d.type+' · '+(d.duree||''),statut:d.statut})),
+    ...acomptes.map(d=>({id:d.id,src:'acomptes',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-acompte',typeLabel:'Acompte',detail:fmtMoney(d.montant),statut:d.statut})),
   ].sort((a,b)=>new Date(b.dateISO)-new Date(a.dateISO));
 
-  const sClass={
-    'Généré':'p-ok','En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'
-  };
-  document.getElementById('tableAll').innerHTML=allRows.map(r=>`
-    <tr>
-      <td>${fmtDate(r.dateISO)}</td>
-      <td><strong>${r.employe}</strong></td>
-      <td>${r.service||'—'}</td>
-      <td><span class="pill ${r.pillCat}">${r.type}</span></td>
-      <td style="color:var(--g500)">${r.detail||'—'}</td>
-      <td><span class="pill ${sClass[r.statut]||'p-attente'}">${r.statut}</span></td>
-      <td><button class="btn-sm" onclick="openModal(${r.id},'${r.cat}')">Voir</button></td>
-    </tr>`).join('');
+  document.getElementById('tableAll').innerHTML=allRows.map(r=>`<tr>
+    <td>${fmtDate(r.dateISO)}</td>
+    <td><strong>${r.employe}</strong></td>
+    <td>${r.service||'—'}</td>
+    <td><span class="pill ${r.pillCat}">${r.typeLabel}</span></td>
+    <td style="color:var(--g500);font-size:11px">${r.detail||'—'}</td>
+    <td><span class="pill ${sClass[r.statut]||'p-attente'}">${r.statut}</span></td>
+    <td>
+      <div style="display:flex;gap:4px">
+        <button class="btn-sm" onclick="openModal(${r.id},'${r.src}')">Voir</button>
+        ${r.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('${r.src}',${r.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('${r.src}',${r.id},'ko')">✗</button>`:''}
+      </div>
+    </td>
+  </tr>`).join('');
 }
 
+// ── CONTRATS TAB ────────────────────────────────────────────────────────────
 function renderContrats(contrats){
-  if(!contrats.length){document.getElementById('main-content').innerHTML=`<div class="empty"><div class="empty-ico">📄</div><div class="empty-title">Aucun contrat généré</div><div class="empty-sub">Générez votre premier contrat de travail.</div><a class="empty-btn" href="contrat.html">Générer un contrat →</a></div>`;return;}
-  const moyenSal=Math.round(contrats.reduce((s,d)=>s+(d.salaireBrut||0),0)/contrats.filter(d=>d.salaireBrut).length)||0;
+  if(!contrats.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">📄</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucun contrat généré</div><a href="contrat.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Générer un contrat →</a></div>`;return;}
+  const moyenSal=Math.round(contrats.filter(d=>d.salaireBrut).reduce((s,d)=>s+d.salaireBrut,0)/contrats.filter(d=>d.salaireBrut).length)||0;
   const types=contrats.reduce((a,d)=>{a[d.type]=(a[d.type]||0)+1;return a;},{});
   document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total contrats</div><div class="kpi-val" style="color:var(--blue)">${contrats.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Salaire moyen brut</div><div class="kpi-val" style="color:var(--green)">${moyenSal?moyenSal.toLocaleString('fr-FR')+'€':'—'}</div></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total</div><div class="kpi-val" style="color:var(--blue)">${contrats.length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Salaire moyen</div><div class="kpi-val" style="color:var(--green)">${moyenSal?moyenSal.toLocaleString('fr-FR')+'€':'—'}</div></div>
       <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Type dominant</div><div class="kpi-val" style="font-size:14px;padding-top:6px;color:var(--amber)">${Object.entries(types).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div></div>
       <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Masse salariale</div><div class="kpi-val" style="color:var(--purple)">${(contrats.reduce((s,d)=>s+(d.salaireBrut||0),0)/1000).toFixed(0)}k€</div></div>
     </div>
@@ -356,69 +488,66 @@ function renderContrats(contrats){
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Types de contrats</div></div></div><canvas id="chartCTypes"></canvas></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Salaires bruts</div></div></div><canvas id="chartCSal"></canvas></div>
     </div>
-    <div class="chart-card" style="margin-bottom:12px">
+    <div class="chart-card">
       <div class="chart-header"><div><div class="chart-title">Contrats générés</div></div></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Employé</th><th>Employeur</th><th>Poste</th><th>Type</th><th>Salaire brut</th><th></th></tr></thead>
-      <tbody>${contrats.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.employeur||'—'}</td><td>${d.poste||'—'}</td><td><span class="pill p-contrat">${d.type}</span></td><td>${fmtMoney(d.salaireBrut)}</td><td><button class="btn-sm" onclick="openModal(${d.id},'contrat')">Voir</button></td></tr>`).join('')}</tbody>
-      </table></div>
+      <tbody>${contrats.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.employeur||'—'}</td><td>${d.poste||'—'}</td><td><span class="pill p-contrat">${d.type}</span></td><td>${fmtMoney(d.salaireBrut)}</td><td><button class="btn-sm" onclick="openModal(${d.id},'contrats')">Voir</button></td></tr>`).join('')}</tbody></table></div>
     </div>`;
-  const tk=Object.keys(types),tv=tk.map(k=>types[k]);
-  mk('chartCTypes',{type:'doughnut',data:{labels:tk.length?tk:['Aucun'],datasets:[{data:tv.length?tv:[1],backgroundColor:tk.length?COLORS.slice(0,tk.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
+  const tk=Object.keys(types);
+  mk('chartCTypes',{type:'doughnut',data:{labels:tk,datasets:[{data:tk.map(k=>types[k]),backgroundColor:COLORS.slice(0,tk.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
   mk('chartCSal',{type:'bar',data:{labels:contrats.filter(d=>d.salaireBrut).map(d=>d.employe.split(' ')[0]),datasets:[{data:contrats.filter(d=>d.salaireBrut).map(d=>d.salaireBrut),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:v=>v.toLocaleString('fr-FR')+'€'}},x:{grid:{display:false}}}}});
 }
 
+// ── CONGÉS TAB ─────────────────────────────────────────────────────────────
 function renderConges(conges){
-  if(!conges.length){document.getElementById('main-content').innerHTML=`<div class="empty"><div class="empty-ico">🏖️</div><div class="empty-title">Aucune demande de congés</div><a class="empty-btn" href="conges.html">Faire une demande →</a></div>`;return;}
+  if(!conges.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">🏖️</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucune demande de congés</div><a href="conges.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--green);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Faire une demande →</a></div>`;return;}
+  const pending=conges.filter(d=>d.statut==='En attente');
   const types=conges.reduce((a,d)=>{a[d.type]=(a[d.type]||0)+1;return a;},{});
-  const statuts=conges.reduce((a,d)=>{a[d.statut]=(a[d.statut]||0)+1;return a;},{});
+  const sClass={'En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
   document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--green)">${conges.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${conges.filter(d=>d.statut==='En attente').length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Type dominant</div><div class="kpi-val" style="font-size:14px;padding-top:6px;color:var(--blue)">${Object.entries(types).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Services distincts</div><div class="kpi-val" style="color:var(--purple)">${new Set(conges.map(d=>d.service)).size}</div></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Total</div><div class="kpi-val" style="color:var(--green)">${conges.length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${pending.length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordées</div><div class="kpi-val" style="color:var(--green)">${conges.filter(d=>d.statut==='Accordé').length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-label">Refusées</div><div class="kpi-val" style="color:var(--red)">${conges.filter(d=>d.statut==='Refusé').length}</div></div>
     </div>
+    ${pending.length?`<div class="validation-section"><div class="vsec-title">🔔 En attente de validation <span class="vsec-count">${pending.length}</span></div>${pending.map(d=>`<div class="demande-card"><div class="dc-icon" style="background:var(--green-l)">🏖️</div><div class="dc-info"><div class="dc-name">${d.employe}</div><div class="dc-meta">${d.type} · ${d.service||'—'} · ${d.dateDebut||'—'} → ${d.dateFin||'—'}</div></div><div class="dc-detail"><strong>${d.duree||'—'}</strong></div><div class="dc-actions"><button class="btn-detail" onclick="openModal(${d.id},'conges')">Détail</button><button class="btn-reject" onclick="validate('conges',${d.id},'ko')">✗ Refuser</button><button class="btn-accept" onclick="validate('conges',${d.id},'ok')">✓ Accorder</button></div></div>`).join('')}</div>`:''}
     <div class="row r2">
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Types de congés</div></div></div><canvas id="chartGTypes"></canvas></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Statuts</div></div></div><canvas id="chartGStat"></canvas></div>
     </div>
-    <div class="chart-card" style="margin-bottom:12px">
-      <div class="chart-header"><div><div class="chart-title">Demandes de congés</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Période</th><th>Durée</th><th>Statut</th><th></th></tr></thead>
-      <tbody>${conges.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td><span class="pill p-conge">${d.type}</span></td><td style="font-size:11px;color:var(--g500)">${d.dateDebut||'—'} → ${d.dateFin||'—'}</td><td>${d.duree||'—'}</td><td><span class="pill ${d.statut==='En attente'?'p-attente':'p-ok'}">${d.statut}</span></td><td><button class="btn-sm" onclick="openModal(${d.id},'conge')">Voir</button></td></tr>`).join('')}</tbody>
-      </table></div>
+    <div class="chart-card">
+      <div class="chart-header"><div><div class="chart-title">Toutes les demandes</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Période</th><th>Durée</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>${conges.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td><span class="pill p-conge" style="font-size:10.5px">${d.type}</span></td><td style="font-size:10.5px;color:var(--g500)">${d.dateDebut||'—'} → ${d.dateFin||'—'}</td><td>${d.duree||'—'}</td><td><span class="pill ${sClass[d.statut]||'p-attente'}">${d.statut}</span></td><td><div style="display:flex;gap:4px"><button class="btn-sm" onclick="openModal(${d.id},'conges')">Voir</button>${d.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('conges',${d.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('conges',${d.id},'ko')">✗</button>`:''}</div></td></tr>`).join('')}</tbody></table></div>
     </div>`;
-  const tk=Object.keys(types),tv=tk.map(k=>types[k]);
-  mk('chartGTypes',{type:'doughnut',data:{labels:tk.length?tk:['Aucun'],datasets:[{data:tv.length?tv:[1],backgroundColor:tk.length?COLORS.slice(0,tk.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
-  const sk=Object.keys(statuts),sv=sk.map(k=>statuts[k]);
-  mk('chartGStat',{type:'bar',data:{labels:sk,datasets:[{data:sv,backgroundColor:['#9CA3AF','#059669','#DC2626'].slice(0,sk.length),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
+  const tk=Object.keys(types);
+  mk('chartGTypes',{type:'doughnut',data:{labels:tk,datasets:[{data:tk.map(k=>types[k]),backgroundColor:COLORS.slice(0,tk.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
+  const statuts={};conges.forEach(d=>{statuts[d.statut]=(statuts[d.statut]||0)+1;});
+  const sk=Object.keys(statuts);
+  mk('chartGStat',{type:'bar',data:{labels:sk,datasets:[{data:sk.map(k=>statuts[k]),backgroundColor:sk.map(k=>k==='Accordé'?'#059669':k==='Refusé'?'#DC2626':'#D97706'),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
 }
 
+// ── ACOMPTES TAB ───────────────────────────────────────────────────────────
 function renderAcomptes(acomptes){
-  if(!acomptes.length){document.getElementById('main-content').innerHTML=`<div class="empty"><div class="empty-ico">💶</div><div class="empty-title">Aucune demande d'acompte</div><a class="empty-btn" href="acompte.html">Faire une demande →</a></div>`;return;}
+  if(!acomptes.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">💶</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucune demande d'acompte</div><a href="acompte.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--amber);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Faire une demande →</a></div>`;return;}
+  const pending=acomptes.filter(d=>d.statut==='En attente');
   const total=acomptes.reduce((s,d)=>s+(d.montant||0),0);
   const moyen=Math.round(total/acomptes.length);
-  const motifs=acomptes.reduce((a,d)=>{const m=d.motif||'Autre';a[m]=(a[m]||0)+1;return a;},{});
+  const sClass={'En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
   document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid">
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
       <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--amber)">${acomptes.length}</div></div>
       <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Montant total</div><div class="kpi-val" style="color:var(--blue)">${fmtMoney(total)}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Montant moyen</div><div class="kpi-val" style="color:var(--green)">${fmtMoney(moyen)}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${acomptes.filter(d=>d.statut==='En attente').length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordés</div><div class="kpi-val" style="color:var(--green)">${acomptes.filter(d=>d.statut==='Accordé').length}</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${pending.length}</div></div>
     </div>
-    <div class="row r2">
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Motifs des demandes</div></div></div><canvas id="chartAMotifs"></canvas></div>
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Montants par demande</div></div></div><canvas id="chartAMontants"></canvas></div>
-    </div>
-    <div class="chart-card" style="margin-bottom:12px">
-      <div class="chart-header"><div><div class="chart-title">Demandes d'acompte</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Montant</th><th>Motif</th><th>Remboursement</th><th>Statut</th><th></th></tr></thead>
-      <tbody>${acomptes.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td style="font-weight:600;color:var(--amber)">${fmtMoney(d.montant)}</td><td style="font-size:11px">${d.motif||'—'}</td><td style="font-size:11px;color:var(--g500)">${d.remboursement||'—'}</td><td><span class="pill ${d.statut==='En attente'?'p-attente':'p-ok'}">${d.statut}</span></td><td><button class="btn-sm" onclick="openModal(${d.id},'acompte')">Voir</button></td></tr>`).join('')}</tbody>
-      </table></div>
+    ${pending.length?`<div class="validation-section"><div class="vsec-title">🔔 En attente de validation <span class="vsec-count">${pending.length}</span></div>${pending.map(d=>`<div class="demande-card"><div class="dc-icon" style="background:var(--amber-l)">💶</div><div class="dc-info"><div class="dc-name">${d.employe}</div><div class="dc-meta">${d.motif||'—'} · ${d.service||'—'} · ${d.remboursement||'—'}</div></div><div class="dc-detail"><strong style="color:var(--amber)">${fmtMoney(d.montant)}</strong></div><div class="dc-actions"><button class="btn-detail" onclick="openModal(${d.id},'acomptes')">Détail</button><button class="btn-reject" onclick="validate('acomptes',${d.id},'ko')">✗ Refuser</button><button class="btn-accept" onclick="validate('acomptes',${d.id},'ok')">✓ Accorder</button></div></div>`).join('')}</div>`:''}
+    <div class="chart-card">
+      <div class="chart-header"><div><div class="chart-title">Toutes les demandes d'acompte</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Montant</th><th>Motif</th><th>Remboursement</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>${acomptes.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td style="font-weight:600;color:var(--amber)">${fmtMoney(d.montant)}</td><td style="font-size:11px">${d.motif||'—'}</td><td style="font-size:11px;color:var(--g500)">${d.remboursement||'—'}</td><td><span class="pill ${sClass[d.statut]||'p-attente'}">${d.statut}</span></td><td><div style="display:flex;gap:4px"><button class="btn-sm" onclick="openModal(${d.id},'acomptes')">Voir</button>${d.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('acomptes',${d.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('acomptes',${d.id},'ko')">✗</button>`:''}</div></td></tr>`).join('')}</tbody></table></div>
     </div>`;
-  const mk2=Object.keys(motifs),mv=mk2.map(k=>motifs[k]);
-  mk('chartAMotifs',{type:'doughnut',data:{labels:mk2.length?mk2:['Aucun'],datasets:[{data:mv.length?mv:[1],backgroundColor:mk2.length?COLORS.slice(0,mk2.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
-  mk('chartAMontants',{type:'bar',data:{labels:acomptes.map(d=>d.employe.split(' ')[0]),datasets:[{data:acomptes.map(d=>d.montant||0),backgroundColor:'rgba(217,119,6,.7)',borderColor:'#D97706',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:v=>v.toLocaleString('fr-FR')+'€'}},x:{grid:{display:false}}}}});
 }
 
 init();
