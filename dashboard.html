@@ -19,8 +19,6 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g100);color:var(--g900);min-height:100vh}
 .layout{display:flex;min-height:100vh}
-
-/* Sidebar */
 .sidebar{width:210px;background:var(--g900);flex-shrink:0;display:flex;flex-direction:column}
 .sidebar-logo{display:flex;align-items:center;gap:10px;padding:18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
 .logo-dot{width:32px;height:32px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;flex-shrink:0}
@@ -28,7 +26,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .logo-sub{color:var(--g400);font-size:10px}
 .nav{padding:10px 8px;flex:1}
 .nav-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.08em;padding:8px 8px 4px;display:block}
-.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);color:var(--g400);font-size:12.5px;margin-bottom:2px;text-decoration:none;transition:.15s}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);color:var(--g400);font-size:12.5px;margin-bottom:2px;text-decoration:none;transition:.15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
 .nav-item:hover{background:rgba(255,255,255,.06);color:white}
 .nav-item.active{background:rgba(255,255,255,.1);color:white}
 .nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -36,8 +34,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.08)}
 .btn-new{display:block;text-align:center;background:var(--blue);color:white;padding:9px;border-radius:var(--r);font-size:12px;font-weight:600;text-decoration:none}
 .btn-new:hover{opacity:.88}
-
-/* Main */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
 .topbar{background:white;border-bottom:1px solid var(--g200);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-title{font-size:15px;font-weight:600}
@@ -47,68 +43,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .live-lbl{font-size:11.5px;color:var(--green);font-weight:500}
 .btn-top{padding:5px 12px;background:white;border:1px solid var(--g200);border-radius:var(--r);font-size:11.5px;cursor:pointer;color:var(--g500)}
 .btn-top:hover{border-color:var(--blue);color:var(--blue)}
-
-/* Tabs */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--g200);background:white;padding:0 20px;overflow-x:auto}
-.tab{padding:12px 14px;font-size:12.5px;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.btn-top-red{color:var(--red);border-color:var(--red-l)}
+.tabs{display:flex;border-bottom:1px solid var(--g200);background:white;padding:0 20px;overflow-x:auto}
+.tab{padding:12px 14px;font-size:12.5px;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:6px;user-select:none}
 .tab:hover{color:var(--g700)}
 .tab.active{color:var(--g900);border-bottom-color:var(--blue);font-weight:500}
-.tab-badge{padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;background:var(--g100);color:var(--g500)}
-.tab.active .tab-badge{background:var(--blue-l);color:var(--blue)}
-.tab-badge.alert{background:var(--red-l);color:var(--red)}
-
+.tbadge{padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;background:var(--g100);color:var(--g500)}
+.tab.active .tbadge{background:var(--blue-l);color:var(--blue)}
+.tbadge-red{background:var(--red-l);color:var(--red)}
 .content{padding:16px 20px;overflow-y:auto;flex:1}
-
-/* Alert banner */
-.alert-banner{background:var(--red-l);border:1px solid #FECACA;border-radius:var(--rl);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:13px}
-.alert-banner strong{color:var(--red-d)}
-.alert-banner span{color:var(--red-d)}
-
-/* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .kpi{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:13px 14px;position:relative;overflow:hidden}
 .kpi-accent{position:absolute;top:0;left:0;width:3px;height:100%}
 .kpi-label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .kpi-val{font-size:24px;font-weight:700;line-height:1}
 .kpi-sub{font-size:10.5px;color:var(--g400);margin-top:3px}
-
-/* Cards */
-.row{display:grid;gap:12px;margin-bottom:12px}
-.r2{grid-template-columns:1fr 1fr}
-.r3{grid-template-columns:2fr 1fr}
-.chart-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:16px}
-.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.chart-title{font-size:12.5px;font-weight:600;color:var(--g700)}
-.chart-sub{font-size:11px;color:var(--g400);margin-top:1px}
+.row-2{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+.row-2b{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.card-title{font-size:12.5px;font-weight:600;color:var(--g700);margin-bottom:12px}
+.card-sub{font-size:11px;color:var(--g400);margin-top:1px}
 canvas{max-height:200px}
-
-/* Validation panel */
-.validation-section{margin-bottom:14px}
-.vsec-title{font-size:12px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.vsec-count{background:var(--amber-l);color:var(--amber);padding:1px 8px;border-radius:99px;font-size:11px;font-weight:700}
-
-.demande-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:.15s}
-.demande-card:hover{border-color:var(--g300)}
-.demande-card.validated{opacity:.55;border-style:dashed}
-.dc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.dc-info{flex:1;min-width:0}
-.dc-name{font-size:13.5px;font-weight:600;color:var(--g900)}
-.dc-meta{font-size:11.5px;color:var(--g400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dc-ref{font-size:10.5px;color:var(--g400);font-family:monospace;margin-top:3px}
-.dc-detail{font-size:12px;color:var(--g500);padding:0 12px;flex-shrink:0;text-align:right;min-width:120px}
-.dc-detail strong{display:block;font-size:13px;color:var(--g900)}
-.dc-actions{display:flex;gap:6px;flex-shrink:0}
-.btn-accept{padding:7px 14px;background:var(--green);color:white;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
-.btn-accept:hover{background:var(--green-d)}
-.btn-reject{padding:7px 14px;background:white;color:var(--red);border:1.5px solid var(--red);border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
-.btn-reject:hover{background:var(--red-l)}
-.btn-detail{padding:7px 10px;background:white;color:var(--g500);border:1px solid var(--g200);border-radius:var(--r);font-size:12px;cursor:pointer}
-.btn-detail:hover{border-color:var(--blue);color:var(--blue)}
-.status-chip{padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600}
-.chip-ok{background:var(--green-l);color:var(--green)}
-.chip-ko{background:var(--red-l);color:var(--red)}
-
-/* Tables */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g200);background:var(--g50);white-space:nowrap}
@@ -124,40 +79,44 @@ tr:hover td{background:var(--g50)}
 .p-refuse{background:var(--red-l);color:var(--red)}
 .btn-sm{padding:3px 9px;border:1px solid var(--g200);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--g700)}
 .btn-sm:hover{border-color:var(--blue);color:var(--blue)}
-.btn-sm-g{padding:3px 9px;border:1px solid var(--green);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--green);font-weight:600}
-.btn-sm-r{padding:3px 9px;border:1px solid var(--red);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--red);font-weight:600}
-
-/* Toast */
-.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:var(--r);font-size:13px;font-weight:500;color:white;opacity:0;transition:opacity .3s;z-index:200;pointer-events:none}
+.btn-ok{padding:3px 9px;border:1px solid var(--green);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--green);font-weight:600}
+.btn-ko{padding:3px 9px;border:1px solid var(--red);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--red);font-weight:600}
+.pending-banner{background:var(--amber-l);border:1px solid #FCD34D;border-radius:var(--rl);padding:12px 16px;margin-bottom:12px;font-size:13px;color:#92400E}
+.demande-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.dc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dc-info{flex:1;min-width:0}
+.dc-name{font-size:13px;font-weight:600}
+.dc-meta{font-size:11.5px;color:var(--g400);margin-top:2px}
+.dc-amount{font-size:13px;font-weight:600;flex-shrink:0;padding:0 12px;text-align:right}
+.dc-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-accept{padding:7px 13px;background:var(--green);color:white;border:none;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer}
+.btn-reject{padding:7px 13px;background:white;color:var(--red);border:1.5px solid var(--red);border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer}
+.btn-detail{padding:7px 10px;background:white;color:var(--g500);border:1px solid var(--g200);border-radius:var(--r);font-size:12px;cursor:pointer}
+.vsec-title{font-size:11.5px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.empty-card{text-align:center;padding:3rem;background:white;border:1px solid var(--g200);border-radius:var(--rl)}
+.toast{position:fixed;bottom:24px;right:24px;padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:500;color:white;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1}
-.toast.ok{background:var(--green)}
-.toast.ko{background:var(--red)}
-
-/* Empty */
-.empty-inline{text-align:center;padding:2rem;font-size:13px;color:var(--g400)}
-
-/* Modal */
+.toast-ok{background:var(--green)}
+.toast-ko{background:var(--red)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.open{display:flex}
 .modal{background:white;border-radius:var(--rl);max-width:680px;width:100%;max-height:85vh;display:flex;flex-direction:column}
 .modal-header{padding:14px 18px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
 .modal-header h3{font-size:14px;font-weight:600}
-.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);padding:4px 8px}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);padding:4px 8px;line-height:1}
 .modal-body{padding:18px;overflow-y:auto;flex:1}
-.modal-body pre{font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:'Georgia',serif;color:var(--g900)}
-.modal-detail-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--g100);font-size:13px}
-.modal-detail-row:last-child{border:none}
-.mdr-key{color:var(--g400);width:160px;flex-shrink:0}
-.mdr-val{color:var(--g900);font-weight:500}
-.modal-footer{padding:14px 18px;border-top:1px solid var(--g200);display:flex;gap:8px;justify-content:flex-end}
-
-@media(max-width:900px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.r2,.r3{grid-template-columns:1fr}.dc-detail{display:none}}
+.modal-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--g100);font-size:13px}
+.modal-row:last-child{border:none}
+.modal-key{color:var(--g400);width:160px;flex-shrink:0}
+.modal-val{color:var(--g900);font-weight:500}
+.modal-pre{font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:Georgia,serif}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--g200);display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:860px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.row-2,.row-2b{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="layout">
 
-<!-- Sidebar -->
 <div class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-dot">S</div>
@@ -165,10 +124,11 @@ tr:hover td{background:var(--g50)}
   </div>
   <nav class="nav">
     <span class="nav-label">Tableaux de bord</span>
-    <a class="nav-item active" href="dashboard.html"><span class="nav-dot" style="background:#2E75B6"></span>Vue globale</a>
-    <a class="nav-item" href="dashboard.html" onclick="switchTab('validation',this);return false"><span class="nav-dot" style="background:#DC2626"></span>À valider <span class="alert-badge" id="sidebar-pending">0</span></a>
-    <a class="nav-item" href="dashboard.html"><span class="nav-dot" style="background:#059669"></span>Congés</a>
-    <a class="nav-item" href="dashboard.html"><span class="nav-dot" style="background:#D97706"></span>Acomptes</a>
+    <button class="nav-item" onclick="goTab('all')"><span class="nav-dot" style="background:var(--blue)"></span>Vue globale</button>
+    <button class="nav-item" onclick="goTab('validation')"><span class="nav-dot" style="background:var(--red)"></span>À valider <span class="alert-badge" id="sb-pending">0</span></button>
+    <button class="nav-item" onclick="goTab('contrats')"><span class="nav-dot" style="background:var(--blue)"></span>Contrats</button>
+    <button class="nav-item" onclick="goTab('conges')"><span class="nav-dot" style="background:var(--green)"></span>Congés</button>
+    <button class="nav-item" onclick="goTab('acomptes')"><span class="nav-dot" style="background:var(--amber)"></span>Acomptes</button>
     <span class="nav-label" style="margin-top:10px">Formulaires</span>
     <a class="nav-item" href="contrat.html">📄 Nouveau contrat</a>
     <a class="nav-item" href="conges.html">🏖️ Demande congés</a>
@@ -178,30 +138,28 @@ tr:hover td{background:var(--g50)}
   <div class="sidebar-footer"><a class="btn-new" href="index.html">+ Nouvelle demande</a></div>
 </div>
 
-<!-- Main -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-title">Dashboard RH — Vue consolidée</div>
     <div class="topbar-right">
       <div class="live-dot"></div><span class="live-lbl">Temps réel</span>
-      <button class="btn-top" onclick="clearAll()" style="color:var(--red)">🗑 Tout effacer</button>
-      <button class="btn-top" onclick="init()">↻ Actualiser</button>
+      <button class="btn-top btn-top-red" onclick="clearAll()">🗑 Tout effacer</button>
+      <button class="btn-top" onclick="render()">↻ Actualiser</button>
     </div>
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('all',this)">Toutes <span class="tab-badge" id="badge-all">0</span></div>
-    <div class="tab" onclick="switchTab('validation',this)">🔔 À valider <span class="tab-badge alert" id="badge-pending">0</span></div>
-    <div class="tab" onclick="switchTab('contrats',this)">📄 Contrats <span class="tab-badge" id="badge-contrats">0</span></div>
-    <div class="tab" onclick="switchTab('conges',this)">🏖️ Congés <span class="tab-badge" id="badge-conges">0</span></div>
-    <div class="tab" onclick="switchTab('acomptes',this)">💶 Acomptes <span class="tab-badge" id="badge-acomptes">0</span></div>
+    <div class="tab active" id="tab-all" onclick="goTab('all')">Toutes <span class="tbadge" id="b-all">0</span></div>
+    <div class="tab" id="tab-validation" onclick="goTab('validation')">🔔 À valider <span class="tbadge tbadge-red" id="b-pending">0</span></div>
+    <div class="tab" id="tab-contrats" onclick="goTab('contrats')">📄 Contrats <span class="tbadge" id="b-contrats">0</span></div>
+    <div class="tab" id="tab-conges" onclick="goTab('conges')">🏖️ Congés <span class="tbadge" id="b-conges">0</span></div>
+    <div class="tab" id="tab-acomptes" onclick="goTab('acomptes')">💶 Acomptes <span class="tbadge" id="b-acomptes">0</span></div>
   </div>
 
-  <div class="content" id="main-content"></div>
+  <div class="content" id="content"></div>
 </div>
 </div>
 
-<!-- Modal -->
 <div class="modal-bg" id="modal">
   <div class="modal">
     <div class="modal-header">
@@ -213,347 +171,390 @@ tr:hover td{background:var(--g50)}
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
-Chart.defaults.font.size=11;Chart.defaults.color='#6B7280';
-const GRID='rgba(0,0,0,.04)';
-let charts={};let currentTab='all';
+// ── Setup ──────────────────────────────────────────────────────────────────
+Chart.defaults.font.family = "system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#6B7280';
+const GRID = 'rgba(0,0,0,.04)';
+const COLORS = ['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF'];
+let charts = {};
+let currentTab = 'all';
 
-// ── Storage helpers ────────────────────────────────────────────────────────
-function load(key){return JSON.parse(localStorage.getItem('synapse_'+key)||'[]');}
-function save(key,arr){localStorage.setItem('synapse_'+key,JSON.stringify(arr));}
-function fmtDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});}catch{return iso;}}
-function fmtMoney(n){return n?Number(n).toLocaleString('fr-FR')+' €':'—';}
-
-// ── Toast ──────────────────────────────────────────────────────────────────
-function toast(msg,type='ok'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast '+type+' show';
-  setTimeout(()=>t.className='toast',2500);
+// ── Helpers ────────────────────────────────────────────────────────────────
+function load(k){ return JSON.parse(localStorage.getItem('synapse_'+k)||'[]'); }
+function save(k,v){ localStorage.setItem('synapse_'+k, JSON.stringify(v)); }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'}); }catch(e){ return iso||'—'; } }
+function fmtMoney(n){ return n ? Number(n).toLocaleString('fr-FR')+' €' : '—'; }
+function pill(text,cls){ return '<span class="pill '+cls+'">'+text+'</span>'; }
+function statusPill(s){
+  if(s==='Généré') return pill(s,'p-ok');
+  if(s==='Accordé') return pill(s,'p-ok');
+  if(s==='Refusé') return pill(s,'p-refuse');
+  return pill(s||'En attente','p-attente');
 }
 
-// ── Validate / Reject ──────────────────────────────────────────────────────
-function validate(source,id,decision){
-  const arr=load(source);
-  const idx=arr.findIndex(d=>d.id===id);
-  if(idx===-1)return;
-  arr[idx].statut=decision==='ok'?'Accordé':'Refusé';
-  arr[idx].dateDecision=new Date().toISOString();
-  save(source,arr);
-  toast(decision==='ok'?'✓ Demande accordée':'✗ Demande refusée',decision==='ok'?'ok':'ko');
-  init();
+function mk(id, cfg){
+  if(charts[id]){ try{ charts[id].destroy(); }catch(e){} }
+  const c = document.getElementById(id);
+  if(!c) return;
+  try{ charts[id] = new Chart(c.getContext('2d'), cfg); }catch(e){ console.error('Chart error',id,e); }
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function toast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type==='ok' ? 'toast-ok' : 'toast-ko') + ' show';
+  setTimeout(()=>{ t.className='toast'; }, 2500);
+}
+
+// ── Validation ─────────────────────────────────────────────────────────────
+function validate(src, id, decision){
+  const arr = load(src);
+  const idx = arr.findIndex(d => d.id === id);
+  if(idx === -1) return;
+  arr[idx].statut = decision === 'ok' ? 'Accordé' : 'Refusé';
+  arr[idx].dateDecision = new Date().toISOString();
+  save(src, arr);
+  toast(decision==='ok' ? '✓ Demande accordée' : '✗ Demande refusée', decision);
+  render();
 }
 
 function clearAll(){
-  if(!confirm('Effacer toutes les données ? Cette action est irréversible.'))return;
-  ['contrats','conges','acomptes'].forEach(k=>localStorage.removeItem('synapse_'+k));
-  init();
+  if(!confirm('Effacer toutes les données ?')) return;
+  ['contrats','conges','acomptes'].forEach(k => localStorage.removeItem('synapse_'+k));
+  render();
 }
 
 // ── Modal ──────────────────────────────────────────────────────────────────
-function openModal(id,source){
-  const arr=load(source);
-  const d=arr.find(x=>x.id===id);
-  if(!d)return;
-  document.getElementById('modal-title').textContent=(source==='contrats'?'Contrat':'source'==='conges'?'Congé':'Acompte')+' — '+d.employe+(d.ref?' · '+d.ref:'');
+function openModal(src, id){
+  const arr = load(src);
+  const d = arr.find(x => x.id === id);
+  if(!d) return;
 
-  let bodyHtml='';
-  if(source==='contrats'&&d.contratTexte){
-    bodyHtml=`<pre>${d.contratTexte}</pre>`;
-  }else{
-    const skip=['id','contratTexte','dateISO','dateDecision'];
-    const labels={employe:'Collaborateur',employeur:'Employeur',type:'Type',poste:'Poste',service:'Service',salaireBrut:'Salaire brut',dateDebut:'Date début',dateFin:'Date fin',duree:'Durée',motif:'Motif',motifDetail:'Précisions',montant:'Montant',remboursement:'Remboursement',statut:'Statut',manager:'Manager',ref:'Référence',date:'Date demande'};
-    bodyHtml=Object.entries(d).filter(([k])=>!skip.includes(k)).map(([k,v])=>{
-      const label=labels[k]||k;
-      const val=k==='salaireBrut'?fmtMoney(v):k==='montant'?fmtMoney(v):v||'—';
-      return `<div class="modal-detail-row"><span class="mdr-key">${label}</span><span class="mdr-val">${val}</span></div>`;
-    }).join('');
-  }
-  document.getElementById('modal-body').innerHTML=bodyHtml;
+  const LABELS = {employe:'Collaborateur',employeur:'Employeur',type:'Type',poste:'Poste',service:'Service',salaireBrut:'Salaire brut',dateDebut:'Date début',dateFin:'Date fin',duree:'Durée',motif:'Motif',motifDetail:'Précisions',montant:'Montant',remboursement:'Remboursement',statut:'Statut',manager:'Manager',ref:'Référence',date:'Date demande',email:'Email',essai:"Période d'essai",teletravail:'Télétravail'};
+  const SKIP = ['id','contratTexte','dateISO','dateDecision'];
 
-  // Footer : boutons de validation si en attente
-  const footer=document.getElementById('modal-footer');
-  if(source!=='contrats'&&d.statut==='En attente'){
-    footer.innerHTML=`
-      <button class="btn-sm" onclick="closeModal()">Fermer</button>
-      <button class="btn-reject" onclick="validate('${source}',${id},'ko');closeModal()">✗ Refuser</button>
-      <button class="btn-accept" onclick="validate('${source}',${id},'ok');closeModal()">✓ Accorder</button>`;
-  }else{
-    footer.innerHTML=`<button class="btn-sm" onclick="closeModal()">Fermer</button>`;
+  document.getElementById('modal-title').textContent = (d.employe||'') + (d.ref ? ' · '+d.ref : '') + (d.type ? ' · '+d.type : '');
+
+  let body = '';
+  if(src === 'contrats' && d.contratTexte){
+    body = '<div class="modal-pre">'+d.contratTexte+'</div>';
+  } else {
+    Object.entries(d).forEach(function(entry){
+      const k = entry[0], val = entry[1];
+      if(SKIP.includes(k)) return;
+      const label = LABELS[k] || k;
+      const display = k==='salaireBrut'||k==='montant' ? fmtMoney(val) : (val||'—');
+      body += '<div class="modal-row"><span class="modal-key">'+label+'</span><span class="modal-val">'+display+'</span></div>';
+    });
   }
+  document.getElementById('modal-body').innerHTML = body;
+
+  let footer = '<button class="btn-sm" onclick="closeModal()">Fermer</button>';
+  if(src !== 'contrats' && d.statut === 'En attente'){
+    footer += '<button class="btn-reject" onclick="validate(\''+src+'\','+id+',\'ko\');closeModal()">✗ Refuser</button>';
+    footer += '<button class="btn-accept" onclick="validate(\''+src+'\','+id+',\'ok\');closeModal()">✓ Accorder</button>';
+  }
+  document.getElementById('modal-footer').innerHTML = footer;
   document.getElementById('modal').classList.add('open');
 }
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target===e.currentTarget) closeModal(); });
 
-// ── Charts ─────────────────────────────────────────────────────────────────
-function mk(id,cfg){if(charts[id])charts[id].destroy();const c=document.getElementById(id);if(!c)return;charts[id]=new Chart(c.getContext('2d'),cfg);}
-const COLORS=['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF'];
-
-// ── Tab switch ─────────────────────────────────────────────────────────────
-function switchTab(tab,el){
-  currentTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  if(el)el.classList.add('active');
-  init();
+// ── Tab switching ──────────────────────────────────────────────────────────
+function goTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  const el = document.getElementById('tab-'+tab);
+  if(el) el.classList.add('active');
+  render();
 }
 
-// ── Pending summary ────────────────────────────────────────────────────────
-function getPending(){
-  const conges=load('conges').filter(d=>d.statut==='En attente');
-  const acomptes=load('acomptes').filter(d=>d.statut==='En attente');
-  return{conges,acomptes,total:conges.length+acomptes.length};
+// ── Badges ─────────────────────────────────────────────────────────────────
+function updateBadges(contrats, conges, acomptes){
+  const pendingTotal = conges.filter(d=>d.statut==='En attente').length + acomptes.filter(d=>d.statut==='En attente').length;
+  document.getElementById('b-all').textContent = contrats.length + conges.length + acomptes.length;
+  document.getElementById('b-contrats').textContent = contrats.length;
+  document.getElementById('b-conges').textContent = conges.length;
+  document.getElementById('b-acomptes').textContent = acomptes.length;
+  document.getElementById('b-pending').textContent = pendingTotal;
+  document.getElementById('sb-pending').textContent = pendingTotal;
 }
 
-// ── Main render ────────────────────────────────────────────────────────────
-function init(){
-  const contrats=load('contrats');
-  const conges=load('conges');
-  const acomptes=load('acomptes');
-  const total=contrats.length+conges.length+acomptes.length;
-  const pending=getPending();
+// ── Main render dispatcher ─────────────────────────────────────────────────
+function render(){
+  const contrats = load('contrats');
+  const conges   = load('conges');
+  const acomptes = load('acomptes');
+  updateBadges(contrats, conges, acomptes);
 
-  // Update badges
-  document.getElementById('badge-all').textContent=total;
-  document.getElementById('badge-contrats').textContent=contrats.length;
-  document.getElementById('badge-conges').textContent=conges.length;
-  document.getElementById('badge-acomptes').textContent=acomptes.length;
-  document.getElementById('badge-pending').textContent=pending.total;
-  document.getElementById('sidebar-pending').textContent=pending.total;
-
-  if(currentTab==='all') renderAll(contrats,conges,acomptes,pending);
-  else if(currentTab==='validation') renderValidation(pending);
-  else if(currentTab==='contrats') renderContrats(contrats);
-  else if(currentTab==='conges') renderConges(conges);
-  else renderAcomptes(acomptes);
+  try {
+    if(currentTab === 'all')        renderAll(contrats, conges, acomptes);
+    else if(currentTab === 'validation') renderValidation(conges, acomptes);
+    else if(currentTab === 'contrats')  renderContrats(contrats);
+    else if(currentTab === 'conges')    renderConges(conges);
+    else if(currentTab === 'acomptes')  renderAcomptes(acomptes);
+  } catch(e) {
+    document.getElementById('content').innerHTML = '<div class="empty-card"><p style="color:red">Erreur : '+e.message+'</p></div>';
+    console.error(e);
+  }
 }
 
-// ── VALIDATION TAB ─────────────────────────────────────────────────────────
-function renderValidation(pending){
-  const content=document.getElementById('main-content');
-  if(pending.total===0){
-    content.innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem">
-      <div style="font-size:48px;margin-bottom:1rem">✅</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:6px">Tout est à jour !</div>
-      <div style="font-size:13px;color:var(--g400)">Aucune demande en attente de validation.</div>
-    </div>`;
+// ── EMPTY helper ───────────────────────────────────────────────────────────
+function emptyCard(icon, title, href, linkText){
+  return '<div class="empty-card"><div style="font-size:40px;margin-bottom:12px">'+icon+'</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">'+title+'</div><a href="'+href+'" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">'+linkText+'</a></div>';
+}
+
+// ── KPI helper ─────────────────────────────────────────────────────────────
+function kpiCard(accent, label, val, sub){
+  return '<div class="kpi"><div class="kpi-accent" style="background:'+accent+'"></div><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+accent+'">'+val+'</div>'+(sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>';
+}
+
+// ── Pending cards ──────────────────────────────────────────────────────────
+function buildPendingCards(items, src, iconBg, iconEmoji, detailFn){
+  if(!items.length) return '';
+  var html = '';
+  items.forEach(function(d){
+    html += '<div class="demande-card">';
+    html += '<div class="dc-icon" style="background:'+iconBg+'">'+iconEmoji+'</div>';
+    html += '<div class="dc-info"><div class="dc-name">'+d.employe+'</div><div class="dc-meta">'+(d.type||d.motif||'—')+' · '+(d.service||'—')+'</div></div>';
+    html += '<div class="dc-amount">'+detailFn(d)+'</div>';
+    html += '<div class="dc-actions">';
+    html += '<button class="btn-detail" onclick="openModal(\''+src+'\','+d.id+')">Détail</button>';
+    html += '<button class="btn-reject" onclick="validate(\''+src+'\','+d.id+',\'ko\')">✗ Refuser</button>';
+    html += '<button class="btn-accept" onclick="validate(\''+src+'\','+d.id+',\'ok\')">✓ Accorder</button>';
+    html += '</div></div>';
+  });
+  return html;
+}
+
+// ── TAB: VALIDATION ────────────────────────────────────────────────────────
+function renderValidation(conges, acomptes){
+  const pConges   = conges.filter(function(d){ return d.statut==='En attente'; });
+  const pAcomptes = acomptes.filter(function(d){ return d.statut==='En attente'; });
+  const total = pConges.length + pAcomptes.length;
+
+  if(total === 0){
+    document.getElementById('content').innerHTML = '<div class="empty-card"><div style="font-size:48px;margin-bottom:1rem">✅</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Tout est à jour !</div><div style="font-size:13px;color:var(--g400)">Aucune demande en attente de validation.</div></div>';
     return;
   }
 
-  let html=``;
-  if(pending.total>0){
-    html+=`<div style="background:var(--amber-l);border:1px solid #FCD34D;border-radius:var(--rl);padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E">
-      🔔 <strong>${pending.total} demande(s) en attente</strong> de validation — cliquez sur ✓ Accorder ou ✗ Refuser pour traiter chaque demande.
-    </div>`;
+  var html = '<div class="pending-banner">🔔 <strong>'+total+' demande(s) en attente</strong> de validation</div>';
+
+  if(pConges.length){
+    html += '<div class="card"><div class="vsec-title">🏖️ Congés en attente ('+pConges.length+')</div>';
+    html += buildPendingCards(pConges, 'conges', 'var(--green-l)', '🏖️', function(d){ return (d.duree||'—')+'<br><small style="color:var(--g400)">'+( d.dateDebut||'')+'</small>'; });
+    html += '</div>';
   }
 
-  if(pending.conges.length>0){
-    html+=`<div class="validation-section">
-      <div class="vsec-title">🏖️ Demandes de congés <span class="vsec-count">${pending.conges.length}</span></div>`;
-    html+=pending.conges.map(d=>`
-      <div class="demande-card" id="dc-conge-${d.id}">
-        <div class="dc-icon" style="background:var(--green-l)">🏖️</div>
-        <div class="dc-info">
-          <div class="dc-name">${d.employe}</div>
-          <div class="dc-meta">${d.type} · ${d.service||'—'} · Manager : ${d.manager||'—'}</div>
-          <div class="dc-ref">${d.ref||''}</div>
-        </div>
-        <div class="dc-detail">
-          <strong>${d.type}</strong>
-          ${d.dateDebut||'—'} → ${d.dateFin||'—'}<br>
-          <span style="font-weight:600;color:var(--green)">${d.duree||'—'}</span>
-        </div>
-        <div class="dc-actions">
-          <button class="btn-detail" onclick="openModal(${d.id},'conges')">Détail</button>
-          <button class="btn-reject" onclick="validate('conges',${d.id},'ko')">✗ Refuser</button>
-          <button class="btn-accept" onclick="validate('conges',${d.id},'ok')">✓ Accorder</button>
-        </div>
-      </div>`).join('');
-    html+=`</div>`;
+  if(pAcomptes.length){
+    html += '<div class="card"><div class="vsec-title">💶 Acomptes en attente ('+pAcomptes.length+')</div>';
+    html += buildPendingCards(pAcomptes, 'acomptes', 'var(--amber-l)', '💶', function(d){ return '<span style="color:var(--amber);font-weight:700">'+fmtMoney(d.montant)+'</span>'; });
+    html += '</div>';
   }
 
-  if(pending.acomptes.length>0){
-    html+=`<div class="validation-section">
-      <div class="vsec-title">💶 Demandes d'acompte <span class="vsec-count">${pending.acomptes.length}</span></div>`;
-    html+=pending.acomptes.map(d=>`
-      <div class="demande-card" id="dc-acompte-${d.id}">
-        <div class="dc-icon" style="background:var(--amber-l)">💶</div>
-        <div class="dc-info">
-          <div class="dc-name">${d.employe}</div>
-          <div class="dc-meta">${d.motif||'—'} · ${d.service||'—'} · RH : ${d.manager||'—'}</div>
-          <div class="dc-ref">${d.ref||''}</div>
-        </div>
-        <div class="dc-detail">
-          <strong>${fmtMoney(d.montant)}</strong>
-          ${d.remboursement||'—'}
-        </div>
-        <div class="dc-actions">
-          <button class="btn-detail" onclick="openModal(${d.id},'acomptes')">Détail</button>
-          <button class="btn-reject" onclick="validate('acomptes',${d.id},'ko')">✗ Refuser</button>
-          <button class="btn-accept" onclick="validate('acomptes',${d.id},'ok')">✓ Accorder</button>
-        </div>
-      </div>`).join('');
-    html+=`</div>`;
-  }
-
-  content.innerHTML=html;
+  document.getElementById('content').innerHTML = html;
 }
 
-// ── ALL TAB ────────────────────────────────────────────────────────────────
-function renderAll(contrats,conges,acomptes,pending){
-  const total=contrats.length+conges.length+acomptes.length;
-  const totalAcomptes=acomptes.reduce((s,d)=>s+(d.montant||0),0);
-  const accordes=conges.filter(d=>d.statut==='Accordé').length+acomptes.filter(d=>d.statut==='Accordé').length;
+// ── TAB: GLOBAL ────────────────────────────────────────────────────────────
+function renderAll(contrats, conges, acomptes){
+  const total = contrats.length + conges.length + acomptes.length;
+  const totalAcomptes = acomptes.reduce(function(s,d){ return s+(d.montant||0); }, 0);
+  const pendingTotal  = conges.filter(function(d){ return d.statut==='En attente'; }).length
+                      + acomptes.filter(function(d){ return d.statut==='En attente'; }).length;
+  const accordes = conges.filter(function(d){ return d.statut==='Accordé'; }).length
+                 + acomptes.filter(function(d){ return d.statut==='Accordé'; }).length;
 
-  const byMonth={};
-  [...contrats,...conges,...acomptes].forEach(d=>{
-    if(!d.dateISO)return;
-    const m=new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});
-    byMonth[m]=(byMonth[m]||0)+1;
+  // Month map
+  const allItems = contrats.concat(conges).concat(acomptes);
+  var byMonth = {};
+  allItems.forEach(function(d){
+    if(!d.dateISO) return;
+    var m = new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});
+    byMonth[m] = (byMonth[m]||0)+1;
   });
-  const mKeys=Object.keys(byMonth).slice(-8);
+  var mKeys = Object.keys(byMonth).slice(-8);
+  var mVals = mKeys.map(function(m){ return byMonth[m]; });
 
-  document.getElementById('main-content').innerHTML=`
-    ${pending.total>0?`<div class="alert-banner">🔔 <span><strong>${pending.total} demande(s) en attente</strong> de validation —</span> <a href="#" onclick="switchTab('validation',document.querySelector('.tab:nth-child(2)'));return false" style="color:var(--red-d);font-weight:600;margin-left:4px">Traiter maintenant →</a></div>`:''}
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--blue)">${total}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--red)">${pending.total}</div><div class="kpi-sub">à traiter</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordées</div><div class="kpi-val" style="color:var(--green)">${accordes}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Acomptes demandés</div><div class="kpi-val" style="color:var(--amber)">${fmtMoney(totalAcomptes)}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Contrats générés</div><div class="kpi-val" style="color:var(--purple)">${contrats.length}</div></div>
-    </div>
+  var alertBanner = pendingTotal > 0
+    ? '<div style="background:var(--red-l);border:1px solid #FECACA;border-radius:var(--rl);padding:11px 16px;margin-bottom:14px;font-size:13px;color:var(--red-d)">🔔 <strong>'+pendingTotal+' demande(s) en attente</strong> — <a href="#" onclick="goTab(\'validation\');return false" style="color:var(--red-d);font-weight:700">Traiter maintenant →</a></div>'
+    : '';
 
-    <div class="row r3">
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Activité globale</div><div class="chart-sub">Toutes demandes par mois</div></div></div>
-        <canvas id="chartGlobal"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Répartition</div></div></div>
-        <canvas id="chartRep"></canvas>
-      </div>
-    </div>
+  var kpiHtml = '<div class="kpi-grid">'
+    + kpiCard('var(--blue)', 'Total demandes', total, 'tous formulaires')
+    + kpiCard('var(--red)', 'En attente', pendingTotal, 'à traiter')
+    + kpiCard('var(--green)', 'Accordées', accordes, '')
+    + kpiCard('var(--amber)', 'Acomptes', fmtMoney(totalAcomptes), 'montant total')
+    + '</div>';
 
-    <div class="chart-card" style="margin-bottom:12px">
-      <div class="chart-header"><div><div class="chart-title">Toutes les demandes</div><div class="chart-sub">${total} entrée(s)</div></div></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Détail</th><th>Statut</th><th>Actions</th></tr></thead>
-        <tbody id="tableAll"></tbody>
-      </table></div>
-    </div>`;
+  // All rows table
+  var allRows = [];
+  contrats.forEach(function(d){ allRows.push({id:d.id,src:'contrats',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-contrat',typeLabel:'Contrat '+d.type,detail:d.poste,statut:'Généré'}); });
+  conges.forEach(function(d){   allRows.push({id:d.id,src:'conges',  dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-conge',  typeLabel:'Congés',      detail:(d.type||'')+(d.duree?' · '+d.duree:''),statut:d.statut}); });
+  acomptes.forEach(function(d){ allRows.push({id:d.id,src:'acomptes',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-acompte',typeLabel:'Acompte',      detail:fmtMoney(d.montant),statut:d.statut}); });
+  allRows.sort(function(a,b){ return new Date(b.dateISO)-new Date(a.dateISO); });
 
-  const allItems=[...contrats,...conges,...acomptes];
-  const mVals=mKeys.map(m=>allItems.filter(d=>d.dateISO&&new Date(d.dateISO).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})===m).length);
+  var tableRows = '';
+  allRows.forEach(function(r){
+    var actionBtns = '<button class="btn-sm" onclick="openModal(\''+r.src+'\','+r.id+')">Voir</button>';
+    if(r.statut === 'En attente'){
+      actionBtns += ' <button class="btn-ok" onclick="validate(\''+r.src+'\','+r.id+',\'ok\')">✓</button>';
+      actionBtns += ' <button class="btn-ko" onclick="validate(\''+r.src+'\','+r.id+',\'ko\')">✗</button>';
+    }
+    tableRows += '<tr><td>'+fmtDate(r.dateISO)+'</td><td><strong>'+r.employe+'</strong></td><td>'+(r.service||'—')+'</td><td>'+pill(r.typeLabel,r.pillCls)+'</td><td style="color:var(--g500);font-size:11px">'+(r.detail||'—')+'</td><td>'+statusPill(r.statut)+'</td><td><div style="display:flex;gap:4px">'+actionBtns+'</div></td></tr>';
+  });
+
+  var tableHtml = '<div class="card"><div class="card-title">Toutes les demandes <span style="color:var(--g400);font-weight:400;font-size:11px">('+total+')</span></div>'
+    + '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Détail</th><th>Statut</th><th>Actions</th></tr></thead>'
+    + '<tbody>'+tableRows+'</tbody></table></div></div>';
+
+  document.getElementById('content').innerHTML = alertBanner + kpiHtml
+    + '<div class="row-2"><div class="card" id="cEvol"><div class="card-title">Activité globale</div><canvas id="chartGlobal"></canvas></div>'
+    + '<div class="card" id="cRep"><div class="card-title">Répartition</div><canvas id="chartRep"></canvas></div></div>'
+    + tableHtml;
+
   mk('chartGlobal',{type:'bar',data:{labels:mKeys.length?mKeys:['—'],datasets:[{data:mVals,backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
-
   mk('chartRep',{type:'doughnut',data:{labels:['Contrats','Congés','Acomptes'],datasets:[{data:[contrats.length,conges.length,acomptes.length],backgroundColor:['#2E75B6','#059669','#D97706'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
-
-  const sClass={'Généré':'p-ok','En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
-  const allRows=[
-    ...contrats.map(d=>({id:d.id,src:'contrats',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-contrat',typeLabel:'Contrat '+d.type,detail:d.poste,statut:'Généré'})),
-    ...conges.map(d=>({id:d.id,src:'conges',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-conge',typeLabel:'Congés',detail:d.type+' · '+(d.duree||''),statut:d.statut})),
-    ...acomptes.map(d=>({id:d.id,src:'acomptes',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCat:'p-acompte',typeLabel:'Acompte',detail:fmtMoney(d.montant),statut:d.statut})),
-  ].sort((a,b)=>new Date(b.dateISO)-new Date(a.dateISO));
-
-  document.getElementById('tableAll').innerHTML=allRows.map(r=>`<tr>
-    <td>${fmtDate(r.dateISO)}</td>
-    <td><strong>${r.employe}</strong></td>
-    <td>${r.service||'—'}</td>
-    <td><span class="pill ${r.pillCat}">${r.typeLabel}</span></td>
-    <td style="color:var(--g500);font-size:11px">${r.detail||'—'}</td>
-    <td><span class="pill ${sClass[r.statut]||'p-attente'}">${r.statut}</span></td>
-    <td>
-      <div style="display:flex;gap:4px">
-        <button class="btn-sm" onclick="openModal(${r.id},'${r.src}')">Voir</button>
-        ${r.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('${r.src}',${r.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('${r.src}',${r.id},'ko')">✗</button>`:''}
-      </div>
-    </td>
-  </tr>`).join('');
 }
 
-// ── CONTRATS TAB ────────────────────────────────────────────────────────────
+// ── TAB: CONTRATS ──────────────────────────────────────────────────────────
 function renderContrats(contrats){
-  if(!contrats.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">📄</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucun contrat généré</div><a href="contrat.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Générer un contrat →</a></div>`;return;}
-  const moyenSal=Math.round(contrats.filter(d=>d.salaireBrut).reduce((s,d)=>s+d.salaireBrut,0)/contrats.filter(d=>d.salaireBrut).length)||0;
-  const types=contrats.reduce((a,d)=>{a[d.type]=(a[d.type]||0)+1;return a;},{});
-  document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Total</div><div class="kpi-val" style="color:var(--blue)">${contrats.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Salaire moyen</div><div class="kpi-val" style="color:var(--green)">${moyenSal?moyenSal.toLocaleString('fr-FR')+'€':'—'}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Type dominant</div><div class="kpi-val" style="font-size:14px;padding-top:6px;color:var(--amber)">${Object.entries(types).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-label">Masse salariale</div><div class="kpi-val" style="color:var(--purple)">${(contrats.reduce((s,d)=>s+(d.salaireBrut||0),0)/1000).toFixed(0)}k€</div></div>
-    </div>
-    <div class="row r2">
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Types de contrats</div></div></div><canvas id="chartCTypes"></canvas></div>
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Salaires bruts</div></div></div><canvas id="chartCSal"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-header"><div><div class="chart-title">Contrats générés</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Employé</th><th>Employeur</th><th>Poste</th><th>Type</th><th>Salaire brut</th><th></th></tr></thead>
-      <tbody>${contrats.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.employeur||'—'}</td><td>${d.poste||'—'}</td><td><span class="pill p-contrat">${d.type}</span></td><td>${fmtMoney(d.salaireBrut)}</td><td><button class="btn-sm" onclick="openModal(${d.id},'contrats')">Voir</button></td></tr>`).join('')}</tbody></table></div>
-    </div>`;
-  const tk=Object.keys(types);
-  mk('chartCTypes',{type:'doughnut',data:{labels:tk,datasets:[{data:tk.map(k=>types[k]),backgroundColor:COLORS.slice(0,tk.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
-  mk('chartCSal',{type:'bar',data:{labels:contrats.filter(d=>d.salaireBrut).map(d=>d.employe.split(' ')[0]),datasets:[{data:contrats.filter(d=>d.salaireBrut).map(d=>d.salaireBrut),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:v=>v.toLocaleString('fr-FR')+'€'}},x:{grid:{display:false}}}}});
+  if(!contrats.length){ document.getElementById('content').innerHTML = emptyCard('📄','Aucun contrat généré','contrat.html','Générer un contrat →'); return; }
+
+  var types = {};
+  contrats.forEach(function(d){ types[d.type] = (types[d.type]||0)+1; });
+  var withSal = contrats.filter(function(d){ return d.salaireBrut; });
+  var totalSal = withSal.reduce(function(s,d){ return s+d.salaireBrut; },0);
+  var moyenSal = withSal.length ? Math.round(totalSal/withSal.length) : 0;
+  var topType = Object.entries(types).sort(function(a,b){ return b[1]-a[1]; })[0];
+
+  var kpiHtml = '<div class="kpi-grid">'
+    + kpiCard('var(--blue)','Total',contrats.length,'')
+    + kpiCard('var(--green)','Salaire moyen',moyenSal?moyenSal.toLocaleString('fr-FR')+' €':'—','brut mensuel')
+    + kpiCard('var(--amber)','Type dominant',topType?topType[0]:'—',topType?topType[1]+' contrat(s)':'')
+    + kpiCard('var(--purple)','Masse salariale',(totalSal/1000).toFixed(0)+'k€','brut mensuel')
+    + '</div>';
+
+  var tableRows = '';
+  contrats.forEach(function(d){
+    tableRows += '<tr><td>'+fmtDate(d.dateISO)+'</td><td><strong>'+d.employe+'</strong></td><td>'+(d.employeur||'—')+'</td><td>'+(d.poste||'—')+'</td><td>'+pill(d.type,'p-contrat')+'</td><td>'+fmtMoney(d.salaireBrut)+'</td><td><button class="btn-sm" onclick="openModal(\'contrats\','+d.id+')">Voir</button></td></tr>';
+  });
+
+  document.getElementById('content').innerHTML = kpiHtml
+    + '<div class="row-2b"><div class="card"><div class="card-title">Types de contrats</div><canvas id="chartCTypes"></canvas></div>'
+    + '<div class="card"><div class="card-title">Salaires bruts</div><canvas id="chartCSal"></canvas></div></div>'
+    + '<div class="card"><div class="card-title">Contrats générés</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Employé</th><th>Employeur</th><th>Poste</th><th>Type</th><th>Salaire brut</th><th></th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+
+  var tKeys = Object.keys(types);
+  mk('chartCTypes',{type:'doughnut',data:{labels:tKeys,datasets:[{data:tKeys.map(function(k){return types[k];}),backgroundColor:COLORS.slice(0,tKeys.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
+  mk('chartCSal',{type:'bar',data:{labels:withSal.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withSal.map(function(d){return d.salaireBrut;}),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
 }
 
-// ── CONGÉS TAB ─────────────────────────────────────────────────────────────
+// ── TAB: CONGÉS ────────────────────────────────────────────────────────────
 function renderConges(conges){
-  if(!conges.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">🏖️</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucune demande de congés</div><a href="conges.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--green);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Faire une demande →</a></div>`;return;}
-  const pending=conges.filter(d=>d.statut==='En attente');
-  const types=conges.reduce((a,d)=>{a[d.type]=(a[d.type]||0)+1;return a;},{});
-  const sClass={'En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
-  document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Total</div><div class="kpi-val" style="color:var(--green)">${conges.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${pending.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordées</div><div class="kpi-val" style="color:var(--green)">${conges.filter(d=>d.statut==='Accordé').length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-label">Refusées</div><div class="kpi-val" style="color:var(--red)">${conges.filter(d=>d.statut==='Refusé').length}</div></div>
-    </div>
-    ${pending.length?`<div class="validation-section"><div class="vsec-title">🔔 En attente de validation <span class="vsec-count">${pending.length}</span></div>${pending.map(d=>`<div class="demande-card"><div class="dc-icon" style="background:var(--green-l)">🏖️</div><div class="dc-info"><div class="dc-name">${d.employe}</div><div class="dc-meta">${d.type} · ${d.service||'—'} · ${d.dateDebut||'—'} → ${d.dateFin||'—'}</div></div><div class="dc-detail"><strong>${d.duree||'—'}</strong></div><div class="dc-actions"><button class="btn-detail" onclick="openModal(${d.id},'conges')">Détail</button><button class="btn-reject" onclick="validate('conges',${d.id},'ko')">✗ Refuser</button><button class="btn-accept" onclick="validate('conges',${d.id},'ok')">✓ Accorder</button></div></div>`).join('')}</div>`:''}
-    <div class="row r2">
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Types de congés</div></div></div><canvas id="chartGTypes"></canvas></div>
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Statuts</div></div></div><canvas id="chartGStat"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-header"><div><div class="chart-title">Toutes les demandes</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Période</th><th>Durée</th><th>Statut</th><th>Actions</th></tr></thead>
-      <tbody>${conges.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td><span class="pill p-conge" style="font-size:10.5px">${d.type}</span></td><td style="font-size:10.5px;color:var(--g500)">${d.dateDebut||'—'} → ${d.dateFin||'—'}</td><td>${d.duree||'—'}</td><td><span class="pill ${sClass[d.statut]||'p-attente'}">${d.statut}</span></td><td><div style="display:flex;gap:4px"><button class="btn-sm" onclick="openModal(${d.id},'conges')">Voir</button>${d.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('conges',${d.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('conges',${d.id},'ko')">✗</button>`:''}</div></td></tr>`).join('')}</tbody></table></div>
-    </div>`;
-  const tk=Object.keys(types);
-  mk('chartGTypes',{type:'doughnut',data:{labels:tk,datasets:[{data:tk.map(k=>types[k]),backgroundColor:COLORS.slice(0,tk.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
-  const statuts={};conges.forEach(d=>{statuts[d.statut]=(statuts[d.statut]||0)+1;});
-  const sk=Object.keys(statuts);
-  mk('chartGStat',{type:'bar',data:{labels:sk,datasets:[{data:sk.map(k=>statuts[k]),backgroundColor:sk.map(k=>k==='Accordé'?'#059669':k==='Refusé'?'#DC2626':'#D97706'),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
+  if(!conges.length){ document.getElementById('content').innerHTML = emptyCard('🏖️','Aucune demande de congés','conges.html','Faire une demande →'); return; }
+
+  var types   = {};
+  var statuts = {};
+  conges.forEach(function(d){
+    types[d.type]     = (types[d.type]||0)+1;
+    statuts[d.statut] = (statuts[d.statut]||0)+1;
+  });
+  var pending  = conges.filter(function(d){ return d.statut==='En attente'; });
+  var accordes = conges.filter(function(d){ return d.statut==='Accordé'; });
+  var refuses  = conges.filter(function(d){ return d.statut==='Refusé'; });
+
+  var kpiHtml = '<div class="kpi-grid">'
+    + kpiCard('var(--green)','Total',conges.length,'')
+    + kpiCard('var(--amber)','En attente',pending.length,'à valider')
+    + kpiCard('var(--green)','Accordées',accordes.length,'')
+    + kpiCard('var(--red)','Refusées',refuses.length,'')
+    + '</div>';
+
+  // Pending section
+  var pendingHtml = '';
+  if(pending.length){
+    pendingHtml = '<div class="card"><div class="vsec-title">🔔 En attente de validation ('+pending.length+')</div>'
+      + buildPendingCards(pending,'conges','var(--green-l)','🏖️',function(d){ return (d.duree||'—')+'<br><small style="color:var(--g400)">'+(d.dateDebut||'—')+' → '+(d.dateFin||'—')+'</small>'; })
+      + '</div>';
+  }
+
+  // Table
+  var tableRows = '';
+  conges.forEach(function(d){
+    var actions = '<button class="btn-sm" onclick="openModal(\'conges\','+d.id+')">Voir</button>';
+    if(d.statut==='En attente'){
+      actions += ' <button class="btn-ok" onclick="validate(\'conges\','+d.id+',\'ok\')">✓</button>';
+      actions += ' <button class="btn-ko" onclick="validate(\'conges\','+d.id+',\'ko\')">✗</button>';
+    }
+    tableRows += '<tr><td>'+fmtDate(d.dateISO)+'</td><td><strong>'+d.employe+'</strong></td><td>'+(d.service||'—')+'</td><td>'+pill(d.type||'—','p-conge')+'</td><td style="font-size:10.5px;color:var(--g500)">'+(d.dateDebut||'—')+' → '+(d.dateFin||'—')+'</td><td>'+(d.duree||'—')+'</td><td>'+statusPill(d.statut)+'</td><td><div style="display:flex;gap:4px">'+actions+'</div></td></tr>';
+  });
+
+  document.getElementById('content').innerHTML = kpiHtml + pendingHtml
+    + '<div class="row-2b"><div class="card"><div class="card-title">Types de congés</div><canvas id="chartGTypes"></canvas></div>'
+    + '<div class="card"><div class="card-title">Statuts</div><canvas id="chartGStat"></canvas></div></div>'
+    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Période</th><th>Durée</th><th>Statut</th><th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+
+  var tKeys = Object.keys(types);
+  mk('chartGTypes',{type:'doughnut',data:{labels:tKeys,datasets:[{data:tKeys.map(function(k){return types[k];}),backgroundColor:COLORS.slice(0,tKeys.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
+  var sKeys = Object.keys(statuts);
+  mk('chartGStat',{type:'bar',data:{labels:sKeys,datasets:[{data:sKeys.map(function(k){return statuts[k];}),backgroundColor:sKeys.map(function(k){ return k==='Accordé'?'#059669':k==='Refusé'?'#DC2626':'#D97706'; }),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
 }
 
-// ── ACOMPTES TAB ───────────────────────────────────────────────────────────
+// ── TAB: ACOMPTES ──────────────────────────────────────────────────────────
 function renderAcomptes(acomptes){
-  if(!acomptes.length){document.getElementById('main-content').innerHTML=`<div class="chart-card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:1rem">💶</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">Aucune demande d'acompte</div><a href="acompte.html" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--amber);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">Faire une demande →</a></div>`;return;}
-  const pending=acomptes.filter(d=>d.statut==='En attente');
-  const total=acomptes.reduce((s,d)=>s+(d.montant||0),0);
-  const moyen=Math.round(total/acomptes.length);
-  const sClass={'En attente':'p-attente','Accordé':'p-ok','Refusé':'p-refuse'};
-  document.getElementById('main-content').innerHTML=`
-    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">Total demandes</div><div class="kpi-val" style="color:var(--amber)">${acomptes.length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-label">Montant total</div><div class="kpi-val" style="color:var(--blue)">${fmtMoney(total)}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-label">Accordés</div><div class="kpi-val" style="color:var(--green)">${acomptes.filter(d=>d.statut==='Accordé').length}</div></div>
-      <div class="kpi"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-label">En attente</div><div class="kpi-val" style="color:var(--amber)">${pending.length}</div></div>
-    </div>
-    ${pending.length?`<div class="validation-section"><div class="vsec-title">🔔 En attente de validation <span class="vsec-count">${pending.length}</span></div>${pending.map(d=>`<div class="demande-card"><div class="dc-icon" style="background:var(--amber-l)">💶</div><div class="dc-info"><div class="dc-name">${d.employe}</div><div class="dc-meta">${d.motif||'—'} · ${d.service||'—'} · ${d.remboursement||'—'}</div></div><div class="dc-detail"><strong style="color:var(--amber)">${fmtMoney(d.montant)}</strong></div><div class="dc-actions"><button class="btn-detail" onclick="openModal(${d.id},'acomptes')">Détail</button><button class="btn-reject" onclick="validate('acomptes',${d.id},'ko')">✗ Refuser</button><button class="btn-accept" onclick="validate('acomptes',${d.id},'ok')">✓ Accorder</button></div></div>`).join('')}</div>`:''}
-    <div class="chart-card">
-      <div class="chart-header"><div><div class="chart-title">Toutes les demandes d'acompte</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Montant</th><th>Motif</th><th>Remboursement</th><th>Statut</th><th>Actions</th></tr></thead>
-      <tbody>${acomptes.map(d=>`<tr><td>${fmtDate(d.dateISO)}</td><td><strong>${d.employe}</strong></td><td>${d.service||'—'}</td><td style="font-weight:600;color:var(--amber)">${fmtMoney(d.montant)}</td><td style="font-size:11px">${d.motif||'—'}</td><td style="font-size:11px;color:var(--g500)">${d.remboursement||'—'}</td><td><span class="pill ${sClass[d.statut]||'p-attente'}">${d.statut}</span></td><td><div style="display:flex;gap:4px"><button class="btn-sm" onclick="openModal(${d.id},'acomptes')">Voir</button>${d.statut==='En attente'?`<button class="btn-sm-g" onclick="validate('acomptes',${d.id},'ok')">✓</button><button class="btn-sm-r" onclick="validate('acomptes',${d.id},'ko')">✗</button>`:''}</div></td></tr>`).join('')}</tbody></table></div>
-    </div>`;
+  if(!acomptes.length){ document.getElementById('content').innerHTML = emptyCard('💶','Aucune demande d\'acompte','acompte.html','Faire une demande →'); return; }
+
+  var total   = acomptes.reduce(function(s,d){ return s+(d.montant||0); },0);
+  var moyen   = Math.round(total/acomptes.length);
+  var pending = acomptes.filter(function(d){ return d.statut==='En attente'; });
+  var accordes= acomptes.filter(function(d){ return d.statut==='Accordé'; });
+
+  var kpiHtml = '<div class="kpi-grid">'
+    + kpiCard('var(--amber)','Total demandes',acomptes.length,'')
+    + kpiCard('var(--blue)','Montant total',fmtMoney(total),'')
+    + kpiCard('var(--green)','Accordés',accordes.length,'')
+    + kpiCard('var(--amber)','En attente',pending.length,'à valider')
+    + '</div>';
+
+  var pendingHtml = '';
+  if(pending.length){
+    pendingHtml = '<div class="card"><div class="vsec-title">🔔 En attente de validation ('+pending.length+')</div>'
+      + buildPendingCards(pending,'acomptes','var(--amber-l)','💶',function(d){ return '<span style="color:var(--amber);font-weight:700">'+fmtMoney(d.montant)+'</span>'; })
+      + '</div>';
+  }
+
+  var tableRows = '';
+  acomptes.forEach(function(d){
+    var actions = '<button class="btn-sm" onclick="openModal(\'acomptes\','+d.id+')">Voir</button>';
+    if(d.statut==='En attente'){
+      actions += ' <button class="btn-ok" onclick="validate(\'acomptes\','+d.id+',\'ok\')">✓</button>';
+      actions += ' <button class="btn-ko" onclick="validate(\'acomptes\','+d.id+',\'ko\')">✗</button>';
+    }
+    tableRows += '<tr><td>'+fmtDate(d.dateISO)+'</td><td><strong>'+d.employe+'</strong></td><td>'+(d.service||'—')+'</td><td style="font-weight:600;color:var(--amber)">'+fmtMoney(d.montant)+'</td><td style="font-size:11px">'+(d.motif||'—')+'</td><td style="font-size:11px;color:var(--g500)">'+(d.remboursement||'—')+'</td><td>'+statusPill(d.statut)+'</td><td><div style="display:flex;gap:4px">'+actions+'</div></td></tr>';
+  });
+
+  var motifs = {};
+  acomptes.forEach(function(d){ var m=d.motif||'Autre'; motifs[m]=(motifs[m]||0)+1; });
+  var mKeys = Object.keys(motifs);
+
+  document.getElementById('content').innerHTML = kpiHtml + pendingHtml
+    + '<div class="row-2b"><div class="card"><div class="card-title">Motifs</div><canvas id="chartAMotifs"></canvas></div>'
+    + '<div class="card"><div class="card-title">Montants</div><canvas id="chartAMontants"></canvas></div></div>'
+    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Montant</th><th>Motif</th><th>Remboursement</th><th>Statut</th><th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+
+  mk('chartAMotifs',{type:'doughnut',data:{labels:mKeys.length?mKeys:['Aucun'],datasets:[{data:mKeys.length?mKeys.map(function(k){return motifs[k];}):  [1],backgroundColor:mKeys.length?COLORS.slice(0,mKeys.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
+  var withAmount = acomptes.filter(function(d){ return d.montant; });
+  mk('chartAMontants',{type:'bar',data:{labels:withAmount.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withAmount.map(function(d){return d.montant;}),backgroundColor:'rgba(217,119,6,.7)',borderColor:'#D97706',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
 }
 
-init();
-setInterval(init,10000);
+// ── Init ───────────────────────────────────────────────────────────────────
+render();
+setInterval(render, 10000);
 </script>
 </body>
 </html>
