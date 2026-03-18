@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Synapse RH — Demande de congés</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#059669;--green-l:#D1FAE5;--green-d:#065F46;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g900:#111827;--r:8px;--rl:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);min-height:100vh;padding:2rem 1rem}
+.app{max-width:680px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700}
+.header-text h1{font-size:17px;font-weight:600}
+.header-text p{font-size:12px;color:var(--g400);margin-top:1px}
+.back-link{font-size:12.5px;color:var(--g500);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--g200);border-radius:var(--r);background:white}
+.back-link:hover{color:var(--green)}
+.card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:12px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem;padding-bottom:10px;border-bottom:1px solid var(--g200)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:520px){.g2,.g3{grid-template-columns:1fr}}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--g500);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1px solid var(--g200);border-radius:var(--r);font-size:13.5px;color:var(--g900);background:white;font-family:inherit;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.1)}
+.field textarea{height:80px;resize:vertical}
+.field input.error{border-color:#E24B4A}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+@media(max-width:520px){.type-grid{grid-template-columns:repeat(2,1fr)}}
+.type-btn{padding:10px 6px;border:1.5px solid var(--g200);border-radius:var(--r);text-align:center;cursor:pointer;transition:.15s;background:white;font-family:inherit}
+.type-btn:hover{border-color:var(--green)}
+.type-btn.selected{border-color:var(--green);background:var(--green-l)}
+.type-btn .type-icon{font-size:20px;display:block;margin-bottom:4px}
+.type-btn .type-label{font-size:11px;font-weight:500;color:var(--g700)}
+.type-btn.selected .type-label{color:var(--green)}
+.row-btns{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem}
+.btn{padding:9px 22px;border-radius:var(--r);font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:.15s}
+.btn:hover{opacity:.88}
+.btn-primary{background:var(--green);color:white}
+.btn-secondary{background:white;border:1px solid var(--g200);color:var(--g900)}
+.info-box{background:var(--green-l);border:1px solid #6EE7B7;border-radius:var(--r);padding:12px 16px;font-size:12.5px;color:var(--green-d);line-height:1.6;margin-bottom:1rem}
+.summary{background:var(--g50);border:1px solid var(--g200);border-radius:var(--r);padding:1rem;margin-bottom:1rem}
+.sum-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--g100)}
+.sum-row:last-child{border:none;font-weight:600}
+.sum-key{color:var(--g500)}
+.sum-val{color:var(--g900);font-weight:500}
+.success{text-align:center;padding:2.5rem 1rem}
+.success-icon{width:56px;height:56px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:24px}
+.success-title{font-size:17px;font-weight:600;margin-bottom:8px}
+.success-sub{font-size:13px;color:var(--g500);line-height:1.6;margin-bottom:1.5rem}
+.ref-badge{display:inline-block;padding:6px 16px;background:var(--g100);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--g700);margin-bottom:1.5rem;font-family:monospace}
+.steps-bar{display:flex;gap:0;margin-bottom:2rem;border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden}
+.prog-step{flex:1;padding:10px 6px;text-align:center;font-size:11px;color:var(--g400);background:white;border-right:1px solid var(--g200)}
+.prog-step:last-child{border-right:none}
+.prog-step.done{background:var(--green-l);color:var(--green)}
+.prog-step.active{background:var(--green);color:white;font-weight:600}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">🏖️</div>
+      <div class="header-text"><h1>Demande de congés</h1><p>Synapse RH — tous types de congés</p></div>
+    </div>
+    <a class="back-link" href="index.html">← Accueil</a>
+  </div>
+
+  <div class="steps-bar">
+    <div class="prog-step active" id="tab1">1 · Identité</div>
+    <div class="prog-step" id="tab2">2 · Type & Dates</div>
+    <div class="prog-step" id="tab3">3 · Détails</div>
+    <div class="prog-step" id="tab4">4 · Confirmation</div>
+  </div>
+
+  <!-- STEP 1 — IDENTITÉ -->
+  <div id="s1">
+    <div class="card">
+      <div class="card-title">Vos informations</div>
+      <div class="g2">
+        <div class="field"><label>Nom *</label><input id="nom" placeholder="Dupont"/></div>
+        <div class="field"><label>Prénom *</label><input id="prenom" placeholder="Marie"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Email professionnel *</label><input id="email" type="email" placeholder="m.dupont@entreprise.fr"/></div>
+        <div class="field"><label>Service / Département *</label>
+          <select id="service">
+            <option value="">— Sélectionnez —</option>
+            <option>Tech & Produit</option><option>RH</option><option>Commercial</option>
+            <option>Finance</option><option>Marketing</option><option>Direction</option><option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Manager / Responsable *</label><input id="manager" placeholder="Jean Martin"/></div>
+        <div class="field"><label>Email du manager</label><input id="manager_email" type="email" placeholder="j.martin@entreprise.fr"/></div>
+      </div>
+    </div>
+    <div class="row-btns"><span></span><button class="btn btn-primary" onclick="next(1)">Suivant →</button></div>
+  </div>
+
+  <!-- STEP 2 — TYPE & DATES -->
+  <div id="s2" style="display:none">
+    <div class="card">
+      <div class="card-title">Type de congés</div>
+      <div class="type-grid" id="type-grid">
+        <button class="type-btn" onclick="selectType(this,'Congés annuels')"><span class="type-icon">🌴</span><span class="type-label">Congés annuels</span></button>
+        <button class="type-btn" onclick="selectType(this,'RTT')"><span class="type-icon">⏰</span><span class="type-label">RTT</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé maladie')"><span class="type-icon">🏥</span><span class="type-label">Congé maladie</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé maternité')"><span class="type-icon">🤱</span><span class="type-label">Maternité</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé paternité')"><span class="type-icon">👶</span><span class="type-label">Paternité</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé sans solde')"><span class="type-icon">📋</span><span class="type-label">Sans solde</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé pour événement familial')"><span class="type-icon">👨‍👩‍👧</span><span class="type-label">Événement familial</span></button>
+        <button class="type-btn" onclick="selectType(this,'Congé formation')"><span class="type-icon">🎓</span><span class="type-label">Formation</span></button>
+        <button class="type-btn" onclick="selectType(this,'Autre')"><span class="type-icon">📝</span><span class="type-label">Autre</span></button>
+      </div>
+      <input type="hidden" id="type_conge"/>
+    </div>
+    <div class="card">
+      <div class="card-title">Période</div>
+      <div class="g3">
+        <div class="field"><label>Date de début *</label><input id="date_debut" type="date" onchange="calcDuree()"/></div>
+        <div class="field"><label>Date de fin *</label><input id="date_fin" type="date" onchange="calcDuree()"/></div>
+        <div class="field"><label>Durée estimée</label><input id="duree" readonly placeholder="Calculée auto" style="background:var(--g50);color:var(--g500)"/></div>
+      </div>
+      <div class="field"><label>Demi-journée</label>
+        <select id="demi"><option value="">Période complète</option><option>Matin du 1er jour seulement</option><option>Après-midi du 1er jour seulement</option><option>Matin du dernier jour seulement</option><option>Après-midi du dernier jour seulement</option></select>
+      </div>
+    </div>
+    <div class="row-btns">
+      <button class="btn btn-secondary" onclick="prev(2)">← Retour</button>
+      <button class="btn btn-primary" onclick="next(2)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — DÉTAILS -->
+  <div id="s3" style="display:none">
+    <div class="card">
+      <div class="card-title">Informations complémentaires</div>
+      <div class="field"><label>Motif / Précisions</label>
+        <textarea id="motif" placeholder="Précisez le motif si nécessaire (voyage, événement, raisons médicales…)"></textarea>
+      </div>
+      <div class="field"><label>Personne à contacter en cas d'urgence</label><input id="urgence" placeholder="Nom et téléphone"/></div>
+      <div class="field"><label>Remplaçant prévu pendant l'absence</label><input id="remplacant" placeholder="Prénom Nom — ou 'Pas de remplaçant'"/></div>
+      <div class="field"><label>Documents joints (si nécessaire)</label>
+        <select id="justif"><option value="">Aucun</option><option>Certificat médical</option><option>Acte de naissance</option><option>Acte de mariage</option><option>Justificatif de formation</option><option>Autre document</option></select>
+      </div>
+    </div>
+    <div class="card" style="background:#FFFBEB;border-color:#FCD34D">
+      <div style="font-size:12.5px;color:#92400E;line-height:1.7">
+        ⚠️ <strong>Rappel :</strong> Toute demande de congés doit être soumise au moins <strong>2 semaines à l'avance</strong> pour les congés annuels, sauf cas exceptionnel. Les congés maladie nécessitent un certificat médical dans les 48h.
+      </div>
+    </div>
+    <div class="row-btns">
+      <button class="btn btn-secondary" onclick="prev(3)">← Retour</button>
+      <button class="btn btn-primary" onclick="next(3)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — CONFIRMATION -->
+  <div id="s4" style="display:none">
+    <div id="confirm-view">
+      <div class="card">
+        <div class="card-title">Récapitulatif de la demande</div>
+        <div id="recap"></div>
+      </div>
+      <div class="row-btns">
+        <button class="btn btn-secondary" onclick="prev(4)">← Retour</button>
+        <button class="btn btn-primary" onclick="submit()">Soumettre la demande ✓</button>
+      </div>
+    </div>
+    <div id="success-view" style="display:none">
+      <div class="card">
+        <div class="success">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Demande envoyée avec succès</div>
+          <div class="success-sub">Votre demande a été transmise à <strong id="s-manager"></strong>.<br>Vous recevrez une réponse dans un délai de <strong>48h ouvrées</strong>.</div>
+          <div class="ref-badge" id="ref-num"></div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <a class="btn btn-primary" href="dashboard.html" style="text-decoration:none">Voir le dashboard</a>
+            <button class="btn btn-secondary" onclick="resetForm()">Nouvelle demande</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+let selectedType='';
+function v(id){return(document.getElementById(id)||{}).value||'';}
+function setTabs(n){for(let i=1;i<=4;i++){const t=document.getElementById('tab'+i);t.className='prog-step'+(i<n?' done':i===n?' active':'');}}
+function showStep(n){for(let i=1;i<=4;i++)document.getElementById('s'+i).style.display=i===n?'block':'none';setTabs(n);window.scrollTo({top:0,behavior:'smooth'});}
+
+const REQ={1:['nom','prenom','email','service','manager'],2:['date_debut','date_fin'],3:[]};
+function next(from){
+  if(from===2&&!selectedType){alert('Veuillez sélectionner un type de congés.');return;}
+  const missing=(REQ[from]||[]).filter(id=>!v(id).trim());
+  if(missing.length){missing.forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('error');setTimeout(()=>el.classList.remove('error'),2500);}});return;}
+  if(from===3)buildRecap();
+  showStep(from+1);
+}
+function prev(from){showStep(from-1);}
+
+function selectType(btn,type){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedType=type;
+  document.getElementById('type_conge').value=type;
+}
+
+function calcDuree(){
+  const d1=new Date(v('date_debut')),d2=new Date(v('date_fin'));
+  if(!v('date_debut')||!v('date_fin')||d2<d1){document.getElementById('duree').value='';return;}
+  const diff=Math.round((d2-d1)/(1000*60*60*24))+1;
+  const ouvres=Math.round(diff*5/7);
+  document.getElementById('duree').value=ouvres+' jour'+(ouvres>1?'s':'')+' ouvré'+(ouvres>1?'s':'');
+}
+
+function buildRecap(){
+  const rows=[
+    ['Collaborateur',v('prenom')+' '+v('nom')],
+    ['Email',v('email')],
+    ['Service',v('service')],
+    ['Manager',v('manager')],
+    ['Type de congés',selectedType],
+    ['Du',v('date_debut')],
+    ['Au',v('date_fin')],
+    ['Durée',v('duree')||'—'],
+    ['Demi-journée',v('demi')||'Période complète'],
+    ['Remplaçant',v('remplacant')||'Non précisé'],
+    ['Justificatif',v('justif')||'Aucun'],
+  ];
+  document.getElementById('recap').innerHTML=`<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">${rows.map(([k,val])=>`<div class="sum-row" style="padding:8px 14px"><span class="sum-key">${k}</span><span class="sum-val">${val}</span></div>`).join('')}</div>`;
+}
+
+function submit(){
+  const ref='CNG-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const entry={
+    id:Date.now(),ref,
+    dateISO:new Date().toISOString(),
+    date:new Date().toLocaleDateString('fr-FR'),
+    employe:v('prenom')+' '+v('nom'),
+    email:v('email'),
+    service:v('service'),
+    manager:v('manager'),
+    type:selectedType,
+    dateDebut:v('date_debut'),
+    dateFin:v('date_fin'),
+    duree:v('duree'),
+    motif:v('motif'),
+    remplacant:v('remplacant'),
+    justificatif:v('justif'),
+    statut:'En attente',
+  };
+  const existing=JSON.parse(localStorage.getItem('synapse_conges')||'[]');
+  existing.unshift(entry);
+  localStorage.setItem('synapse_conges',JSON.stringify(existing));
+  document.getElementById('s-manager').textContent=v('manager')||'votre manager';
+  document.getElementById('ref-num').textContent='Réf : '+ref;
+  document.getElementById('confirm-view').style.display='none';
+  document.getElementById('success-view').style.display='block';
+}
+
+function resetForm(){
+  document.querySelectorAll('input,select,textarea').forEach(el=>{if(el.type==='date')el.value='';else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  selectedType='';
+  document.getElementById('success-view').style.display='none';
+  document.getElementById('confirm-view').style.display='block';
+  showStep(1);
+}
+</script>
+</body>
+</html>

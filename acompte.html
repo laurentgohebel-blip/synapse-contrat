@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Synapse RH — Demande d'acompte</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--amber:#D97706;--amber-l:#FEF3C7;--amber-d:#92400E;--green:#059669;--green-l:#D1FAE5;--red:#DC2626;--red-l:#FEE2E2;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g900:#111827;--r:8px;--rl:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);min-height:100vh;padding:2rem 1rem}
+.app{max-width:660px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border-radius:10px;background:var(--amber);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700}
+.header-text h1{font-size:17px;font-weight:600}
+.header-text p{font-size:12px;color:var(--g400);margin-top:1px}
+.back-link{font-size:12.5px;color:var(--g500);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--g200);border-radius:var(--r);background:white}
+.back-link:hover{color:var(--amber)}
+.steps-bar{display:flex;gap:0;margin-bottom:2rem;border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden}
+.prog-step{flex:1;padding:10px 6px;text-align:center;font-size:11px;color:var(--g400);background:white;border-right:1px solid var(--g200)}
+.prog-step:last-child{border-right:none}
+.prog-step.done{background:var(--amber-l);color:var(--amber)}
+.prog-step.active{background:var(--amber);color:white;font-weight:600}
+.card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:12px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem;padding-bottom:10px;border-bottom:1px solid var(--g200)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:520px){.g2,.g3{grid-template-columns:1fr}}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--g500);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1px solid var(--g200);border-radius:var(--r);font-size:13.5px;color:var(--g900);background:white;font-family:inherit;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(217,119,6,.1)}
+.field textarea{height:80px;resize:vertical}
+.field input.error{border-color:#E24B4A}
+.field input[readonly]{background:var(--g50);color:var(--g500)}
+.amount-display{text-align:center;padding:1.5rem;background:var(--amber-l);border-radius:var(--r);margin:1rem 0}
+.amount-big{font-size:36px;font-weight:700;color:var(--amber)}
+.amount-label{font-size:12px;color:var(--amber-d);margin-top:4px}
+.remb-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+.remb-table th{text-align:left;padding:7px 10px;font-size:11px;font-weight:600;color:var(--g400);background:var(--g50);border-bottom:1px solid var(--g200)}
+.remb-table td{padding:8px 10px;border-bottom:1px solid var(--g100)}
+.remb-table tr:last-child td{border:none;font-weight:600;background:var(--g50)}
+.row-btns{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem}
+.btn{padding:9px 22px;border-radius:var(--r);font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:.15s}
+.btn:hover{opacity:.88}
+.btn-primary{background:var(--amber);color:white}
+.btn-secondary{background:white;border:1px solid var(--g200);color:var(--g900)}
+.warning-box{background:#FFFBEB;border:1px solid #FCD34D;border-radius:var(--r);padding:12px 16px;font-size:12px;color:var(--amber-d);line-height:1.7;margin-bottom:1rem}
+.sum-row{display:flex;justify-content:space-between;padding:8px 14px;font-size:13px;border-bottom:1px solid var(--g100)}
+.sum-row:last-child{border:none}
+.sum-key{color:var(--g500)}
+.sum-val{color:var(--g900);font-weight:500}
+.success{text-align:center;padding:2.5rem 1rem}
+.success-icon{width:56px;height:56px;border-radius:50%;background:var(--amber-l);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:24px}
+.success-title{font-size:17px;font-weight:600;margin-bottom:8px}
+.success-sub{font-size:13px;color:var(--g500);line-height:1.6;margin-bottom:1.5rem}
+.ref-badge{display:inline-block;padding:6px 16px;background:var(--g100);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--g700);margin-bottom:1.5rem;font-family:monospace}
+.slider-wrap{margin:8px 0 4px}
+input[type=range]{width:100%;accent-color:var(--amber)}
+.slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--g400);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">💶</div>
+      <div class="header-text"><h1>Demande d'acompte sur salaire</h1><p>Synapse RH — RH &amp; Finance</p></div>
+    </div>
+    <a class="back-link" href="index.html">← Accueil</a>
+  </div>
+
+  <div class="steps-bar">
+    <div class="prog-step active" id="tab1">1 · Identité</div>
+    <div class="prog-step" id="tab2">2 · Montant</div>
+    <div class="prog-step" id="tab3">3 · Motif</div>
+    <div class="prog-step" id="tab4">4 · Récapitulatif</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="s1">
+    <div class="card">
+      <div class="card-title">Vos informations</div>
+      <div class="g2">
+        <div class="field"><label>Nom *</label><input id="nom" placeholder="Dupont"/></div>
+        <div class="field"><label>Prénom *</label><input id="prenom" placeholder="Marie"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Email professionnel *</label><input id="email" type="email" placeholder="m.dupont@entreprise.fr"/></div>
+        <div class="field"><label>Service *</label>
+          <select id="service">
+            <option value="">— Sélectionnez —</option>
+            <option>Tech & Produit</option><option>RH</option><option>Commercial</option>
+            <option>Finance</option><option>Marketing</option><option>Direction</option><option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Salaire brut mensuel (€) *</label><input id="salaire_brut" type="number" placeholder="3000" oninput="updateLimite()"/></div>
+        <div class="field"><label>Salaire net mensuel (€)</label><input id="salaire_net" type="number" placeholder="2300" oninput="updateLimite()"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>IBAN (pour virement)</label><input id="iban" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX"/></div>
+        <div class="field"><label>Manager / RH référent *</label><input id="manager" placeholder="Jean Martin"/></div>
+      </div>
+    </div>
+    <div class="row-btns"><span></span><button class="btn btn-primary" onclick="next(1)">Suivant →</button></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="s2" style="display:none">
+    <div class="card">
+      <div class="card-title">Montant demandé</div>
+      <div class="field">
+        <label>Montant de l'acompte (€) * <span id="limite-label" style="color:var(--amber);font-weight:600"></span></label>
+        <div class="slider-wrap">
+          <input type="range" id="montant_slider" min="100" max="3000" step="50" value="500" oninput="syncMontant(this.value)"/>
+          <div class="slider-labels"><span>100 €</span><span id="slider-max-label">3 000 €</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Ou saisir directement (€)</label>
+        <input id="montant" type="number" placeholder="500" oninput="syncSlider(this.value)"/>
+      </div>
+      <div class="amount-display">
+        <div class="amount-big" id="amount-display">500 €</div>
+        <div class="amount-label">Montant demandé</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Remboursement</div>
+      <div class="g2">
+        <div class="field"><label>Modalité *</label>
+          <select id="remb_mode" onchange="buildRemb()">
+            <option value="1">Déduction sur le prochain salaire (1 mois)</option>
+            <option value="2">En 2 mensualités</option>
+            <option value="3">En 3 mensualités</option>
+            <option value="4">En 4 mensualités</option>
+            <option value="6">En 6 mensualités</option>
+          </select>
+        </div>
+        <div class="field"><label>Date de versement souhaitée</label><input id="date_vers" type="date"/></div>
+      </div>
+      <div id="remb-plan"></div>
+    </div>
+    <div class="row-btns">
+      <button class="btn btn-secondary" onclick="prev(2)">← Retour</button>
+      <button class="btn btn-primary" onclick="next(2)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="s3" style="display:none">
+    <div class="card">
+      <div class="card-title">Motif de la demande</div>
+      <div class="field"><label>Motif principal *</label>
+        <select id="motif_type">
+          <option value="">— Sélectionnez —</option>
+          <option>Dépenses imprévues (réparation, santé…)</option>
+          <option>Loyer / charges de logement</option>
+          <option>Dépenses liées à un déménagement</option>
+          <option>Achat de matériel professionnel</option>
+          <option>Frais de scolarité</option>
+          <option>Difficultés financières temporaires</option>
+          <option>Autre motif</option>
+        </select>
+      </div>
+      <div class="field"><label>Précisions (facultatif)</label>
+        <textarea id="motif_detail" placeholder="Décrivez brièvement votre situation si vous souhaitez apporter des précisions…"></textarea>
+      </div>
+      <div class="field"><label>Avez-vous déjà bénéficié d'un acompte cette année ?</label>
+        <select id="anterieur"><option>Non, c'est ma première demande cette année</option><option>Oui, 1 fois</option><option>Oui, 2 fois</option><option>Oui, plus de 2 fois</option></select>
+      </div>
+    </div>
+    <div class="warning-box">
+      ⚠️ <strong>Rappel :</strong> Un acompte sur salaire est limité à <strong>50% du salaire net mensuel</strong> en application du Code du travail (Art. L3242-1). Les demandes supérieures peuvent être refusées ou partiellement accordées.
+    </div>
+    <div class="row-btns">
+      <button class="btn btn-secondary" onclick="prev(3)">← Retour</button>
+      <button class="btn btn-primary" onclick="next(3)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div id="s4" style="display:none">
+    <div id="confirm-view">
+      <div class="card">
+        <div class="card-title">Récapitulatif de la demande d'acompte</div>
+        <div id="recap"></div>
+      </div>
+      <div class="card" style="background:var(--g50)">
+        <div style="font-size:12px;color:var(--g500);line-height:1.7">
+          En soumettant cette demande, vous confirmez que les informations fournies sont exactes et que vous acceptez les modalités de remboursement indiquées. La demande sera traitée par le service RH et Finance dans un délai de <strong>72h ouvrées</strong>.
+        </div>
+      </div>
+      <div class="row-btns">
+        <button class="btn btn-secondary" onclick="prev(4)">← Retour</button>
+        <button class="btn btn-primary" onclick="submit()">Soumettre la demande ✓</button>
+      </div>
+    </div>
+    <div id="success-view" style="display:none">
+      <div class="card">
+        <div class="success">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Demande d'acompte soumise</div>
+          <div class="success-sub">Votre demande a été transmise au service RH &amp; Finance.<br>Réponse attendue sous <strong>72h ouvrées</strong>.</div>
+          <div class="ref-badge" id="ref-num"></div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <a class="btn btn-primary" href="dashboard.html" style="text-decoration:none">Voir le dashboard</a>
+            <button class="btn btn-secondary" onclick="resetForm()">Nouvelle demande</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+function v(id){return(document.getElementById(id)||{}).value||'';}
+function setTabs(n){for(let i=1;i<=4;i++){const t=document.getElementById('tab'+i);t.className='prog-step'+(i<n?' done':i===n?' active':'');}}
+function showStep(n){for(let i=1;i<=4;i++)document.getElementById('s'+i).style.display=i===n?'block':'none';setTabs(n);window.scrollTo({top:0,behavior:'smooth'});}
+const REQ={1:['nom','prenom','email','service','manager'],2:['montant'],3:['motif_type']};
+function next(from){
+  const missing=(REQ[from]||[]).filter(id=>!v(id).trim());
+  if(missing.length){missing.forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('error');setTimeout(()=>el.classList.remove('error'),2500);}});return;}
+  if(from===3)buildRecap();
+  showStep(from+1);
+}
+function prev(from){showStep(from-1);}
+
+function updateLimite(){
+  const net=parseFloat(v('salaire_net')||v('salaire_brut')*0.77)||0;
+  const max=Math.floor(net*0.5/50)*50||3000;
+  document.getElementById('limite-label').textContent=net?'(max légal : '+max+' €)':'';
+  const slider=document.getElementById('montant_slider');
+  slider.max=Math.min(max,5000);
+  document.getElementById('slider-max-label').textContent=slider.max.toLocaleString('fr-FR')+' €';
+}
+
+function syncMontant(val){
+  document.getElementById('montant').value=val;
+  document.getElementById('amount-display').textContent=parseInt(val).toLocaleString('fr-FR')+' €';
+  buildRemb();
+}
+function syncSlider(val){
+  const slider=document.getElementById('montant_slider');
+  slider.value=val;
+  document.getElementById('amount-display').textContent=parseInt(val||0).toLocaleString('fr-FR')+' €';
+  buildRemb();
+}
+
+function buildRemb(){
+  const montant=parseInt(v('montant')||v('montant_slider')||500);
+  const nb=parseInt(v('remb_mode')||1);
+  const mensualite=Math.ceil(montant/nb);
+  const rows=Array.from({length:nb},(_,i)=>{
+    const d=new Date();d.setMonth(d.getMonth()+i+1);
+    return `<tr><td>Mois ${i+1} — ${d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</td><td style="text-align:right;font-weight:600">${(i===nb-1?montant-(mensualite*(nb-1)):mensualite).toLocaleString('fr-FR')} €</td></tr>`;
+  });
+  document.getElementById('remb-plan').innerHTML=`<table class="remb-table"><thead><tr><th>Échéance</th><th style="text-align:right">Montant prélevé</th></tr></thead><tbody>${rows.join('')}<tr><td><strong>Total remboursé</strong></td><td style="text-align:right"><strong>${montant.toLocaleString('fr-FR')} €</strong></td></tr></tbody></table>`;
+}
+
+function buildRecap(){
+  const montant=parseInt(v('montant')||v('montant_slider')||500);
+  const rows=[
+    ['Collaborateur',v('prenom')+' '+v('nom')],
+    ['Service',v('service')],
+    ['Email',v('email')],
+    ['Manager / RH',v('manager')],
+    ['Montant demandé',montant.toLocaleString('fr-FR')+' €'],
+    ['Remboursement',document.getElementById('remb_mode').selectedOptions[0]?.text||'—'],
+    ['Versement souhaité',v('date_vers')||'Dès que possible'],
+    ['Motif',v('motif_type')],
+    ['Acomptes antérieurs',v('anterieur')],
+  ];
+  document.getElementById('recap').innerHTML=`<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">${rows.map(([k,val])=>`<div class="sum-row"><span class="sum-key">${k}</span><span class="sum-val">${val||'—'}</span></div>`).join('')}</div>`;
+}
+
+function submit(){
+  const montant=parseInt(v('montant')||v('montant_slider')||500);
+  const ref='ACP-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const entry={
+    id:Date.now(),ref,
+    dateISO:new Date().toISOString(),
+    date:new Date().toLocaleDateString('fr-FR'),
+    employe:v('prenom')+' '+v('nom'),
+    email:v('email'),
+    service:v('service'),
+    manager:v('manager'),
+    montant,
+    remboursement:document.getElementById('remb_mode').selectedOptions[0]?.text||'—',
+    motif:v('motif_type'),
+    motifDetail:v('motif_detail'),
+    salaireBrut:parseInt(v('salaire_brut'))||0,
+    statut:'En attente',
+  };
+  const existing=JSON.parse(localStorage.getItem('synapse_acomptes')||'[]');
+  existing.unshift(entry);
+  localStorage.setItem('synapse_acomptes',JSON.stringify(existing));
+  document.getElementById('ref-num').textContent='Réf : '+ref;
+  document.getElementById('confirm-view').style.display='none';
+  document.getElementById('success-view').style.display='block';
+}
+
+function resetForm(){
+  document.querySelectorAll('input,select,textarea').forEach(el=>{if(el.type==='range')el.value=500;else if(el.type==='date')el.value='';else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+  syncMontant(500);
+  document.getElementById('success-view').style.display='none';
+  document.getElementById('confirm-view').style.display='block';
+  showStep(1);
+}
+
+// Init
+syncMontant(500);
+buildRemb();
+</script>
+</body>
+</html>
