@@ -185,6 +185,7 @@ let currentTab = 'all';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function load(k){ return JSON.parse(localStorage.getItem('synapse_'+k)||'[]'); }
+async function loadRemote(k){ if(window.SynapseStorage) return await window.SynapseStorage.load(k); return load(k); }
 function save(k,v){ localStorage.setItem('synapse_'+k, JSON.stringify(v)); }
 function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'}); }catch(e){ return iso||'—'; } }
 function fmtMoney(n){ return n ? Number(n).toLocaleString('fr-FR')+' €' : '—'; }
@@ -212,15 +213,22 @@ function toast(msg, type){
 }
 
 // ── Validation ─────────────────────────────────────────────────────────────
-function validate(src, id, decision){
+async function validate(src, id, decision){
+  const statut = decision === 'ok' ? 'Accordé' : 'Refusé';
+  const changes = { statut: statut, dateDecision: new Date().toISOString() };
+  // Mise à jour locale immédiate
   const arr = load(src);
-  const idx = arr.findIndex(d => d.id === id);
+  const idx = arr.findIndex(function(d){ return d.id === id; });
   if(idx === -1) return;
-  arr[idx].statut = decision === 'ok' ? 'Accordé' : 'Refusé';
-  arr[idx].dateDecision = new Date().toISOString();
+  Object.assign(arr[idx], changes);
   save(src, arr);
-  toast(decision==='ok' ? '✓ Demande accordée' : '✗ Demande refusée', decision);
   render();
+  toast(decision==='ok' ? '✓ Demande accordée' : '✗ Demande refusée', decision);
+  // Sauvegarde GitHub en arrière-plan
+  if(window.SynapseStorage){
+    try { await window.SynapseStorage.update(src, id, changes); }
+    catch(e){ console.warn('GitHub sync error:', e); }
+  }
 }
 
 function clearAll(){
@@ -286,6 +294,19 @@ function updateBadges(contrats, conges, acomptes){
 }
 
 // ── Main render dispatcher ─────────────────────────────────────────────────
+async function renderRemote(){
+  if(window.SynapseStorage && localStorage.getItem('synapse_gh_token')){
+    try{
+      await Promise.all([
+        window.SynapseStorage.load('contrats'),
+        window.SynapseStorage.load('conges'),
+        window.SynapseStorage.load('acomptes')
+      ]);
+    }catch(e){ console.warn('GitHub load error:', e); }
+  }
+  render();
+}
+
 function render(){
   const contrats = load('contrats');
   const conges   = load('conges');
@@ -553,9 +574,11 @@ function renderAcomptes(acomptes){
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
-render();
-setInterval(render, 10000);
+renderRemote();
+setInterval(renderRemote, 30000);
 </script>
+<script src="github-storage.js"></script>
+<script src="token-setup.js"></script>
 <script src="chatbot.js"></script>
 </body>
 </html>

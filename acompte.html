@@ -275,7 +275,7 @@ function buildRecap(){
   document.getElementById('recap').innerHTML=`<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">${rows.map(([k,val])=>`<div class="sum-row"><span class="sum-key">${k}</span><span class="sum-val">${val||'—'}</span></div>`).join('')}</div>`;
 }
 
-function submit(){
+async function submit(){
   const montant=parseInt(v('montant')||v('montant_slider')||500);
   const ref='ACP-'+Date.now().toString(36).toUpperCase().slice(-6);
   const entry={
@@ -293,9 +293,8 @@ function submit(){
     salaireBrut:parseInt(v('salaire_brut'))||0,
     statut:'En attente',
   };
-  const existing=JSON.parse(localStorage.getItem('synapse_acomptes')||'[]');
-  existing.unshift(entry);
-  localStorage.setItem('synapse_acomptes',JSON.stringify(existing));
+  if(window.SynapseStorage){ await window.SynapseStorage.add('acomptes', entry); }
+  else { const e=JSON.parse(localStorage.getItem('synapse_acomptes')||'[]');e.unshift(entry);localStorage.setItem('synapse_acomptes',JSON.stringify(e)); }
   document.getElementById('ref-num').textContent='Réf : '+ref;
   document.getElementById('confirm-view').style.display='none';
   document.getElementById('success-view').style.display='block';
@@ -313,5 +312,8 @@ function resetForm(){
 syncMontant(500);
 buildRemb();
 </script>
+<script src="github-storage.js"></script>
+<script src="token-setup.js"></script>
+<script src="chatbot.js"></script>
 </body>
 </html>

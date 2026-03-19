@@ -236,7 +236,7 @@ function buildRecap(){
   document.getElementById('recap').innerHTML=`<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">${rows.map(([k,val])=>`<div class="sum-row" style="padding:8px 14px"><span class="sum-key">${k}</span><span class="sum-val">${val}</span></div>`).join('')}</div>`;
 }
 
-function submit(){
+async function submit(){
   const ref='CNG-'+Date.now().toString(36).toUpperCase().slice(-6);
   const entry={
     id:Date.now(),ref,
@@ -255,9 +255,8 @@ function submit(){
     justificatif:v('justif'),
     statut:'En attente',
   };
-  const existing=JSON.parse(localStorage.getItem('synapse_conges')||'[]');
-  existing.unshift(entry);
-  localStorage.setItem('synapse_conges',JSON.stringify(existing));
+  if(window.SynapseStorage){ await window.SynapseStorage.add('conges', entry); }
+  else { const e=JSON.parse(localStorage.getItem('synapse_conges')||'[]');e.unshift(entry);localStorage.setItem('synapse_conges',JSON.stringify(e)); }
   document.getElementById('s-manager').textContent=v('manager')||'votre manager';
   document.getElementById('ref-num').textContent='Réf : '+ref;
   document.getElementById('confirm-view').style.display='none';
@@ -273,5 +272,8 @@ function resetForm(){
   showStep(1);
 }
 </script>
+<script src="github-storage.js"></script>
+<script src="token-setup.js"></script>
+<script src="chatbot.js"></script>
 </body>
 </html>
