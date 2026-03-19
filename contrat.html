@@ -378,10 +378,7 @@ Génère un contrat complet avec en-tête officiel, articles 1 à 13 numérotés
 }
 
 function copyContract(){const txt=document.getElementById('contract-text').textContent;navigator.clipboard.writeText(txt).then(()=>{const b=event.target;b.textContent='✓ Copié !';setTimeout(()=>b.textContent='Copier le texte',2000);});}
-function printContract(){const txt=document.getElementById('contract-text').textContent;const w=window.open('','_blank');w.document.write(`<html><head><title>Contrat</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;font-size:13px;line-height:1.9}pre{white-space:pre-wrap;font-family:Georgia,serif}</style></head><body><pre>${txt}</pre><script src="github-storage.js"></script>
-<script src="token-setup.js"></script>
-<script src="chatbot.js"></script>
-</body></html>`);w.document.close();w.print();}
+function printContract(){const txt=document.getElementById('contract-text').textContent;const w=window.open('','_blank');w.document.write('<html><head><title>Contrat</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;font-size:13px;line-height:1.9}pre{white-space:pre-wrap;font-family:Georgia,serif}</style></head><body><pre>'+txt+'</pre><\/body><\/html>');w.document.close();w.print();}
 function resetForm(){
   document.querySelectorAll('input,select,textarea').forEach(el=>{
     if(el.id==='api-key')return;
