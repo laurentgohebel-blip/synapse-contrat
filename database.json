@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-03-23T00:00:00.000Z",
+
+  "employeurs": [
+    {
+      "id": "emp_1",
+      "raisonSociale": "TRIANGLE PROPRETÉ SAS",
+      "forme": "SAS",
+      "siret": "12345678900010",
+      "ape": "8121Z",
+      "adresse": "12 rue de la Paix, 75001 Paris",
+      "representant": "Laurent Gohebel, Directeur Général",
+      "convention": "Entreprises de propreté et services associés (IDCC 3043)",
+      "actif": true
+    }
+  ],
+
+  "salaries": [
+    {
+      "id": "sal_1",
+      "nom": "DUPONT",
+      "prenom": "Marie",
+      "dateNaissance": "1990-03-15",
+      "lieuNaissance": "Paris (75)",
+      "nationalite": "Française",
+      "adresse": "5 avenue Victor Hugo, 69001 Lyon",
+      "email": "m.dupont@triangle.fr",
+      "telephone": "06 12 34 56 78",
+      "numSecu": "2 90 03 75 123 456 78",
+      "posteDefaut": "Agent de service professionnel",
+      "serviceDefaut": "Opérations",
+      "actif": true
+    },
+    {
+      "id": "sal_2",
+      "nom": "MARTIN",
+      "prenom": "Jean",
+      "dateNaissance": "1985-07-22",
+      "lieuNaissance": "Lyon (69)",
+      "nationalite": "Française",
+      "adresse": "18 rue du Commerce, 31000 Toulouse",
+      "email": "j.martin@triangle.fr",
+      "telephone": "06 98 76 54 32",
+      "numSecu": "1 85 07 69 456 789 01",
+      "posteDefaut": "Chef d'équipe",
+      "serviceDefaut": "Opérations",
+      "actif": true
+    }
+  ],
+
+  "postes": [
+    {
+      "id": "poste_1",
+      "intitule": "Agent de service professionnel",
+      "coefficient": "140",
+      "classification": "Ouvrier niveau 1 échelon 1",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 1766.92,
+      "dureeHebdoDefaut": "35h",
+      "description": "Assure le nettoyage et l'entretien des locaux selon les directives et le cahier des charges client."
+    },
+    {
+      "id": "poste_2",
+      "intitule": "Chef d'équipe",
+      "coefficient": "150",
+      "classification": "Agent de maîtrise niveau 1",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 1900.00,
+      "dureeHebdoDefaut": "35h",
+      "description": "Encadre une équipe d'agents de service, organise et contrôle les prestations."
+    },
+    {
+      "id": "poste_3",
+      "intitule": "Agent de propreté",
+      "coefficient": "140",
+      "classification": "Ouvrier niveau 1 échelon 1",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 1766.92,
+      "dureeHebdoDefaut": "35h",
+      "description": "Assure les opérations de nettoyage courant des surfaces et équipements."
+    },
+    {
+      "id": "poste_4",
+      "intitule": "Laveur de vitres",
+      "coefficient": "145",
+      "classification": "Ouvrier niveau 1 échelon 2",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 1820.00,
+      "dureeHebdoDefaut": "35h",
+      "description": "Réalise le nettoyage des vitres et façades vitrées en hauteur."
+    },
+    {
+      "id": "poste_5",
+      "intitule": "Responsable de secteur",
+      "coefficient": "170",
+      "classification": "Agent de maîtrise niveau 2",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 2200.00,
+      "dureeHebdoDefaut": "39h",
+      "description": "Gère un portefeuille de clients, supervise les équipes et assure la qualité des prestations."
+    },
+    {
+      "id": "poste_6",
+      "intitule": "Agent machiniste",
+      "coefficient": "142",
+      "classification": "Ouvrier niveau 1 échelon 1",
+      "convention": "IDCC 3043",
+      "salaireMinBrut": 1780.00,
+      "dureeHebdoDefaut": "35h",
+      "description": "Utilise des machines de nettoyage (autolaveuse, monobrosse) pour l'entretien des sols."
+    }
+  ]
+}

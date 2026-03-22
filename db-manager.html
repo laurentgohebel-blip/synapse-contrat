@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Synapse RH — Base de données</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#2E75B6;--blue-l:#EBF3FC;--blue-d:#1A4F80;
+  --green:#059669;--green-l:#D1FAE5;
+  --amber:#D97706;--amber-l:#FEF3C7;
+  --red:#DC2626;--red-l:#FEE2E2;
+  --purple:#7C3AED;--purple-l:#EDE9FE;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;
+  --g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g900:#111827;
+  --r:8px;--rl:12px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:220px;background:var(--g900);flex-shrink:0;display:flex;flex-direction:column;padding:18px 10px}
+.logo-row{display:flex;align-items:center;gap:10px;padding:0 6px;margin-bottom:24px}
+.logo{width:30px;height:30px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700}
+.logo-text{color:white;font-size:13px;font-weight:600}
+.logo-sub{color:#5a6178;font-size:10px}
+.nav-lbl{font-size:10px;font-weight:600;color:#3d4455;text-transform:uppercase;letter-spacing:.08em;padding:8px 8px 4px}
+.nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:var(--r);border:none;background:none;cursor:pointer;color:#7c8497;font-size:12.5px;font-family:inherit;margin-bottom:2px;transition:.15s;text-align:left}
+.nav-btn:hover{background:rgba(255,255,255,.06);color:white}
+.nav-btn.active{background:rgba(255,255,255,.1);color:white}
+.nav-count{background:var(--blue);color:white;border-radius:99px;font-size:10px;padding:1px 6px;font-weight:600;margin-left:auto}
+.sidebar-footer{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}
+.back-link{display:block;padding:8px 10px;color:#7c8497;font-size:12px;text-decoration:none;border-radius:var(--r);transition:.15s}
+.back-link:hover{color:white;background:rgba(255,255,255,.06)}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{background:white;border-bottom:1px solid var(--g200);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-right{display:flex;gap:10px;align-items:center}
+.btn{padding:8px 18px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:.15s}
+.btn:hover{opacity:.88}
+.btn-primary{background:var(--blue);color:white}
+.btn-secondary{background:white;border:1px solid var(--g200);color:var(--g700)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red-l);color:var(--red);border:1px solid #FECACA}
+.content{padding:20px 24px;overflow-y:auto;flex:1}
+.section{display:none}
+.section.active{display:block}
+
+/* Cards */
+.page-header{margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:20px;font-weight:700}
+.page-sub{font-size:13px;color:var(--g400);margin-top:3px}
+
+/* Grid cards */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:16px}
+.item-card{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:16px;position:relative;transition:.15s}
+.item-card:hover{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-l)}
+.item-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.item-avatar{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.item-name{font-size:14px;font-weight:600}
+.item-meta{font-size:12px;color:var(--g400);margin-top:1px}
+.item-detail{font-size:12px;color:var(--g500);line-height:1.6}
+.item-actions{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--g100)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
+.badge-blue{background:var(--blue-l);color:var(--blue)}
+.badge-green{background:var(--green-l);color:var(--green)}
+.badge-purple{background:var(--purple-l);color:var(--purple)}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:white;border-radius:var(--rl);max-width:560px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);padding:4px 8px;line-height:1}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--g200);display:flex;gap:8px;justify-content:flex-end}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--g500);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1px solid var(--g200);border-radius:var(--r);font-size:13.5px;color:var(--g900);background:white;font-family:inherit;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-l)}
+.field textarea{height:72px;resize:vertical}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:500px){.g2,.g3{grid-template-columns:1fr}}
+
+/* Sync status */
+.sync-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--g50);border-bottom:1px solid var(--g200);font-size:12px;color:var(--g500)}
+.sync-dot{width:7px;height:7px;border-radius:50%}
+.sync-ok{background:var(--green)}
+.sync-warn{background:var(--amber)}
+.sync-spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 16px;border-radius:var(--r);font-size:13px;font-weight:500;color:white;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.toast-ok{background:var(--green)}
+.toast-err{background:var(--red)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo-row">
+    <div class="logo">S</div>
+    <div><div class="logo-text">Synapse RH</div><div class="logo-sub">Base de données</div></div>
+  </div>
+  <span class="nav-lbl">Collections</span>
+  <button class="nav-btn active" id="nav-salaries"   onclick="showSection('salaries')">👤 Salariés <span class="nav-count" id="count-salaries">0</span></button>
+  <button class="nav-btn"        id="nav-employeurs" onclick="showSection('employeurs')">🏢 Employeurs <span class="nav-count" id="count-employeurs">0</span></button>
+  <button class="nav-btn"        id="nav-postes"     onclick="showSection('postes')">📋 Postes <span class="nav-count" id="count-postes">0</span></button>
+  <div class="sidebar-footer">
+    <a class="back-link" href="index.html">← Retour à l'accueil</a>
+    <a class="back-link" href="dashboard.html">📊 Dashboard</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Salariés</div>
+    <div class="topbar-right">
+      <span id="sync-status" style="font-size:12px;color:var(--g400)">Chargement…</span>
+      <button class="btn btn-secondary btn-sm" onclick="loadAndRender()">↻ Actualiser</button>
+      <button class="btn btn-primary btn-sm" id="btn-add" onclick="openAddModal()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <div class="sync-bar">
+    <div class="sync-dot" id="sync-dot" style="background:var(--amber)"></div>
+    <span id="sync-msg">Connexion à la base…</span>
+    <span style="margin-left:auto;color:var(--g400)" id="sync-ts"></span>
+  </div>
+
+  <div class="content">
+
+    <!-- SALARIÉS -->
+    <div class="section active" id="sec-salaries">
+      <div class="page-header">
+        <div><div class="page-title">Salariés</div><div class="page-sub">Fiches complètes — autocomplétion dans les formulaires</div></div>
+      </div>
+      <div class="cards-grid" id="grid-salaries"></div>
+    </div>
+
+    <!-- EMPLOYEURS -->
+    <div class="section" id="sec-employeurs">
+      <div class="page-header">
+        <div><div class="page-title">Employeurs</div><div class="page-sub">Entreprises — remplissage automatique des contrats</div></div>
+      </div>
+      <div class="cards-grid" id="grid-employeurs"></div>
+    </div>
+
+    <!-- POSTES -->
+    <div class="section" id="sec-postes">
+      <div class="page-header">
+        <div><div class="page-title">Postes & Classifications</div><div class="page-sub">Grille de postes — salaire minimum et coefficient</div></div>
+      </div>
+      <div class="cards-grid" id="grid-postes"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Ajouter</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="github-storage.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────
+let DB = { employeurs:[], salaries:[], postes:[] };
+let currentSection = 'salaries';
+let editingId = null;
+
+// ── Toast ──────────────────────────────────────────────────────────────
+function toast(msg, type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast toast-'+(type==='ok'?'ok':'err')+' show';
+  setTimeout(()=>t.className='toast',2500);
+}
+
+// ── Load DB ────────────────────────────────────────────────────────────
+async function loadDB(){
+  document.getElementById('sync-msg').textContent='Chargement…';
+  document.getElementById('sync-dot').style.background='var(--amber)';
+
+  const GH_OWNER='laurentgohebel-blip', GH_REPO='synapse-contrat';
+  const token=localStorage.getItem('synapse_gh_token')||'';
+  const hdrs=token?{'Authorization':'token '+token}:{};
+
+  try{
+    const res=await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/data/database.json',{headers:hdrs});
+    if(res.ok){
+      const json=await res.json();
+      DB=JSON.parse(atob(json.content.replace(/\n/g,'')));
+      document.getElementById('sync-dot').style.background='var(--green)';
+      document.getElementById('sync-msg').textContent='Connecté à GitHub ✓';
+      document.getElementById('sync-ts').textContent=new Date().toLocaleTimeString('fr-FR');
+      document.getElementById('sync-status').textContent='GitHub synchronisé';
+      localStorage.setItem('synapse_database',JSON.stringify(DB));
+      return;
+    }
+  }catch(e){}
+
+  // Fallback localStorage
+  const local=localStorage.getItem('synapse_database');
+  if(local){ DB=JSON.parse(local); }
+  document.getElementById('sync-dot').style.background='var(--amber)';
+  document.getElementById('sync-msg').textContent='Mode local (configurer le token GitHub pour synchroniser)';
+  document.getElementById('sync-status').textContent='Local uniquement';
+}
+
+async function saveDB(){
+  const GH_OWNER='laurentgohebel-blip', GH_REPO='synapse-contrat';
+  const token=localStorage.getItem('synapse_gh_token')||'';
+  DB.updatedAt=new Date().toISOString();
+  localStorage.setItem('synapse_database',JSON.stringify(DB));
+
+  if(!token){ toast('Sauvegardé localement (pas de token GitHub)','ok'); return; }
+  document.getElementById('sync-msg').textContent='Sauvegarde en cours…';
+
+  try{
+    const hdrs={'Authorization':'token '+token,'Content-Type':'application/json'};
+    const check=await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/data/database.json',{headers:hdrs});
+    const body={message:'Synapse RH — mise à jour base de données',content:btoa(unescape(encodeURIComponent(JSON.stringify(DB,null,2)))),branch:'main'};
+    if(check.ok){const d=await check.json();body.sha=d.sha;}
+    const res=await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/data/database.json',{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
+    if(res.ok){
+      document.getElementById('sync-dot').style.background='var(--green)';
+      document.getElementById('sync-msg').textContent='Sauvegardé sur GitHub ✓';
+      document.getElementById('sync-ts').textContent=new Date().toLocaleTimeString('fr-FR');
+      toast('Base de données sauvegardée sur GitHub ✓','ok');
+    } else { toast('Erreur de sauvegarde GitHub','err'); }
+  }catch(e){ toast('Erreur réseau : '+e.message,'err'); }
+}
+
+// ── Render ─────────────────────────────────────────────────────────────
+function render(){
+  document.getElementById('count-salaries').textContent=DB.salaries.length;
+  document.getElementById('count-employeurs').textContent=DB.employeurs.length;
+  document.getElementById('count-postes').textContent=DB.postes.length;
+  renderSalaries();
+  renderEmployeurs();
+  renderPostes();
+}
+
+function renderSalaries(){
+  const grid=document.getElementById('grid-salaries');
+  if(!DB.salaries.length){grid.innerHTML='<div style="color:var(--g400);font-size:13px;padding:20px">Aucun salarié. Cliquez sur + Ajouter.</div>';return;}
+  grid.innerHTML=DB.salaries.map(s=>`
+    <div class="item-card">
+      <div class="item-card-top">
+        <div class="item-avatar" style="background:var(--blue-l);color:var(--blue)">${s.nom[0]}${s.prenom?s.prenom[0]:''}</div>
+        <div>
+          <div class="item-name">${s.nom} ${s.prenom}</div>
+          <div class="item-meta">${s.email||'—'}</div>
+        </div>
+      </div>
+      <div class="item-detail">
+        ${s.adresse?'📍 '+s.adresse+'<br>':''}
+        ${s.telephone?'📞 '+s.telephone+'<br>':''}
+        ${s.posteDefaut?'💼 '+s.posteDefaut:''}
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        ${s.nationalite?'<span class="badge badge-blue">'+s.nationalite+'</span>':''}
+        ${s.actif===false?'<span class="badge" style="background:#FEE2E2;color:#DC2626">Inactif</span>':'<span class="badge badge-green">Actif</span>'}
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editSalarie('${s.id}')">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSalarie('${s.id}')">Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderEmployeurs(){
+  const grid=document.getElementById('grid-employeurs');
+  if(!DB.employeurs.length){grid.innerHTML='<div style="color:var(--g400);font-size:13px;padding:20px">Aucun employeur. Cliquez sur + Ajouter.</div>';return;}
+  grid.innerHTML=DB.employeurs.map(e=>`
+    <div class="item-card">
+      <div class="item-card-top">
+        <div class="item-avatar" style="background:var(--purple-l);color:var(--purple)">${e.raisonSociale[0]}</div>
+        <div>
+          <div class="item-name">${e.raisonSociale}</div>
+          <div class="item-meta">${e.forme} · SIRET ${e.siret}</div>
+        </div>
+      </div>
+      <div class="item-detail">
+        ${e.adresse?'📍 '+e.adresse+'<br>':''}
+        ${e.representant?'👤 '+e.representant+'<br>':''}
+        ${e.convention?'📋 '+e.convention:''}
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editEmployeur('${e.id}')">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEmployeur('${e.id}')">Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderPostes(){
+  const grid=document.getElementById('grid-postes');
+  if(!DB.postes.length){grid.innerHTML='<div style="color:var(--g400);font-size:13px;padding:20px">Aucun poste. Cliquez sur + Ajouter.</div>';return;}
+  grid.innerHTML=DB.postes.map(p=>`
+    <div class="item-card">
+      <div class="item-card-top">
+        <div class="item-avatar" style="background:#FEF3C7;color:#D97706">📋</div>
+        <div>
+          <div class="item-name">${p.intitule}</div>
+          <div class="item-meta">Coef. ${p.coefficient} · ${p.salaireMinBrut?p.salaireMinBrut.toLocaleString('fr-FR')+' €/mois':''}</div>
+        </div>
+      </div>
+      <div class="item-detail">
+        ${p.classification?'🏷️ '+p.classification+'<br>':''}
+        ${p.dureeHebdoDefaut?'⏱️ '+p.dureeHebdoDefaut+'<br>':''}
+        ${p.description?'<span style="color:var(--g400)">'+p.description.substring(0,80)+'…</span>':''}
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editPoste('${p.id}')">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePoste('${p.id}')">Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── Navigation ─────────────────────────────────────────────────────────
+function showSection(sec){
+  currentSection=sec;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  document.getElementById('nav-'+sec).classList.add('active');
+  const titles={salaries:'Salariés',employeurs:'Employeurs',postes:'Postes & Classifications'};
+  document.getElementById('topbar-title').textContent=titles[sec];
+}
+
+// ── Modal helpers ──────────────────────────────────────────────────────
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+function openModal(title,bodyHtml,footerHtml){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=bodyHtml;
+  document.getElementById('modal-footer').innerHTML=footerHtml;
+  document.getElementById('modal').classList.add('open');
+}
+
+function openAddModal(){
+  if(currentSection==='salaries') openAddSalarie();
+  else if(currentSection==='employeurs') openAddEmployeur();
+  else openAddPoste();
+}
+
+// ── SALARIÉS CRUD ──────────────────────────────────────────────────────
+function salaryForm(s){
+  s=s||{};
+  return `
+  <div class="g2">
+    <div class="field"><label>Nom *</label><input id="f-nom" value="${s.nom||''}" placeholder="DUPONT"/></div>
+    <div class="field"><label>Prénom *</label><input id="f-prenom" value="${s.prenom||''}" placeholder="Marie"/></div>
+  </div>
+  <div class="g3">
+    <div class="field"><label>Date de naissance</label><input id="f-ddn" type="date" value="${s.dateNaissance||''}"/></div>
+    <div class="field"><label>Lieu de naissance</label><input id="f-ldn" value="${s.lieuNaissance||''}" placeholder="Paris (75)"/></div>
+    <div class="field"><label>Nationalité</label><input id="f-nat" value="${s.nationalite||'Française'}"/></div>
+  </div>
+  <div class="field"><label>Adresse domicile</label><input id="f-adresse" value="${s.adresse||''}" placeholder="5 avenue Hugo, 69001 Lyon"/></div>
+  <div class="g2">
+    <div class="field"><label>Email</label><input id="f-email" type="email" value="${s.email||''}" placeholder="m.dupont@acme.fr"/></div>
+    <div class="field"><label>Téléphone</label><input id="f-tel" value="${s.telephone||''}" placeholder="06 12 34 56 78"/></div>
+  </div>
+  <div class="g2">
+    <div class="field"><label>N° Sécurité Sociale</label><input id="f-secu" value="${s.numSecu||''}" placeholder="2 82 03 75 123 456 78"/></div>
+    <div class="field"><label>Statut</label>
+      <select id="f-actif"><option value="true" ${s.actif!==false?'selected':''}>Actif</option><option value="false" ${s.actif===false?'selected':''}>Inactif</option></select>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="field"><label>Poste par défaut</label><input id="f-poste" value="${s.posteDefaut||''}" placeholder="Agent de service professionnel"/></div>
+    <div class="field"><label>Service par défaut</label><input id="f-service" value="${s.serviceDefaut||''}" placeholder="Opérations"/></div>
+  </div>`;
+}
+
+function openAddSalarie(){editingId=null;openModal('Ajouter un salarié',salaryForm(),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveSalarie()">Enregistrer</button>');}
+function editSalarie(id){editingId=id;const s=DB.salaries.find(x=>x.id===id);openModal('Modifier le salarié',salaryForm(s),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveSalarie()">Enregistrer</button>');}
+
+function saveSalarie(){
+  const g=id=>document.getElementById(id)?.value||'';
+  if(!g('f-nom').trim()||!g('f-prenom').trim()){alert('Nom et prénom requis.');return;}
+  const entry={id:editingId||('sal_'+Date.now()),nom:g('f-nom').toUpperCase(),prenom:g('f-prenom'),dateNaissance:g('f-ddn'),lieuNaissance:g('f-ldn'),nationalite:g('f-nat'),adresse:g('f-adresse'),email:g('f-email'),telephone:g('f-tel'),numSecu:g('f-secu'),posteDefaut:g('f-poste'),serviceDefaut:g('f-service'),actif:g('f-actif')!=='false'};
+  if(editingId){const i=DB.salaries.findIndex(x=>x.id===editingId);DB.salaries[i]=entry;}
+  else DB.salaries.push(entry);
+  closeModal();renderSalaries();
+  document.getElementById('count-salaries').textContent=DB.salaries.length;
+  saveDB();
+}
+
+function deleteSalarie(id){if(!confirm('Supprimer ce salarié ?'))return;DB.salaries=DB.salaries.filter(s=>s.id!==id);renderSalaries();document.getElementById('count-salaries').textContent=DB.salaries.length;saveDB();}
+
+// ── EMPLOYEURS CRUD ────────────────────────────────────────────────────
+function employeurForm(e){
+  e=e||{};
+  return `
+  <div class="g2">
+    <div class="field"><label>Raison sociale *</label><input id="f-rs" value="${e.raisonSociale||''}" placeholder="ACME SAS"/></div>
+    <div class="field"><label>Forme juridique</label>
+      <select id="f-forme"><option ${e.forme==='SAS'?'selected':''}>SAS</option><option ${e.forme==='SARL'?'selected':''}>SARL</option><option ${e.forme==='SA'?'selected':''}>SA</option><option ${e.forme==='EURL'?'selected':''}>EURL</option><option ${e.forme==='Association'?'selected':''}>Association</option></select>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="field"><label>SIRET *</label><input id="f-siret" value="${e.siret||''}" placeholder="12345678900010"/></div>
+    <div class="field"><label>Code APE / NAF</label><input id="f-ape" value="${e.ape||''}" placeholder="8121Z"/></div>
+  </div>
+  <div class="field"><label>Adresse siège social *</label><input id="f-adresse" value="${e.adresse||''}" placeholder="12 rue de la Paix, 75001 Paris"/></div>
+  <div class="field"><label>Représentant légal *</label><input id="f-rep" value="${e.representant||''}" placeholder="Jean Durand, Directeur Général"/></div>
+  <div class="field"><label>Convention collective</label><input id="f-conv" value="${e.convention||''}" placeholder="Syntec, Métallurgie…"/></div>`;
+}
+
+function openAddEmployeur(){editingId=null;openModal('Ajouter un employeur',employeurForm(),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveEmployeur()">Enregistrer</button>');}
+function editEmployeur(id){editingId=id;const e=DB.employeurs.find(x=>x.id===id);openModal('Modifier l\'employeur',employeurForm(e),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveEmployeur()">Enregistrer</button>');}
+
+function saveEmployeur(){
+  const g=id=>document.getElementById(id)?.value||'';
+  if(!g('f-rs').trim()||!g('f-siret').trim()){alert('Raison sociale et SIRET requis.');return;}
+  const entry={id:editingId||('emp_'+Date.now()),raisonSociale:g('f-rs'),forme:g('f-forme'),siret:g('f-siret'),ape:g('f-ape'),adresse:g('f-adresse'),representant:g('f-rep'),convention:g('f-conv'),actif:true};
+  if(editingId){const i=DB.employeurs.findIndex(x=>x.id===editingId);DB.employeurs[i]=entry;}
+  else DB.employeurs.push(entry);
+  closeModal();renderEmployeurs();
+  document.getElementById('count-employeurs').textContent=DB.employeurs.length;
+  saveDB();
+}
+
+function deleteEmployeur(id){if(!confirm('Supprimer cet employeur ?'))return;DB.employeurs=DB.employeurs.filter(e=>e.id!==id);renderEmployeurs();document.getElementById('count-employeurs').textContent=DB.employeurs.length;saveDB();}
+
+// ── POSTES CRUD ────────────────────────────────────────────────────────
+function posteForm(p){
+  p=p||{};
+  return `
+  <div class="field"><label>Intitulé du poste *</label><input id="f-intitule" value="${p.intitule||''}" placeholder="Agent de service professionnel"/></div>
+  <div class="g3">
+    <div class="field"><label>Coefficient</label><input id="f-coef" value="${p.coefficient||''}" placeholder="140"/></div>
+    <div class="field"><label>Salaire minimum brut (€)</label><input id="f-salmin" type="number" value="${p.salaireMinBrut||''}" placeholder="1766.92"/></div>
+    <div class="field"><label>Durée hebdo par défaut</label>
+      <select id="f-duree"><option ${p.dureeHebdoDefaut==='35h'?'selected':''}>35h</option><option ${p.dureeHebdoDefaut==='39h'?'selected':''}>39h</option><option ${p.dureeHebdoDefaut==='Forfait jours (218j)'?'selected':''}>Forfait jours (218j)</option></select>
+    </div>
+  </div>
+  <div class="field"><label>Classification</label><input id="f-class" value="${p.classification||''}" placeholder="Ouvrier niveau 1 échelon 1"/></div>
+  <div class="field"><label>Convention collective</label><input id="f-conv" value="${p.convention||'IDCC 3043'}"/></div>
+  <div class="field"><label>Description des missions</label><textarea id="f-desc" placeholder="Assure le nettoyage et l'entretien des locaux…">${p.description||''}</textarea></div>`;
+}
+
+function openAddPoste(){editingId=null;openModal('Ajouter un poste',posteForm(),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="savePoste()">Enregistrer</button>');}
+function editPoste(id){editingId=id;const p=DB.postes.find(x=>x.id===id);openModal('Modifier le poste',posteForm(p),'<button class="btn btn-secondary" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="savePoste()">Enregistrer</button>');}
+
+function savePoste(){
+  const g=id=>document.getElementById(id)?.value||'';
+  if(!g('f-intitule').trim()){alert('Intitulé requis.');return;}
+  const entry={id:editingId||('poste_'+Date.now()),intitule:g('f-intitule'),coefficient:g('f-coef'),salaireMinBrut:parseFloat(g('f-salmin'))||0,dureeHebdoDefaut:g('f-duree'),classification:g('f-class'),convention:g('f-conv'),description:g('f-desc')};
+  if(editingId){const i=DB.postes.findIndex(x=>x.id===editingId);DB.postes[i]=entry;}
+  else DB.postes.push(entry);
+  closeModal();renderPostes();
+  document.getElementById('count-postes').textContent=DB.postes.length;
+  saveDB();
+}
+
+function deletePoste(id){if(!confirm('Supprimer ce poste ?'))return;DB.postes=DB.postes.filter(p=>p.id!==id);renderPostes();document.getElementById('count-postes').textContent=DB.postes.length;saveDB();}
+
+// ── Init ───────────────────────────────────────────────────────────────
+async function loadAndRender(){ await loadDB(); render(); }
+loadAndRender();
+</script>
+</body>
+</html>
