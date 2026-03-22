@@ -18,8 +18,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .nav-link{display:flex;align-items:center;gap:6px;padding:7px 13px;border:1px solid var(--g200);border-radius:var(--r);font-size:12.5px;color:var(--g500);text-decoration:none;background:white;transition:.15s}
 .nav-link:hover{border-color:var(--blue);color:var(--blue)}
 .counter-badge{background:var(--blue);color:white;border-radius:99px;font-size:10px;padding:1px 6px;font-weight:600}
-.apikey-banner{background:#FFFBEB;border:1px solid #FCD34D;border-radius:var(--r);padding:12px 16px;font-size:12.5px;color:#92400E;margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.apikey-banner input{flex:1;min-width:200px;padding:7px 10px;border:1px solid #FCD34D;border-radius:6px;font-size:12.5px;background:white;color:var(--g900);font-family:monospace}
 .progress{display:flex;margin-bottom:2rem;border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden;background:white}
 .prog-step{flex:1;padding:11px 6px;text-align:center;font-size:11px;color:var(--g400);background:white;border-right:1px solid var(--g200);transition:.2s}
 .prog-step:last-child{border-right:none}
@@ -71,19 +69,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="logo">📄</div>
       <div class="header-text">
         <h1>Générateur de contrat de travail</h1>
-        <p>Synapse RH · Génération IA · Droit du travail français</p>
+        <p>Synapse RH · Contrat généré automatiquement · Droit du travail français</p>
       </div>
     </div>
     <div class="nav-links">
       <a class="nav-link" href="index.html">← Accueil</a>
       <a class="nav-link" href="dashboard.html">📊 Dashboard <span class="counter-badge" id="nav-counter">0</span></a>
     </div>
-  </div>
-
-  <div class="apikey-banner">
-    <span>🔑</span>
-    <strong>Clé API Anthropic :</strong>
-    <input type="password" id="api-key" placeholder="sk-ant-api03-..." oninput="saveKey()"/>
   </div>
 
   <div class="progress">
@@ -236,7 +228,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div style="margin-top:8px">
           <span class="tag">Droit français</span>
           <span class="tag">Articles numérotés</span>
-          <span class="tag">Sauvegardé dans le dashboard</span>
+          <span class="tag">Généré instantanément</span><span class="tag">Sauvegardé dans le dashboard</span>
         </div>
       </div>
       <div class="row-btns">
@@ -280,11 +272,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <script>
 const REQUIRED={1:['emp_nom','emp_siret','emp_adresse','emp_rep'],2:['sal_nom','sal_prenom','sal_adresse'],3:['ctr_poste','ctr_lieu','ctr_debut'],4:['rem_brut']};
 function v(id){return(document.getElementById(id)||{}).value||'';}
-
-// Restore saved API key
-function saveKey(){localStorage.setItem('synapse_apikey',document.getElementById('api-key').value);}
-const savedKey=localStorage.getItem('synapse_apikey');
-if(savedKey)document.getElementById('api-key').value=savedKey;
 
 function updateCounter(){
   const n=JSON.parse(localStorage.getItem('synapse_contrats')||'[]').length;
@@ -337,51 +324,148 @@ async function saveToStorage(contratText){
   updateCounter();
 }
 
+function generateTemplate(){
+  const today=new Date().toLocaleDateString('fr-FR');
+  const type=v('ctr_type');
+  const isCDD=type.includes('CDD');
+  const isAvenant=type.toLowerCase().includes('avenant');
+  const emp=v('emp_nom')+' ('+v('emp_forme')+')';
+  const sal=v('sal_nom')+' '+v('sal_prenom');
+  const ddn=v('sal_ddn')?(v('sal_ddn')+(v('sal_ldn')?' à '+v('sal_ldn'):'')):'';
+
+  const durSection=isCDD
+    ?['Contrat à durée déterminée.','Date de début : '+v('ctr_debut'),'Date de fin   : '+(v('ctr_fin')||'À préciser'),"Période d'essai : "+(v('ctr_essai')||'Aucune')].join('\n')
+    :['Contrat à durée indéterminée.','Prise d\'effet  : '+v('ctr_debut'),"Période d'essai : "+(v('ctr_essai')||'Aucune')].join('\n');
+
+  const essaiSection=v('ctr_essai')==='Aucune'
+    ?"Le présent contrat ne comporte pas de période d'essai."
+    :"Période d'essai de "+v('ctr_essai')+", renouvelable une fois.";
+
+  const ruptureSection=isCDD
+    ?"Le contrat prend fin à l'échéance prévue. En cas de rupture anticipée, les dispositions légales s'appliquent."
+    :"La rupture du contrat est soumise aux dispositions légales en vigueur (démission, licenciement, rupture conventionnelle).";
+
+  if(isAvenant){return [
+    'AVENANT AU CONTRAT DE TRAVAIL',
+    '════════════════════════════════════════════════════════',
+    'Fait à '+v('ctr_lieu')+', le '+today,'',
+    'ENTRE LES SOUSSIGNÉS :','',
+    emp,
+    'SIRET : '+v('emp_siret'),
+    'Siège social : '+v('emp_adresse'),
+    'Représentée par : '+v('emp_rep'),
+    'Ci-après dénommée "l\'Employeur"','',
+    'ET :','',
+    sal,
+    ddn?'Né(e) le : '+ddn:'',
+    v('sal_adresse')?'Domicile : '+v('sal_adresse'):'',
+    'Ci-après dénommé(e) "le Salarié"','',
+    'IL A ÉTÉ CONVENU CE QUI SUIT :','',
+    "Article 1 — Objet",
+    "Le présent avenant modifie le contrat de travail initial à compter du "+v('ctr_debut')+'.','',
+    "Article 2 — Durée du travail",
+    "La durée hebdomadaire est portée à "+v('ctr_duree')+'.','',
+    "Article 3 — Poste",
+    "Poste : "+v('ctr_poste')+" — Service : "+v('ctr_service'),'','',
+    "Article 4 — Rémunération",
+    "Salaire brut mensuel : "+v('rem_brut')+" €",'',
+    "Article 5 — Dispositions inchangées",
+    "Toutes les autres clauses du contrat initial demeurent inchangées.",'',
+    '────────────────────────────────────────────────────────',
+    'Fait en deux exemplaires originaux.','',
+    "L'Employeur                         Le Salarié",
+    emp+'',
+    '','Signature :                         Signature :',
+    '_____________________               _____________________',
+    '                                    (précédée de "Lu et approuvé")',
+  ].filter(s=>s!==false).join('\n');}
+
+  return [
+    'CONTRAT DE TRAVAIL — '+type.toUpperCase(),
+    '════════════════════════════════════════════════════════',
+    'Fait à '+v('ctr_lieu')+', le '+today,'',
+    'ENTRE LES SOUSSIGNÉS :','',
+    'EMPLOYEUR',
+    'Raison sociale  : '+emp,
+    'SIRET           : '+v('emp_siret')+(v('emp_ape')?' — APE : '+v('emp_ape'):''),
+    'Siège social    : '+v('emp_adresse'),
+    'Représentant    : '+v('emp_rep'),
+    'Convention coll.: '+(v('emp_conv')||'Non précisée'),
+    'Ci-après dénommée "l\'Employeur"','',
+    'SALARIÉ',
+    'Nom / Prénom       : '+sal,
+    ddn?'Date de naissance  : '+ddn:'',
+    v('sal_nat')?'Nationalité        : '+v('sal_nat'):'',
+    v('sal_adresse')?'Domicile           : '+v('sal_adresse'):'',
+    v('sal_email')?'Email              : '+v('sal_email'):'',
+    v('sal_secu')?'N° Sécurité Sociale: '+v('sal_secu'):'',
+    'Ci-après dénommé(e) "le Salarié"','',
+    '────────────────────────────────────────────────────────','',
+    'ARTICLE 1 — ENGAGEMENT',
+    "L'Employeur engage le Salarié au poste de :",
+    v('ctr_poste')+' — Service : '+v('ctr_service'),
+    'Type de contrat : '+type,
+    (isCDD&&v('ctr_motif'))?'Motif : '+v('ctr_motif'):'','',
+    'ARTICLE 2 — DURÉE',
+    durSection,'',
+    'ARTICLE 3 — LIEU DE TRAVAIL',
+    v('ctr_lieu'),'',
+    'ARTICLE 4 — FONCTIONS ET MISSIONS',
+    v('ctr_missions')||"Le Salarié exercera les fonctions inhérentes à son poste.",
+    v('ctr_class')?'Classification : '+v('ctr_class'):'','',
+    'ARTICLE 5 — DURÉE DU TRAVAIL',
+    'Durée hebdomadaire : '+v('ctr_duree'),
+    "Horaires selon planning établi par l'employeur.",'',
+    "ARTICLE 6 — PÉRIODE D'ESSAI",
+    essaiSection,'',
+    'ARTICLE 7 — RÉMUNÉRATION',
+    'Salaire brut mensuel : '+v('rem_brut')+' € — Versement : '+v('rem_mode'),
+    v('rem_13')==='Oui'?'13e mois : Oui, versé en décembre.':'',' ',
+    'ARTICLE 8 — AVANTAGES',
+    'Tickets restaurant  : '+v('rem_tr'),
+    'Mutuelle entreprise : '+v('rem_mut'),
+    'Transport           : '+v('rem_trans'),
+    'Télétravail         : '+v('rem_tele'),
+    v('rem_autres')?'Autres : '+v('rem_autres'):'',' ',
+    'ARTICLE 9 — OBLIGATIONS DU SALARIÉ',
+    "Le Salarié s'engage à exercer ses fonctions avec diligence et loyauté,",
+    "à respecter le règlement intérieur et les directives de l'employeur.",'',
+    'ARTICLE 10 — CONFIDENTIALITÉ',
+    "Le Salarié s'engage à conserver la confidentialité de toute information",
+    "à caractère confidentiel dont il pourrait avoir connaissance.",'',
+    'ARTICLE 11 — PROTECTION DES DONNÉES',
+    'Les données personnelles sont traitées conformément au RGPD.',' ',
+    'ARTICLE 12 — RUPTURE DU CONTRAT',
+    ruptureSection,' ',
+    'ARTICLE 13 — DROIT APPLICABLE',
+    'Le présent contrat est soumis au droit français.',
+    "Tout litige sera porté devant le Conseil de Prud'hommes compétent.",'',
+    '────────────────────────────────────────────────────────',
+    'Fait en deux exemplaires originaux, dont un remis au Salarié.','',
+    "L'Employeur                         Le Salarié",
+    emp,'','Signature :                         Signature :',
+    '_____________________               _____________________',
+    '                                    (précédée de "Lu et approuvé")',
+  ].filter(s=>s!==false).join('\n');
+}
+
+
 async function generate(){
-  const apiKey=v('api-key').trim();
-  if(!apiKey){alert('Veuillez entrer votre clé API Anthropic (sk-ant-...)');return;}
   document.getElementById('recap-view').style.display='none';
   document.getElementById('generating-view').style.display='block';
-  const msgs=['Analyse des données saisies…','Rédaction des clauses contractuelles…','Application du droit du travail français…','Intégration des avantages salariaux…','Finalisation et mise en forme…'];
-  let mi=0;const statusEl=document.getElementById('gen-status');
-  const iv=setInterval(()=>{mi=(mi+1)%msgs.length;statusEl.textContent=msgs[mi];},2000);
-
-  const prompt=`Tu es un juriste expert en droit du travail français. Génère un contrat de travail complet et conforme au droit français.
-
-EMPLOYEUR : ${v('emp_nom')} (${v('emp_forme')}) — SIRET ${v('emp_siret')} — ${v('emp_adresse')} — Représentant : ${v('emp_rep')} — Convention : ${v('emp_conv')||'Non précisée'}
-SALARIÉ : ${v('sal_prenom')} ${v('sal_nom')} — né le ${v('sal_ddn')||'N/A'}${v('sal_ldn')?' à '+v('sal_ldn'):''} — ${v('sal_adresse')} — N°SS : ${v('sal_secu')||'À compléter'}
-CONTRAT : ${v('ctr_type')} — Poste : ${v('ctr_poste')} — Service : ${v('ctr_service')} — Début : ${v('ctr_debut')}${v('ctr_fin')?' — Fin : '+v('ctr_fin'):''} — Période d'essai : ${v('ctr_essai')} — ${v('ctr_duree')} — Lieu : ${v('ctr_lieu')} — Classification : ${v('ctr_class')||'Non précisée'} — Missions : ${v('ctr_missions')||'À préciser'}
-RÉMUNÉRATION : ${v('rem_brut')} € brut/mois — ${v('rem_mode')} — 13e mois : ${v('rem_13')} — TR : ${v('rem_tr')} — Mutuelle : ${v('rem_mut')} — Transport : ${v('rem_trans')} — Télétravail : ${v('rem_tele')} — Autres : ${v('rem_autres')||'Néant'}
-
-Génère un contrat complet avec en-tête officiel, articles 1 à 13 numérotés (Engagement, Durée, Lieu, Fonctions, Durée du travail, Période d'essai, Rémunération, Avantages, Obligations, Confidentialité, Non-concurrence si pertinent, Rupture, Droit applicable), et bloc de signature. Format texte structuré professionnel, sans markdown.`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    clearInterval(iv);
-    if(data.error)throw new Error(data.error.message);
-    const text=data.content?.find(b=>b.type==='text')?.text||'Erreur de génération.';
-    await saveToStorage(text);
-    document.getElementById('contract-text').textContent=text;
-    document.getElementById('generating-view').style.display='none';
-    document.getElementById('result-view').style.display='block';
-  }catch(e){
-    clearInterval(iv);
-    document.getElementById('generating-view').style.display='none';
-    document.getElementById('recap-view').style.display='block';
-    alert('Erreur : '+e.message);
-  }
+  // Simulation courte pour l'effet visuel
+  await new Promise(r=>setTimeout(r,600));
+  const text=generateTemplate();
+  await saveToStorage(text);
+  document.getElementById('contract-text').textContent=text;
+  document.getElementById('generating-view').style.display='none';
+  document.getElementById('result-view').style.display='block';
 }
 
 function copyContract(){const txt=document.getElementById('contract-text').textContent;navigator.clipboard.writeText(txt).then(()=>{const b=event.target;b.textContent='✓ Copié !';setTimeout(()=>b.textContent='Copier le texte',2000);});}
 function printContract(){const txt=document.getElementById('contract-text').textContent;const w=window.open('','_blank');w.document.write('<html><head><title>Contrat</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;font-size:13px;line-height:1.9}pre{white-space:pre-wrap;font-family:Georgia,serif}</style></head><body><pre>'+txt+'</pre><\/body><\/html>');w.document.close();w.print();}
 function resetForm(){
   document.querySelectorAll('input,select,textarea').forEach(el=>{
-    if(el.id==='api-key')return;
     if(el.type==='date')el.value='';
     else if(el.tagName==='SELECT')el.selectedIndex=0;
     else el.value='';
