@@ -51,6 +51,63 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tbadge{padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;background:var(--g100);color:var(--g500)}
 .tab.active .tbadge{background:var(--blue-l);color:var(--blue)}
 .tbadge-red{background:var(--red-l);color:var(--red)}
+
+/* ── FILTER BAR ───────────────────────────────────────────────────── */
+.filter-bar{
+  background:white;border-bottom:1px solid var(--g200);
+  overflow:hidden;transition:max-height .3s ease, padding .3s ease;
+  max-height:0;padding:0 20px;
+}
+.filter-bar.open{max-height:220px;padding:12px 20px 14px}
+.filter-toggle{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;background:white;border:1px solid var(--g200);border-radius:var(--r);
+  font-size:11.5px;cursor:pointer;color:var(--g500);position:relative;
+}
+.filter-toggle:hover{border-color:var(--blue);color:var(--blue)}
+.filter-toggle .f-count{
+  background:var(--blue);color:white;border-radius:99px;font-size:9px;font-weight:700;
+  padding:1px 5px;margin-left:2px;display:none;
+}
+.filter-toggle .f-count.visible{display:inline}
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:3px;min-width:0}
+.filter-group label{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em}
+.filter-group select,
+.filter-group input[type="date"],
+.filter-group input[type="text"]{
+  padding:6px 10px;border:1px solid var(--g200);border-radius:6px;font-size:12px;
+  color:var(--g700);background:var(--g50);outline:none;min-width:0;
+  transition:border-color .15s;
+}
+.filter-group select{min-width:130px;padding-right:26px;appearance:auto}
+.filter-group input[type="date"]{width:130px}
+.filter-group input[type="text"]{width:180px}
+.filter-group select:focus,
+.filter-group input:focus{border-color:var(--blue);background:white}
+.filter-actions{display:flex;gap:6px;align-items:flex-end;padding-bottom:1px}
+.btn-filter{padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;border:none}
+.btn-filter-reset{background:var(--g100);color:var(--g500)}
+.btn-filter-reset:hover{background:var(--g200);color:var(--g700)}
+.btn-filter-csv{background:var(--green-l);color:var(--green-d)}
+.btn-filter-csv:hover{background:var(--green);color:white}
+.filter-summary{
+  margin-top:8px;display:flex;flex-wrap:wrap;gap:5px;
+}
+.filter-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--blue-l);color:var(--blue);padding:2px 8px 2px 10px;
+  border-radius:99px;font-size:10.5px;font-weight:500;
+}
+.filter-chip button{
+  background:none;border:none;color:var(--blue);cursor:pointer;font-size:13px;
+  line-height:1;padding:0 2px;opacity:.6;
+}
+.filter-chip button:hover{opacity:1}
+.filter-result-count{
+  font-size:11px;color:var(--g400);margin-top:6px;
+}
+
 .content{padding:16px 20px;overflow-y:auto;flex:1}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .kpi{background:white;border:1px solid var(--g200);border-radius:var(--rl);padding:13px 14px;position:relative;overflow:hidden}
@@ -66,7 +123,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 canvas{max-height:200px}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g200);background:var(--g50);white-space:nowrap}
+th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g200);background:var(--g50);white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--g700)}
+th .sort-arrow{font-size:9px;margin-left:3px;opacity:.4}
+th.sorted .sort-arrow{opacity:1;color:var(--blue)}
 td{padding:9px 10px;border-bottom:1px solid var(--g100);color:var(--g700);vertical-align:middle}
 tr:last-child td{border:none}
 tr:hover td{background:var(--g50)}
@@ -111,7 +171,16 @@ tr:hover td{background:var(--g50)}
 .modal-val{color:var(--g900);font-weight:500}
 .modal-pre{font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:Georgia,serif}
 .modal-footer{padding:12px 18px;border-top:1px solid var(--g200);display:flex;gap:8px;justify-content:flex-end}
-@media(max-width:860px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.row-2,.row-2b{grid-template-columns:1fr}}
+
+/* ── Pagination ────────────────────────────────────────────────────── */
+.pagination{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:12px}
+.pg-btn{padding:5px 10px;border:1px solid var(--g200);border-radius:5px;font-size:11px;cursor:pointer;background:white;color:var(--g500)}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue)}
+.pg-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
+.pg-btn:disabled{opacity:.3;cursor:default}
+.pg-info{font-size:11px;color:var(--g400);margin:0 8px}
+
+@media(max-width:860px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.row-2,.row-2b{grid-template-columns:1fr}.filter-row{flex-direction:column}.filter-group select,.filter-group input[type="date"],.filter-group input[type="text"]{width:100%;min-width:0}}
 </style>
 </head>
 <body>
@@ -145,9 +214,60 @@ tr:hover td{background:var(--g50)}
     <div class="topbar-title">Dashboard RH — Vue consolidée</div>
     <div class="topbar-right">
       <div class="live-dot"></div><span class="live-lbl">Temps réel</span>
-      <button class="btn-top btn-top-red" onclick="clearAll()">🗑 Tout effacer</button>
+      <button class="filter-toggle" id="filterToggleBtn" onclick="toggleFilters()">
+        🔍 Filtres <span class="f-count" id="filterCount">0</span>
+      </button>
       <button class="btn-top" onclick="loadFromSupabase()">↻ Actualiser</button>
+      <button class="btn-top btn-top-red" onclick="clearAll()">🗑 Tout effacer</button>
     </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>🔎 Recherche</label>
+        <input type="text" id="f-search" placeholder="Nom, poste, motif…" oninput="applyFilters()"/>
+      </div>
+      <div class="filter-group">
+        <label>Service</label>
+        <select id="f-service" onchange="applyFilters()">
+          <option value="">Tous les services</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Collaborateur</label>
+        <select id="f-employe" onchange="applyFilters()">
+          <option value="">Tous</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Statut</label>
+        <select id="f-statut" onchange="applyFilters()">
+          <option value="">Tous</option>
+          <option value="En attente">En attente</option>
+          <option value="Accordé">Accordé</option>
+          <option value="Refusé">Refusé</option>
+          <option value="Généré">Généré</option>
+          <option value="Actif">Actif</option>
+          <option value="Terminé">Terminé</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Du</label>
+        <input type="date" id="f-dateFrom" onchange="applyFilters()"/>
+      </div>
+      <div class="filter-group">
+        <label>Au</label>
+        <input type="date" id="f-dateTo" onchange="applyFilters()"/>
+      </div>
+      <div class="filter-actions">
+        <button class="btn-filter btn-filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
+        <button class="btn-filter btn-filter-csv" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+    </div>
+    <div class="filter-summary" id="filterSummary"></div>
+    <div class="filter-result-count" id="filterResultCount"></div>
   </div>
 
   <div class="tabs">
@@ -176,18 +296,26 @@ tr:hover td{background:var(--g50)}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Setup ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════════════════════════════════
 Chart.defaults.font.family = "system-ui,sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#6B7280';
 const GRID = 'rgba(0,0,0,.04)';
-const COLORS = ['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF'];
+const COLORS = ['#2E75B6','#059669','#D97706','#7C3AED','#0D9488','#DC2626','#9CA3AF','#EC4899','#F59E0B'];
 let charts = {};
 let currentTab = 'all';
+let currentPage = {};  // per-tab page tracking
+const PAGE_SIZE = 15;
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// Current filter state
+let filters = { search:'', service:'', employe:'', statut:'', dateFrom:'', dateTo:'' };
+
+// ══════════════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════════════
 function load(k){ return JSON.parse(localStorage.getItem('synapse_'+k)||'[]'); }
-async function loadRemote(k){ if(window.SynapseStorage) return await window.SynapseStorage.load(k); return load(k); }
 function save(k,v){ localStorage.setItem('synapse_'+k, JSON.stringify(v)); }
 function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'}); }catch(e){ return iso||'—'; } }
 function fmtMoney(n){ return n ? Number(n).toLocaleString('fr-FR')+' €' : '—'; }
@@ -195,7 +323,9 @@ function pill(text,cls){ return '<span class="pill '+cls+'">'+text+'</span>'; }
 function statusPill(s){
   if(s==='Généré') return pill(s,'p-ok');
   if(s==='Accordé') return pill(s,'p-ok');
+  if(s==='Actif') return pill(s,'p-ok');
   if(s==='Refusé') return pill(s,'p-refuse');
+  if(s==='Terminé') return pill(s,'p-refuse');
   return pill(s||'En attente','p-attente');
 }
 
@@ -206,7 +336,239 @@ function mk(id, cfg){
   try{ charts[id] = new Chart(c.getContext('2d'), cfg); }catch(e){ console.error('Chart error',id,e); }
 }
 
-// ── Toast ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  FILTER ENGINE
+// ══════════════════════════════════════════════════════════════════════
+function toggleFilters(){
+  const bar = document.getElementById('filterBar');
+  bar.classList.toggle('open');
+  const btn = document.getElementById('filterToggleBtn');
+  if(bar.classList.contains('open')){
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
+  } else {
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }
+}
+
+function populateFilterOptions(){
+  const contrats = load('contrats');
+  const conges = load('conges');
+  const acomptes = load('acomptes');
+  const all = contrats.concat(conges).concat(acomptes);
+
+  // Services
+  const services = [...new Set(all.map(d=>d.service).filter(Boolean))].sort();
+  const fService = document.getElementById('f-service');
+  const curService = fService.value;
+  fService.innerHTML = '<option value="">Tous les services</option>';
+  services.forEach(s => { fService.innerHTML += '<option value="'+s+'"'+(curService===s?' selected':'')+'>'+s+'</option>'; });
+
+  // Collaborateurs
+  const employes = [...new Set(all.map(d=>d.employe).filter(Boolean))].sort();
+  const fEmploye = document.getElementById('f-employe');
+  const curEmploye = fEmploye.value;
+  fEmploye.innerHTML = '<option value="">Tous les collaborateurs</option>';
+  employes.forEach(e => { fEmploye.innerHTML += '<option value="'+e+'"'+(curEmploye===e?' selected':'')+'>'+e+'</option>'; });
+}
+
+function readFilters(){
+  filters.search   = (document.getElementById('f-search').value||'').trim().toLowerCase();
+  filters.service  = document.getElementById('f-service').value;
+  filters.employe  = document.getElementById('f-employe').value;
+  filters.statut   = document.getElementById('f-statut').value;
+  filters.dateFrom = document.getElementById('f-dateFrom').value;
+  filters.dateTo   = document.getElementById('f-dateTo').value;
+}
+
+function activeFilterCount(){
+  let n = 0;
+  if(filters.search)   n++;
+  if(filters.service)  n++;
+  if(filters.employe)  n++;
+  if(filters.statut)   n++;
+  if(filters.dateFrom) n++;
+  if(filters.dateTo)   n++;
+  return n;
+}
+
+function updateFilterUI(){
+  const n = activeFilterCount();
+  const badge = document.getElementById('filterCount');
+  badge.textContent = n;
+  badge.classList.toggle('visible', n > 0);
+
+  // Chips
+  const summary = document.getElementById('filterSummary');
+  let chips = '';
+  if(filters.service)  chips += filterChip('Service: '+filters.service, 'f-service');
+  if(filters.employe)  chips += filterChip(filters.employe, 'f-employe');
+  if(filters.statut)   chips += filterChip('Statut: '+filters.statut, 'f-statut');
+  if(filters.dateFrom) chips += filterChip('Depuis: '+filters.dateFrom, 'f-dateFrom');
+  if(filters.dateTo)   chips += filterChip('Jusqu\'au: '+filters.dateTo, 'f-dateTo');
+  if(filters.search)   chips += filterChip('« '+filters.search+' »', 'f-search');
+  summary.innerHTML = chips;
+}
+
+function filterChip(label, inputId){
+  return '<span class="filter-chip">'+label+'<button onclick="clearFilter(\''+inputId+'\')">×</button></span>';
+}
+
+function clearFilter(inputId){
+  const el = document.getElementById(inputId);
+  if(el) el.value = '';
+  applyFilters();
+}
+
+function applyFilters(){
+  readFilters();
+  updateFilterUI();
+  // Reset pagination
+  Object.keys(currentPage).forEach(k => currentPage[k] = 1);
+  render();
+}
+
+function resetFilters(){
+  document.getElementById('f-search').value = '';
+  document.getElementById('f-service').value = '';
+  document.getElementById('f-employe').value = '';
+  document.getElementById('f-statut').value = '';
+  document.getElementById('f-dateFrom').value = '';
+  document.getElementById('f-dateTo').value = '';
+  applyFilters();
+}
+
+// Apply filters to an array
+function filterData(arr){
+  return arr.filter(function(d){
+    // Search
+    if(filters.search){
+      const hay = JSON.stringify(d).toLowerCase();
+      if(hay.indexOf(filters.search) === -1) return false;
+    }
+    // Service
+    if(filters.service && d.service !== filters.service) return false;
+    // Employe
+    if(filters.employe && d.employe !== filters.employe) return false;
+    // Statut
+    if(filters.statut && d.statut !== filters.statut) return false;
+    // Date range
+    const iso = d.dateISO || d.dateDebut || '';
+    if(filters.dateFrom && iso && iso < filters.dateFrom) return false;
+    if(filters.dateTo && iso && iso > filters.dateTo) return false;
+    return true;
+  });
+}
+
+function showFilterCount(tabKey, total, filtered){
+  const el = document.getElementById('filterResultCount');
+  if(activeFilterCount() === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = '🔍 <strong>'+filtered+'</strong> résultat(s) sur '+total+' — filtres actifs';
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  CSV EXPORT
+// ══════════════════════════════════════════════════════════════════════
+function exportCSV(){
+  const contrats = filterData(load('contrats'));
+  const conges = filterData(load('conges'));
+  const acomptes = filterData(load('acomptes'));
+
+  let rows = [['Source','Date','Collaborateur','Service','Type','Détail','Statut']];
+
+  contrats.forEach(d => rows.push(['Contrat', d.dateISO||'', d.employe||'', d.service||'', d.type||'', d.poste||'', d.statut||'Généré']));
+  conges.forEach(d => rows.push(['Congés', d.dateISO||'', d.employe||'', d.service||'', d.type||'', (d.dateDebut||'')+' → '+(d.dateFin||''), d.statut||'']));
+  acomptes.forEach(d => rows.push(['Acompte', d.dateISO||'', d.employe||'', d.service||'', d.motif||'', d.montant+'€', d.statut||'']));
+
+  if(rows.length <= 1){ toast('Aucune donnée à exporter','err'); return; }
+
+  const csv = rows.map(r => r.map(c => '"'+(c||'').replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'synapse-export-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+  toast('Export CSV téléchargé ✓','ok');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  PAGINATION
+// ══════════════════════════════════════════════════════════════════════
+function paginate(arr, tabKey){
+  if(!currentPage[tabKey]) currentPage[tabKey] = 1;
+  const page = currentPage[tabKey];
+  const total = arr.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const slice = arr.slice(start, start + PAGE_SIZE);
+  return { items: slice, page, totalPages, total, start };
+}
+
+function paginationHtml(tabKey, pg){
+  if(pg.totalPages <= 1) return '';
+  let html = '<div class="pagination">';
+  html += '<button class="pg-btn" onclick="goPage(\''+tabKey+'\',' + (pg.page-1) + ')"'+(pg.page<=1?' disabled':'')+'>‹</button>';
+  for(let i=1;i<=pg.totalPages;i++){
+    if(pg.totalPages > 7 && i > 3 && i < pg.totalPages - 1 && Math.abs(i - pg.page) > 1){
+      if(i === 4 || i === pg.totalPages - 2) html += '<span class="pg-info">…</span>';
+      continue;
+    }
+    html += '<button class="pg-btn'+(i===pg.page?' active':'')+'" onclick="goPage(\''+tabKey+'\','+i+')">'+i+'</button>';
+  }
+  html += '<button class="pg-btn" onclick="goPage(\''+tabKey+'\',' + (pg.page+1) + ')"'+(pg.page>=pg.totalPages?' disabled':'')+'>›</button>';
+  html += '<span class="pg-info">'+pg.start+1+'–'+Math.min(pg.start+PAGE_SIZE, pg.total)+' sur '+pg.total+'</span>';
+  html += '</div>';
+  return html;
+}
+
+function goPage(tabKey, page){
+  currentPage[tabKey] = page;
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  SORT (column click)
+// ══════════════════════════════════════════════════════════════════════
+let sortState = {}; // { tabKey: { col, dir } }
+
+function sortableHeader(tabKey, col, label){
+  const s = sortState[tabKey];
+  const active = s && s.col === col;
+  const arrow = active ? (s.dir === 'asc' ? '▲' : '▼') : '⇅';
+  return '<th class="'+(active?'sorted':'')+'" onclick="toggleSort(\''+tabKey+'\',\''+col+'\')">'+label+' <span class="sort-arrow">'+arrow+'</span></th>';
+}
+
+function toggleSort(tabKey, col){
+  const s = sortState[tabKey];
+  if(s && s.col === col){
+    s.dir = s.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortState[tabKey] = { col, dir: 'asc' };
+  }
+  render();
+}
+
+function applySorting(arr, tabKey){
+  const s = sortState[tabKey];
+  if(!s) return arr;
+  const sorted = [...arr];
+  sorted.sort(function(a,b){
+    let va = a[s.col], vb = b[s.col];
+    if(va == null) va = '';
+    if(vb == null) vb = '';
+    if(typeof va === 'number' && typeof vb === 'number') return s.dir === 'asc' ? va - vb : vb - va;
+    va = String(va).toLowerCase(); vb = String(vb).toLowerCase();
+    if(va < vb) return s.dir === 'asc' ? -1 : 1;
+    if(va > vb) return s.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return sorted;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════════════════════
 function toast(msg, type){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -214,11 +576,12 @@ function toast(msg, type){
   setTimeout(()=>{ t.className='toast'; }, 2500);
 }
 
-// ── Validation ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  VALIDATION
+// ══════════════════════════════════════════════════════════════════════
 async function validate(src, id, decision){
   const statut = decision === 'ok' ? 'Accordé' : 'Refusé';
   const changes = { statut: statut, dateDecision: new Date().toISOString() };
-  // Mise à jour locale immédiate
   const arr = load(src);
   const idx = arr.findIndex(function(d){ return d.id === id; });
   if(idx === -1) return;
@@ -226,10 +589,9 @@ async function validate(src, id, decision){
   save(src, arr);
   render();
   toast(decision==='ok' ? '✓ Demande accordée' : '✗ Demande refusée', decision);
-  // Sauvegarde GitHub en arrière-plan
   if(window.SynapseStorage){
     try { await window.SynapseStorage.update(src, id, changes); }
-    catch(e){ console.warn('GitHub sync error:', e); }
+    catch(e){ console.warn('Sync error:', e); }
   }
 }
 
@@ -239,17 +601,16 @@ function clearAll(){
   render();
 }
 
-// ── Modal ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════════════════════════════
 function openModal(src, id){
   const arr = load(src);
   const d = arr.find(x => x.id === id);
   if(!d) return;
-
   const LABELS = {employe:'Collaborateur',employeur:'Employeur',type:'Type',poste:'Poste',service:'Service',salaireBrut:'Salaire brut',dateDebut:'Date début',dateFin:'Date fin',duree:'Durée',motif:'Motif',motifDetail:'Précisions',montant:'Montant',remboursement:'Remboursement',statut:'Statut',manager:'Manager',ref:'Référence',date:'Date demande',email:'Email',essai:"Période d'essai",teletravail:'Télétravail'};
   const SKIP = ['id','contratTexte','dateISO','dateDecision'];
-
   document.getElementById('modal-title').textContent = (d.employe||'') + (d.ref ? ' · '+d.ref : '') + (d.type ? ' · '+d.type : '');
-
   let body = '';
   if(src === 'contrats' && d.contratTexte){
     body = '<div class="modal-pre">'+d.contratTexte+'</div>';
@@ -263,7 +624,6 @@ function openModal(src, id){
     });
   }
   document.getElementById('modal-body').innerHTML = body;
-
   let footer = '<button class="btn-sm" onclick="closeModal()">Fermer</button>';
   if(src !== 'contrats' && d.statut === 'En attente'){
     footer += '<button class="btn-reject" onclick="validate(\''+src+'\','+id+',\'ko\');closeModal()">✗ Refuser</button>';
@@ -275,7 +635,9 @@ function openModal(src, id){
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
 document.getElementById('modal').addEventListener('click', function(e){ if(e.target===e.currentTarget) closeModal(); });
 
-// ── Tab switching ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════════════════════════════
 function goTab(tab){
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
@@ -284,7 +646,9 @@ function goTab(tab){
   render();
 }
 
-// ── Badges ─────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  BADGES (on raw, unfiltered data)
+// ══════════════════════════════════════════════════════════════════════
 function updateBadges(contrats, conges, acomptes){
   const pendingTotal = conges.filter(d=>d.statut==='En attente').length + acomptes.filter(d=>d.statut==='En attente').length;
   document.getElementById('b-all').textContent = contrats.length + conges.length + acomptes.length;
@@ -295,36 +659,53 @@ function updateBadges(contrats, conges, acomptes){
   document.getElementById('sb-pending').textContent = pendingTotal;
 }
 
-// ── Main render dispatcher ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  MAIN RENDER
+// ══════════════════════════════════════════════════════════════════════
 function render(){
-  const contrats = load('contrats');
-  const conges   = load('conges');
-  const acomptes = load('acomptes');
-  updateBadges(contrats, conges, acomptes);
+  const rawContrats = load('contrats');
+  const rawConges   = load('conges');
+  const rawAcomptes = load('acomptes');
+
+  // Badges always on raw data
+  updateBadges(rawContrats, rawConges, rawAcomptes);
+  populateFilterOptions();
+
+  // Filtered data
+  const contrats = filterData(rawContrats);
+  const conges   = filterData(rawConges);
+  const acomptes = filterData(rawAcomptes);
+
+  const totalRaw = rawContrats.length + rawConges.length + rawAcomptes.length;
+  const totalFiltered = contrats.length + conges.length + acomptes.length;
+  showFilterCount(currentTab, totalRaw, totalFiltered);
 
   try {
-    if(currentTab === 'all')        renderAll(contrats, conges, acomptes);
+    if(currentTab === 'all')            renderAll(contrats, conges, acomptes);
     else if(currentTab === 'validation') renderValidation(conges, acomptes);
-    else if(currentTab === 'contrats')  renderContrats(contrats);
-    else if(currentTab === 'conges')    renderConges(conges);
-    else if(currentTab === 'acomptes')  renderAcomptes(acomptes);
+    else if(currentTab === 'contrats')   renderContrats(contrats);
+    else if(currentTab === 'conges')     renderConges(conges);
+    else if(currentTab === 'acomptes')   renderAcomptes(acomptes);
   } catch(e) {
     document.getElementById('content').innerHTML = '<div class="empty-card"><p style="color:red">Erreur : '+e.message+'</p></div>';
     console.error(e);
   }
 }
 
-// ── EMPTY helper ───────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════════════
 function emptyCard(icon, title, href, linkText){
-  return '<div class="empty-card"><div style="font-size:40px;margin-bottom:12px">'+icon+'</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">'+title+'</div><a href="'+href+'" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">'+linkText+'</a></div>';
+  const filterMsg = activeFilterCount() > 0
+    ? '<div style="font-size:12px;color:var(--g400);margin-top:8px">Essayez de <a href="#" onclick="resetFilters();return false" style="color:var(--blue)">réinitialiser les filtres</a></div>'
+    : '';
+  return '<div class="empty-card"><div style="font-size:40px;margin-bottom:12px">'+icon+'</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">'+title+'</div>'+filterMsg+'<a href="'+href+'" style="display:inline-block;margin-top:1rem;padding:9px 20px;background:var(--blue);color:white;border-radius:var(--r);font-size:13px;text-decoration:none">'+linkText+'</a></div>';
 }
 
-// ── KPI helper ─────────────────────────────────────────────────────────────
 function kpiCard(accent, label, val, sub){
   return '<div class="kpi"><div class="kpi-accent" style="background:'+accent+'"></div><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+accent+'">'+val+'</div>'+(sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>';
 }
 
-// ── Pending cards ──────────────────────────────────────────────────────────
 function buildPendingCards(items, src, iconBg, iconEmoji, detailFn){
   if(!items.length) return '';
   var html = '';
@@ -342,14 +723,16 @@ function buildPendingCards(items, src, iconBg, iconEmoji, detailFn){
   return html;
 }
 
-// ── TAB: VALIDATION ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB: VALIDATION
+// ══════════════════════════════════════════════════════════════════════
 function renderValidation(conges, acomptes){
   const pConges   = conges.filter(function(d){ return d.statut==='En attente'; });
   const pAcomptes = acomptes.filter(function(d){ return d.statut==='En attente'; });
   const total = pConges.length + pAcomptes.length;
 
   if(total === 0){
-    document.getElementById('content').innerHTML = '<div class="empty-card"><div style="font-size:48px;margin-bottom:1rem">✅</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Tout est à jour !</div><div style="font-size:13px;color:var(--g400)">Aucune demande en attente de validation.</div></div>';
+    document.getElementById('content').innerHTML = '<div class="empty-card"><div style="font-size:48px;margin-bottom:1rem">✅</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Tout est à jour !</div><div style="font-size:13px;color:var(--g400)">Aucune demande en attente de validation.</div>'+(activeFilterCount()>0?'<div style="margin-top:8px"><a href="#" onclick="resetFilters();return false" style="color:var(--blue);font-size:12px">Réinitialiser les filtres</a></div>':'')+'</div>';
     return;
   }
 
@@ -357,7 +740,7 @@ function renderValidation(conges, acomptes){
 
   if(pConges.length){
     html += '<div class="card"><div class="vsec-title">🏖️ Congés en attente ('+pConges.length+')</div>';
-    html += buildPendingCards(pConges, 'conges', 'var(--green-l)', '🏖️', function(d){ return (d.duree||'—')+'<br><small style="color:var(--g400)">'+( d.dateDebut||'')+'</small>'; });
+    html += buildPendingCards(pConges, 'conges', 'var(--green-l)', '🏖️', function(d){ return (d.duree||'—')+'<br><small style="color:var(--g400)">'+(d.dateDebut||'')+'</small>'; });
     html += '</div>';
   }
 
@@ -370,7 +753,9 @@ function renderValidation(conges, acomptes){
   document.getElementById('content').innerHTML = html;
 }
 
-// ── TAB: GLOBAL ────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB: GLOBAL
+// ══════════════════════════════════════════════════════════════════════
 function renderAll(contrats, conges, acomptes){
   const total = contrats.length + conges.length + acomptes.length;
   const totalAcomptes = acomptes.reduce(function(s,d){ return s+(d.montant||0); }, 0);
@@ -403,13 +788,16 @@ function renderAll(contrats, conges, acomptes){
 
   // All rows table
   var allRows = [];
-  contrats.forEach(function(d){ allRows.push({id:d.id,src:'contrats',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-contrat',typeLabel:'Contrat '+d.type,detail:d.poste,statut:'Généré'}); });
+  contrats.forEach(function(d){ allRows.push({id:d.id,src:'contrats',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-contrat',typeLabel:'Contrat '+(d.type||''),detail:d.poste,statut:d.statut||'Généré'}); });
   conges.forEach(function(d){   allRows.push({id:d.id,src:'conges',  dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-conge',  typeLabel:'Congés',      detail:(d.type||'')+(d.duree?' · '+d.duree:''),statut:d.statut}); });
   acomptes.forEach(function(d){ allRows.push({id:d.id,src:'acomptes',dateISO:d.dateISO,employe:d.employe,service:d.service,pillCls:'p-acompte',typeLabel:'Acompte',      detail:fmtMoney(d.montant),statut:d.statut}); });
   allRows.sort(function(a,b){ return new Date(b.dateISO)-new Date(a.dateISO); });
 
+  allRows = applySorting(allRows, 'all');
+  var pg = paginate(allRows, 'all');
+
   var tableRows = '';
-  allRows.forEach(function(r){
+  pg.items.forEach(function(r){
     var actionBtns = '<button class="btn-sm" onclick="openModal(\''+r.src+'\','+r.id+')">Voir</button>';
     if(r.statut === 'En attente'){
       actionBtns += ' <button class="btn-ok" onclick="validate(\''+r.src+'\','+r.id+',\'ok\')">✓</button>';
@@ -419,8 +807,16 @@ function renderAll(contrats, conges, acomptes){
   });
 
   var tableHtml = '<div class="card"><div class="card-title">Toutes les demandes <span style="color:var(--g400);font-weight:400;font-size:11px">('+total+')</span></div>'
-    + '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Détail</th><th>Statut</th><th>Actions</th></tr></thead>'
-    + '<tbody>'+tableRows+'</tbody></table></div></div>';
+    + '<div class="table-wrap"><table><thead><tr>'
+    + sortableHeader('all','dateISO','Date')
+    + sortableHeader('all','employe','Collaborateur')
+    + sortableHeader('all','service','Service')
+    + '<th>Type</th><th>Détail</th>'
+    + sortableHeader('all','statut','Statut')
+    + '<th>Actions</th></tr></thead>'
+    + '<tbody>'+tableRows+'</tbody></table></div>'
+    + paginationHtml('all', pg)
+    + '</div>';
 
   document.getElementById('content').innerHTML = alertBanner + kpiHtml
     + '<div class="row-2"><div class="card" id="cEvol"><div class="card-title">Activité globale</div><canvas id="chartGlobal"></canvas></div>'
@@ -431,7 +827,9 @@ function renderAll(contrats, conges, acomptes){
   mk('chartRep',{type:'doughnut',data:{labels:['Contrats','Congés','Acomptes'],datasets:[{data:[contrats.length,conges.length,acomptes.length],backgroundColor:['#2E75B6','#059669','#D97706'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
 }
 
-// ── TAB: CONTRATS ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB: CONTRATS
+// ══════════════════════════════════════════════════════════════════════
 function renderContrats(contrats){
   if(!contrats.length){ document.getElementById('content').innerHTML = emptyCard('📄','Aucun contrat généré','contrat.html','Générer un contrat →'); return; }
 
@@ -449,22 +847,36 @@ function renderContrats(contrats){
     + kpiCard('var(--purple)','Masse salariale',(totalSal/1000).toFixed(0)+'k€','brut mensuel')
     + '</div>';
 
+  var sorted = applySorting([...contrats], 'contrats');
+  var pg = paginate(sorted, 'contrats');
+
   var tableRows = '';
-  contrats.forEach(function(d){
+  pg.items.forEach(function(d){
     tableRows += '<tr><td>'+fmtDate(d.dateISO)+'</td><td><strong>'+d.employe+'</strong></td><td>'+(d.employeur||'—')+'</td><td>'+(d.poste||'—')+'</td><td>'+pill(d.type,'p-contrat')+'</td><td>'+fmtMoney(d.salaireBrut)+'</td><td><button class="btn-sm" onclick="openModal(\'contrats\','+d.id+')">Voir</button></td></tr>';
   });
 
   document.getElementById('content').innerHTML = kpiHtml
     + '<div class="row-2b"><div class="card"><div class="card-title">Types de contrats</div><canvas id="chartCTypes"></canvas></div>'
     + '<div class="card"><div class="card-title">Salaires bruts</div><canvas id="chartCSal"></canvas></div></div>'
-    + '<div class="card"><div class="card-title">Contrats générés</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Employé</th><th>Employeur</th><th>Poste</th><th>Type</th><th>Salaire brut</th><th></th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+    + '<div class="card"><div class="card-title">Contrats générés</div><div class="table-wrap"><table><thead><tr>'
+    + sortableHeader('contrats','dateISO','Date')
+    + sortableHeader('contrats','employe','Employé')
+    + '<th>Employeur</th>'
+    + sortableHeader('contrats','poste','Poste')
+    + '<th>Type</th>'
+    + sortableHeader('contrats','salaireBrut','Salaire brut')
+    + '<th></th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
+    + paginationHtml('contrats', pg)
+    + '</div>';
 
   var tKeys = Object.keys(types);
   mk('chartCTypes',{type:'doughnut',data:{labels:tKeys,datasets:[{data:tKeys.map(function(k){return types[k];}),backgroundColor:COLORS.slice(0,tKeys.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:10}}},cutout:'65%'}});
   mk('chartCSal',{type:'bar',data:{labels:withSal.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withSal.map(function(d){return d.salaireBrut;}),backgroundColor:'rgba(46,117,182,.7)',borderColor:'#2E75B6',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
 }
 
-// ── TAB: CONGÉS ────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB: CONGÉS
+// ══════════════════════════════════════════════════════════════════════
 function renderConges(conges){
   if(!conges.length){ document.getElementById('content').innerHTML = emptyCard('🏖️','Aucune demande de congés','conges.html','Faire une demande →'); return; }
 
@@ -485,7 +897,6 @@ function renderConges(conges){
     + kpiCard('var(--red)','Refusées',refuses.length,'')
     + '</div>';
 
-  // Pending section
   var pendingHtml = '';
   if(pending.length){
     pendingHtml = '<div class="card"><div class="vsec-title">🔔 En attente de validation ('+pending.length+')</div>'
@@ -493,9 +904,11 @@ function renderConges(conges){
       + '</div>';
   }
 
-  // Table
+  var sorted = applySorting([...conges], 'conges');
+  var pg = paginate(sorted, 'conges');
+
   var tableRows = '';
-  conges.forEach(function(d){
+  pg.items.forEach(function(d){
     var actions = '<button class="btn-sm" onclick="openModal(\'conges\','+d.id+')">Voir</button>';
     if(d.statut==='En attente'){
       actions += ' <button class="btn-ok" onclick="validate(\'conges\','+d.id+',\'ok\')">✓</button>';
@@ -507,7 +920,15 @@ function renderConges(conges){
   document.getElementById('content').innerHTML = kpiHtml + pendingHtml
     + '<div class="row-2b"><div class="card"><div class="card-title">Types de congés</div><canvas id="chartGTypes"></canvas></div>'
     + '<div class="card"><div class="card-title">Statuts</div><canvas id="chartGStat"></canvas></div></div>'
-    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Type</th><th>Période</th><th>Durée</th><th>Statut</th><th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr>'
+    + sortableHeader('conges','dateISO','Date')
+    + sortableHeader('conges','employe','Collaborateur')
+    + sortableHeader('conges','service','Service')
+    + '<th>Type</th><th>Période</th><th>Durée</th>'
+    + sortableHeader('conges','statut','Statut')
+    + '<th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
+    + paginationHtml('conges', pg)
+    + '</div>';
 
   var tKeys = Object.keys(types);
   mk('chartGTypes',{type:'doughnut',data:{labels:tKeys,datasets:[{data:tKeys.map(function(k){return types[k];}),backgroundColor:COLORS.slice(0,tKeys.length),borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
@@ -515,7 +936,9 @@ function renderConges(conges){
   mk('chartGStat',{type:'bar',data:{labels:sKeys,datasets:[{data:sKeys.map(function(k){return statuts[k];}),backgroundColor:sKeys.map(function(k){ return k==='Accordé'?'#059669':k==='Refusé'?'#DC2626':'#D97706'; }),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
 }
 
-// ── TAB: ACOMPTES ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+//  TAB: ACOMPTES
+// ══════════════════════════════════════════════════════════════════════
 function renderAcomptes(acomptes){
   if(!acomptes.length){ document.getElementById('content').innerHTML = emptyCard('💶','Aucune demande d\'acompte','acompte.html','Faire une demande →'); return; }
 
@@ -538,8 +961,11 @@ function renderAcomptes(acomptes){
       + '</div>';
   }
 
+  var sorted = applySorting([...acomptes], 'acomptes');
+  var pg = paginate(sorted, 'acomptes');
+
   var tableRows = '';
-  acomptes.forEach(function(d){
+  pg.items.forEach(function(d){
     var actions = '<button class="btn-sm" onclick="openModal(\'acomptes\','+d.id+')">Voir</button>';
     if(d.statut==='En attente'){
       actions += ' <button class="btn-ok" onclick="validate(\'acomptes\','+d.id+',\'ok\')">✓</button>';
@@ -555,16 +981,25 @@ function renderAcomptes(acomptes){
   document.getElementById('content').innerHTML = kpiHtml + pendingHtml
     + '<div class="row-2b"><div class="card"><div class="card-title">Motifs</div><canvas id="chartAMotifs"></canvas></div>'
     + '<div class="card"><div class="card-title">Montants</div><canvas id="chartAMontants"></canvas></div></div>'
-    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Collaborateur</th><th>Service</th><th>Montant</th><th>Motif</th><th>Remboursement</th><th>Statut</th><th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+    + '<div class="card"><div class="card-title">Toutes les demandes</div><div class="table-wrap"><table><thead><tr>'
+    + sortableHeader('acomptes','dateISO','Date')
+    + sortableHeader('acomptes','employe','Collaborateur')
+    + sortableHeader('acomptes','service','Service')
+    + sortableHeader('acomptes','montant','Montant')
+    + '<th>Motif</th><th>Remboursement</th>'
+    + sortableHeader('acomptes','statut','Statut')
+    + '<th>Actions</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
+    + paginationHtml('acomptes', pg)
+    + '</div>';
 
-  mk('chartAMotifs',{type:'doughnut',data:{labels:mKeys.length?mKeys:['Aucun'],datasets:[{data:mKeys.length?mKeys.map(function(k){return motifs[k];}):  [1],backgroundColor:mKeys.length?COLORS.slice(0,mKeys.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
+  mk('chartAMotifs',{type:'doughnut',data:{labels:mKeys.length?mKeys:['Aucun'],datasets:[{data:mKeys.length?mKeys.map(function(k){return motifs[k];}): [1],backgroundColor:mKeys.length?COLORS.slice(0,mKeys.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
   var withAmount = acomptes.filter(function(d){ return d.montant; });
   mk('chartAMontants',{type:'bar',data:{labels:withAmount.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withAmount.map(function(d){return d.montant;}),backgroundColor:'rgba(217,119,6,.7)',borderColor:'#D97706',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
-// Affichage localStorage immédiat, puis sync Supabase
-// Affichage localStorage immédiat
+// ══════════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════════
 render();
 
 async function loadFromSupabase() {
@@ -582,14 +1017,23 @@ async function loadFromSupabase() {
   if (btn) { btn.textContent = '↻ Actualiser'; btn.disabled = false; }
 }
 
-// Si localStorage vide → charge Supabase immédiatement
-// Sinon → attend 300ms pour ne pas bloquer l'affichage
 const _hasLocal = ['contrats','conges','acomptes'].some(function(k){
   return JSON.parse(localStorage.getItem('synapse_'+k)||'[]').length > 0;
 });
 setTimeout(loadFromSupabase, _hasLocal ? 300 : 0);
-// Rafraîchit toutes les 30s
 setInterval(loadFromSupabase, 30000);
+
+// Keyboard shortcut: Ctrl+F opens filters
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey || e.metaKey) && e.key === 'f'){
+    const bar = document.getElementById('filterBar');
+    if(!bar.classList.contains('open')){
+      e.preventDefault();
+      toggleFilters();
+      setTimeout(function(){ document.getElementById('f-search').focus(); }, 100);
+    }
+  }
+});
 </script>
 <script src="supabase-storage.js"></script>
 <script src="chatbot.js"></script>
