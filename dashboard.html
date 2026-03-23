@@ -564,23 +564,31 @@ function renderAcomptes(acomptes){
 
 // ── Init ───────────────────────────────────────────────────────────────────
 // Affichage localStorage immédiat, puis sync Supabase
+// Affichage localStorage immédiat
 render();
 
 async function loadFromSupabase() {
   if (!window.SynapseStorage) return;
+  const btn = document.querySelector('[onclick="loadFromSupabase()"]');
+  if (btn) { btn.textContent = '⏳ Sync…'; btn.disabled = true; }
   try {
-    const [contrats, conges, acomptes] = await Promise.all([
+    await Promise.all([
       window.SynapseStorage.load('contrats'),
       window.SynapseStorage.load('conges'),
       window.SynapseStorage.load('acomptes'),
     ]);
     render();
   } catch(e) { console.warn('Supabase sync:', e); }
+  if (btn) { btn.textContent = '↻ Actualiser'; btn.disabled = false; }
 }
 
-// Charge depuis Supabase au démarrage
-setTimeout(loadFromSupabase, 300);
-// Rafraîchit toutes les 30s (temps réel)
+// Si localStorage vide → charge Supabase immédiatement
+// Sinon → attend 300ms pour ne pas bloquer l'affichage
+const _hasLocal = ['contrats','conges','acomptes'].some(function(k){
+  return JSON.parse(localStorage.getItem('synapse_'+k)||'[]').length > 0;
+});
+setTimeout(loadFromSupabase, _hasLocal ? 300 : 0);
+// Rafraîchit toutes les 30s
 setInterval(loadFromSupabase, 30000);
 </script>
 <script src="supabase-storage.js"></script>
