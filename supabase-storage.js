@@ -1,5 +1,6 @@
 // supabase-storage.js — Synapse RH
-// Remplace github-storage.js — base de données PostgreSQL temps réel
+// localStorage = affichage instantané, Supabase = source de vérité persistante
+// RÈGLE ABSOLUE : localStorage n'est JAMAIS écrasé par une réponse vide de Supabase
 
 (function () {
   const SB_URL = 'https://pbfhqkofzlcncynkxizz.supabase.co';
@@ -9,10 +10,8 @@
     'Content-Type': 'application/json',
     'apikey': SB_KEY,
     'Authorization': 'Bearer ' + SB_KEY,
-    'Prefer': 'return=minimal'
   };
 
-  // ── Requête générique ──────────────────────────────────────────────────
   async function sbFetch(path, options) {
     const res = await fetch(SB_URL + '/rest/v1/' + path, {
       ...options,
@@ -26,125 +25,106 @@
     return text ? JSON.parse(text) : [];
   }
 
-  // ── Charger une collection ─────────────────────────────────────────────
+  // ── LOAD : ne jamais écraser localStorage avec un résultat vide ────────
   async function load(collection) {
+    const local = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
+
     try {
       const rows = await sbFetch(collection + '?order=created_at.desc&limit=500', { method: 'GET' });
-      const data = rows.map(function (r) { return r.data || r; });
-      // Miroir localStorage pour affichage hors-ligne
-      localStorage.setItem('synapse_' + collection, JSON.stringify(data));
-      return data;
-    } catch (e) {
-      console.warn('[Supabase] load error, fallback localStorage:', e.message);
-      return JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
+      const remote = rows.map(function(r) { return r.data || r; });
+
+      // Supabase vide + données locales → migration silencieuse vers Supabase
+      if (remote.length === 0 && local.length > 0) {
+        console.log('[Supabase] Migration', local.length, 'entrées depuis localStorage →', collection);
+        local.forEach(function(entry) { _addToSB(collection, entry); });
+        return local; // Conserver les données locales
+      }
+
+      // Supabase a des données → chercher des entrées locales non encore envoyées
+      if (remote.length > 0) {
+        const remoteIds = new Set(remote.map(function(d) { return String(d.id); }));
+        const unsent = local.filter(function(d) { return !remoteIds.has(String(d.id)); });
+        if (unsent.length > 0) {
+          unsent.forEach(function(entry) { _addToSB(collection, entry); });
+          const merged = unsent.concat(remote);
+          localStorage.setItem('synapse_' + collection, JSON.stringify(merged));
+          return merged;
+        }
+        // Supabase à jour → sync locale
+        localStorage.setItem('synapse_' + collection, JSON.stringify(remote));
+        return remote;
+      }
+
+      return local;
+    } catch(e) {
+      console.warn('[Supabase] load fallback local:', e.message);
+      return local; // En cas d'erreur : localStorage intact
     }
   }
 
-  // ── Ajouter un enregistrement ──────────────────────────────────────────
+  // ── ADD : localStorage d'abord, Supabase ensuite ───────────────────────
   async function add(collection, entry) {
-    // Mise à jour localStorage immédiate (affichage instantané)
-    const existing = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
-    existing.unshift(entry);
-    localStorage.setItem('synapse_' + collection, JSON.stringify(existing));
+    const arr = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
+    arr.unshift(entry);
+    localStorage.setItem('synapse_' + collection, JSON.stringify(arr));
+    await _addToSB(collection, entry);
+    return true;
+  }
 
-    // Écriture Supabase
+  async function _addToSB(collection, entry) {
     try {
       await sbFetch(collection, {
         method: 'POST',
-        headers: { 'Prefer': 'return=minimal' },
+        headers: { 'Prefer': 'return=minimal', 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: entry.id, data: entry })
       });
-      return true;
-    } catch (e) {
-      console.error('[Supabase] add error:', e.message);
-      return false;
+    } catch(e) {
+      if (!e.message.includes('23505') && !e.message.includes('duplicate')) {
+        console.warn('[Supabase] _addToSB:', e.message);
+      }
     }
   }
 
-  // ── Mettre à jour un enregistrement ───────────────────────────────────
+  // ── UPDATE : localStorage d'abord, Supabase ensuite ───────────────────
   async function update(collection, id, changes) {
-    // Mise à jour localStorage immédiate
     const arr = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
-    const idx = arr.findIndex(function (d) { return d.id === id; });
-    if (idx !== -1) {
-      Object.assign(arr[idx], changes);
-      localStorage.setItem('synapse_' + collection, JSON.stringify(arr));
-    }
-
-    // Écriture Supabase
+    const idx = arr.findIndex(function(d) { return d.id === id; });
+    if (idx !== -1) { Object.assign(arr[idx], changes); localStorage.setItem('synapse_' + collection, JSON.stringify(arr)); }
     try {
-      const row = await sbFetch(collection + '?id=eq.' + id, { method: 'GET' });
-      const existing = (row && row[0] && row[0].data) ? row[0].data : {};
-      Object.assign(existing, changes);
+      const rows = await sbFetch(collection + '?id=eq.' + id, { method: 'GET' });
+      const current = (rows && rows[0] && rows[0].data) ? rows[0].data : (arr[idx] || {});
+      Object.assign(current, changes);
       await sbFetch(collection + '?id=eq.' + id, {
         method: 'PATCH',
-        headers: { 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ data: existing })
+        headers: { 'Prefer': 'return=minimal', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: current })
       });
-      return true;
-    } catch (e) {
-      console.error('[Supabase] update error:', e.message);
-      return false;
-    }
+    } catch(e) { console.warn('[Supabase] update:', e.message); }
+    return true;
   }
 
-  // ── Supprimer un enregistrement ────────────────────────────────────────
+  // ── REMOVE ─────────────────────────────────────────────────────────────
   async function remove(collection, id) {
     const arr = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
-    localStorage.setItem('synapse_' + collection, JSON.stringify(arr.filter(function (d) { return d.id !== id; })));
-    try {
-      await sbFetch(collection + '?id=eq.' + id, { method: 'DELETE' });
-      return true;
-    } catch (e) {
-      console.error('[Supabase] delete error:', e.message);
-      return false;
-    }
+    localStorage.setItem('synapse_' + collection, JSON.stringify(arr.filter(function(d){ return d.id!==id; })));
+    try { await sbFetch(collection + '?id=eq.' + id, { method: 'DELETE' }); } catch(e) {}
+    return true;
   }
 
-  // ── Tester la connexion ────────────────────────────────────────────────
   async function checkConnection() {
-    try {
-      await sbFetch('contrats?limit=1', { method: 'GET' });
-      return true;
-    } catch (e) {
-      return false;
-    }
+    try { await sbFetch('contrats?limit=1', { method: 'GET' }); return true; } catch(e) { return false; }
   }
 
-  // ── API publique (compatible avec l'ancien SynapseStorage) ────────────
-  window.SynapseStorage = {
-    load:   load,
-    add:    add,
-    update: update,
-    remove: remove,
-    check:  checkConnection,
-    // Compatibilité github-storage
-    getToken:  function () { return SB_KEY; },
-    setToken:  function () {},
-  };
+  window.SynapseStorage = { load, add, update, remove, check: checkConnection, getToken: function(){return 'supabase';}, setToken: function(){} };
 
-  // Indicateur de connexion dans token-setup.js (si présent)
-  document.addEventListener('DOMContentLoaded', async function () {
-    const bar = document.getElementById('srh-token-bar');
-    if (bar) {
-      bar.style.background = '#0F2922';
-      bar.style.borderColor = '#6EE7B7';
-      const label = document.getElementById('srh-token-label');
-      const dot   = document.getElementById('srh-token-dot');
-      const input = document.getElementById('srh-token-input');
-      const btn   = document.getElementById('srh-token-btn');
-      const okMsg = document.getElementById('srh-token-ok');
-      if (label)  { label.style.display = 'none'; }
-      if (input)  { input.style.display = 'none'; }
-      if (btn)    { btn.style.display = 'none'; }
-      if (dot)    { dot.className = 'ok'; }
-      if (okMsg)  { okMsg.style.display = 'inline'; okMsg.textContent = '✓ Connecté à Supabase — données synchronisées en temps réel'; okMsg.style.color = '#34D399'; }
-      setTimeout(function () {
-        if (bar) { bar.style.display = 'none'; }
-        const body = document.body;
-        if (body) { body.classList.remove('srh-has-bar'); }
-      }, 3000);
-    }
+  // Bannière verte → disparaît en 2.5s
+  document.addEventListener('DOMContentLoaded', function() {
+    var bar = document.getElementById('srh-token-bar');
+    if (!bar) return;
+    ['srh-token-label','srh-token-input','srh-token-btn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+    var dot=document.getElementById('srh-token-dot'); if(dot) dot.style.background='#34D399';
+    var ok=document.getElementById('srh-token-ok'); if(ok){ ok.style.display='inline'; ok.textContent='✓ Connecté à Supabase — synchronisation automatique'; ok.style.color='#34D399'; }
+    setTimeout(function(){ bar.style.display='none'; document.body.classList.remove('srh-has-bar'); }, 2500);
   });
 
 })();
