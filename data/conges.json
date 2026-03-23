@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1774280893007,
+    "ref": "CNG-3D16XB",
+    "dateISO": "2026-03-23T15:48:13.007Z",
+    "date": "23/03/2026",
+    "employe": "test test",
+    "email": "eeee",
+    "service": "Tech & Produit",
+    "manager": "eeee",
+    "type": "Congés annuels",
+    "dateDebut": "2026-03-24",
+    "dateFin": "2026-03-26",
+    "duree": "2 jours ouvrés",
+    "motif": "",
+    "remplacant": "",
+    "justificatif": "",
+    "statut": "En attente"
+  }
+]
