@@ -9,7 +9,7 @@
   function getKey() {
     var cfg = window.SYNAPSE_CONFIG || {};
     var k = cfg.supabase_key || '';
-    if (!k || k === 'COLLEZ_VOTRE_CLE_ANON_ICI') {
+    if (!k || k === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBiZmhxa29memxjbmN5bmt4aXp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg4OTgsImV4cCI6MjA4OTg2NDg5OH0.lEkC_pFJfK8pGusKIeq1nxuTOt-sgx1iM2BjxSwHsjE') {
       console.error('[Supabase] Clé manquante dans config.js');
     }
     return k;
