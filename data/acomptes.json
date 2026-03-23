@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1774274675687,
+    "ref": "ACP-39BXLZ",
+    "dateISO": "2026-03-23T14:04:35.687Z",
+    "date": "23/03/2026",
+    "employe": "Laurent GOHEBEL",
+    "email": "laurent_gohebel@yahoo.fr",
+    "service": "Tech & Produit",
+    "manager": "dd",
+    "montant": 500,
+    "remboursement": "Déduction sur le prochain salaire (1 mois)",
+    "motif": "Dépenses imprévues (réparation, santé…)",
+    "motifDetail": "",
+    "salaireBrut": 3500,
+    "statut": "En attente"
+  }
+]
