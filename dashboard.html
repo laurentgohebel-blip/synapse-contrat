@@ -296,19 +296,6 @@ function updateBadges(contrats, conges, acomptes){
 }
 
 // ── Main render dispatcher ─────────────────────────────────────────────────
-async function renderRemote(){
-  if(window.SynapseStorage && localStorage.getItem('synapse_gh_token')){
-    try{
-      await Promise.all([
-        window.SynapseStorage.load('contrats'),
-        window.SynapseStorage.load('conges'),
-        window.SynapseStorage.load('acomptes')
-      ]);
-    }catch(e){ console.warn('GitHub load error:', e); }
-  }
-  render();
-}
-
 function render(){
   const contrats = load('contrats');
   const conges   = load('conges');
@@ -576,8 +563,50 @@ function renderAcomptes(acomptes){
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
-renderRemote();
-setInterval(renderRemote, 30000);
+// Affichage immédiat depuis localStorage
+render();
+
+// Sync GitHub en arrière-plan — ne met à jour l'affichage QUE si nouvelles données
+async function syncGitHub(){
+  if(!window.SynapseStorage || !localStorage.getItem('synapse_gh_token')) return;
+  const keys = ['contrats','conges','acomptes'];
+  let changed = false;
+  for(const k of keys){
+    const before = localStorage.getItem('synapse_'+k);
+    try{
+      const rawUrl = 'https://raw.githubusercontent.com/laurentgohebel-blip/synapse-contrat/main/data/'+k+'.json?t='+Date.now();
+      const res = await fetch(rawUrl, {cache:'no-store'});
+      if(!res.ok) continue;
+      const remote = await res.json();
+      const local = JSON.parse(before||'[]');
+      // Fusionner : priorité aux entrées locales récentes (< 2 min)
+      const recentTs = parseInt(localStorage.getItem('synapse_'+k+'_ts')||'0');
+      const isRecent = (Date.now() - recentTs) < 120000;
+      if(isRecent){
+        // Ajouter uniquement les entrées distantes absentes en local
+        const localIds = new Set(local.map(function(d){return d.id;}));
+        const newEntries = remote.filter(function(d){return !localIds.has(d.id);});
+        if(newEntries.length > 0){
+          const merged = local.concat(newEntries);
+          localStorage.setItem('synapse_'+k, JSON.stringify(merged));
+          changed = true;
+        }
+      } else {
+        // Données locales pas récentes : GitHub fait foi
+        if(JSON.stringify(remote) !== before){
+          localStorage.setItem('synapse_'+k, JSON.stringify(remote));
+          changed = true;
+        }
+      }
+    }catch(e){}
+  }
+  if(changed) render();
+}
+
+// Sync initiale après 3s (laisse le temps aux écritures de se terminer)
+setTimeout(syncGitHub, 3000);
+// Puis toutes les 60s
+setInterval(syncGitHub, 60000);
 </script>
 <script src="github-storage.js"></script>
 <script src="token-setup.js"></script>
