@@ -3,26 +3,32 @@
 // RÈGLE ABSOLUE : localStorage n'est JAMAIS écrasé par une réponse vide de Supabase
 
 (function () {
-  // Lit les credentials depuis config.js (plus facile à mettre à jour)
-  const cfg  = window.SYNAPSE_CONFIG || {};
-  const SB_URL = cfg.supabase_url || 'https://pbfhqkofzlcncynkxizz.supabase.co';
-  const SB_KEY = cfg.supabase_key || '';
+  const SB_URL = 'https://pbfhqkofzlcncynkxizz.supabase.co';
 
-  // Vérification au démarrage
-  if (!SB_KEY || SB_KEY === 'COLLEZ_VOTRE_CLE_ANON_ICI') {
-    console.error('[Supabase] Clé API manquante — éditez config.js');
+  // Lit la clé à chaque appel (config.js peut être chargé après)
+  function getKey() {
+    var cfg = window.SYNAPSE_CONFIG || {};
+    var k = cfg.supabase_key || '';
+    if (!k || k === 'COLLEZ_VOTRE_CLE_ANON_ICI') {
+      console.error('[Supabase] Clé manquante dans config.js');
+    }
+    return k;
   }
 
-  const HEADERS = {
-    'Content-Type': 'application/json',
-    'apikey': SB_KEY,
-    'Authorization': 'Bearer ' + SB_KEY,
-  };
+  // Headers construits à chaque appel pour utiliser la clé courante
+  function getHeaders() {
+    var k = getKey();
+    return {
+      'Content-Type': 'application/json',
+      'apikey': k,
+      'Authorization': 'Bearer ' + k,
+    };
+  }
 
   async function sbFetch(path, options) {
     const res = await fetch(SB_URL + '/rest/v1/' + path, {
       ...options,
-      headers: { ...HEADERS, ...(options && options.headers || {}) }
+      headers: { ...getHeaders(), ...(options && options.headers || {}) }
     });
     if (!res.ok) {
       const err = await res.text();
