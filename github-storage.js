@@ -88,42 +88,10 @@ async function writeFile(filename, data, sha){
 
 // ── API publique ───────────────────────────────────────────────────────────
 
-// Charger une collection (contrats, conges, acomptes)
+// Charger une collection — lit localStorage UNIQUEMENT
+// GitHub n'écrase jamais localStorage (sens unique : local → GitHub)
 async function load(collection){
-  const token = getToken();
-  const localData = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
-  const localTs = parseInt(localStorage.getItem('synapse_' + collection + '_ts') || '0');
-
-  if(!token){
-    return localData;
-  }
-
-  try {
-    // Lecture rapide via raw URL
-    const rawUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/main/data/' + collection + '.json?t=' + Date.now();
-    const res = await fetch(rawUrl, { cache: 'no-store' });
-    if(res.ok){
-      const remoteData = await res.json();
-
-      // Ne pas écraser si les données locales sont plus récentes (< 60s)
-      const localAge = Date.now() - localTs;
-      if(localTs > 0 && localAge < 60000){
-        // Fusionner : garder les entrées locales non présentes sur GitHub
-        const remoteIds = new Set(remoteData.map(function(d){ return d.id; }));
-        const localOnly = localData.filter(function(d){ return !remoteIds.has(d.id); });
-        if(localOnly.length > 0){
-          const merged = localOnly.concat(remoteData);
-          localStorage.setItem('synapse_' + collection, JSON.stringify(merged));
-          return merged;
-        }
-      }
-
-      localStorage.setItem('synapse_' + collection, JSON.stringify(remoteData));
-      return remoteData;
-    }
-  } catch(e) {}
-
-  return localData;
+  return JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
 }
 
 // Ajouter un enregistrement dans une collection

@@ -146,7 +146,7 @@ tr:hover td{background:var(--g50)}
     <div class="topbar-right">
       <div class="live-dot"></div><span class="live-lbl">Temps réel</span>
       <button class="btn-top btn-top-red" onclick="clearAll()">🗑 Tout effacer</button>
-      <button class="btn-top" onclick="render()">↻ Actualiser</button>
+      <button class="btn-top" onclick="render()">↻ Local</button><button class="btn-top" onclick="syncFromGitHub()" id="btn-sync-gh">☁ GitHub</button>
     </div>
   </div>
 
@@ -562,51 +562,33 @@ function renderAcomptes(acomptes){
   mk('chartAMontants',{type:'bar',data:{labels:withAmount.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withAmount.map(function(d){return d.montant;}),backgroundColor:'rgba(217,119,6,.7)',borderColor:'#D97706',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
-// Affichage immédiat depuis localStorage
-render();
 
-// Sync GitHub en arrière-plan — ne met à jour l'affichage QUE si nouvelles données
-async function syncGitHub(){
-  if(!window.SynapseStorage || !localStorage.getItem('synapse_gh_token')) return;
-  const keys = ['contrats','conges','acomptes'];
-  let changed = false;
-  for(const k of keys){
-    const before = localStorage.getItem('synapse_'+k);
+// ── Sync manuelle depuis GitHub (bouton ☁) ────────────────────────────────
+async function syncFromGitHub(){
+  const token = localStorage.getItem('synapse_gh_token');
+  if(!token){ alert('Token GitHub non configuré.'); return; }
+  const btn = document.getElementById('btn-sync-gh');
+  if(btn){ btn.textContent = '⏳ Sync…'; btn.disabled = true; }
+  const base = 'https://raw.githubusercontent.com/laurentgohebel-blip/synapse-contrat/main/data/';
+  let ok = true;
+  for(const k of ['contrats','conges','acomptes']){
     try{
-      const rawUrl = 'https://raw.githubusercontent.com/laurentgohebel-blip/synapse-contrat/main/data/'+k+'.json?t='+Date.now();
-      const res = await fetch(rawUrl, {cache:'no-store'});
-      if(!res.ok) continue;
-      const remote = await res.json();
-      const local = JSON.parse(before||'[]');
-      // Fusionner : priorité aux entrées locales récentes (< 2 min)
-      const recentTs = parseInt(localStorage.getItem('synapse_'+k+'_ts')||'0');
-      const isRecent = (Date.now() - recentTs) < 120000;
-      if(isRecent){
-        // Ajouter uniquement les entrées distantes absentes en local
-        const localIds = new Set(local.map(function(d){return d.id;}));
-        const newEntries = remote.filter(function(d){return !localIds.has(d.id);});
-        if(newEntries.length > 0){
-          const merged = local.concat(newEntries);
-          localStorage.setItem('synapse_'+k, JSON.stringify(merged));
-          changed = true;
-        }
-      } else {
-        // Données locales pas récentes : GitHub fait foi
-        if(JSON.stringify(remote) !== before){
-          localStorage.setItem('synapse_'+k, JSON.stringify(remote));
-          changed = true;
-        }
+      const res = await fetch(base + k + '.json?t=' + Date.now(), {cache:'no-store'});
+      if(res.ok){
+        const data = await res.json();
+        localStorage.setItem('synapse_' + k, JSON.stringify(data));
       }
-    }catch(e){}
+    }catch(e){ ok = false; }
   }
-  if(changed) render();
+  if(btn){ btn.textContent = ok ? '☁ GitHub ✓' : '☁ Erreur'; btn.disabled = false; setTimeout(()=>{ if(btn) btn.textContent='☁ GitHub'; }, 2000); }
+  render();
 }
 
-// Sync initiale après 3s (laisse le temps aux écritures de se terminer)
-setTimeout(syncGitHub, 3000);
-// Puis toutes les 60s
-setInterval(syncGitHub, 60000);
+// ── Init ───────────────────────────────────────────────────────────────────
+// Le dashboard lit UNIQUEMENT localStorage — jamais de sync GitHub entrant
+render();
+// Rafraîchissement local toutes les 10s (pas d'appel réseau)
+setInterval(render, 10000);
 </script>
 <script src="github-storage.js"></script>
 <script src="token-setup.js"></script>
