@@ -3,8 +3,15 @@
 // RÈGLE ABSOLUE : localStorage n'est JAMAIS écrasé par une réponse vide de Supabase
 
 (function () {
-  const SB_URL = 'https://pbfhqkofzlcncynkxizz.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBiZmhxa29memxjbmN5bmtYaXp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg4OTgsImV4cCI6MjA4OTg2NDg5OH0.lEkC_pFJfK8pGusKIeq1nxuTOt-sgx1iM2BjxSwHsjE';
+  // Lit les credentials depuis config.js (plus facile à mettre à jour)
+  const cfg  = window.SYNAPSE_CONFIG || {};
+  const SB_URL = cfg.supabase_url || 'https://pbfhqkofzlcncynkxizz.supabase.co';
+  const SB_KEY = cfg.supabase_key || '';
+
+  // Vérification au démarrage
+  if (!SB_KEY || SB_KEY === 'COLLEZ_VOTRE_CLE_ANON_ICI') {
+    console.error('[Supabase] Clé API manquante — éditez config.js');
+  }
 
   const HEADERS = {
     'Content-Type': 'application/json',
