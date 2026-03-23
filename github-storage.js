@@ -74,12 +74,14 @@ async function writeFile(filename, data, sha){
     // Miroir dans localStorage pour accès rapide
     const key = 'synapse_' + filename.replace('.json','');
     localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key + '_ts', String(Date.now()));
     return true;
   } catch(e) {
     console.error('[GH Storage] writeFile error:', e.message);
     // Fallback localStorage
     const key = 'synapse_' + filename.replace('.json','');
     localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key + '_ts', String(Date.now()));
     return false;
   }
 }
@@ -89,14 +91,39 @@ async function writeFile(filename, data, sha){
 // Charger une collection (contrats, conges, acomptes)
 async function load(collection){
   const token = getToken();
+  const localData = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
+  const localTs = parseInt(localStorage.getItem('synapse_' + collection + '_ts') || '0');
+
   if(!token){
-    // Pas de token → localStorage uniquement
-    return JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
+    return localData;
   }
-  const result = await readFile(collection + '.json');
-  // Synchroniser localStorage
-  localStorage.setItem('synapse_' + collection, JSON.stringify(result.data));
-  return result.data;
+
+  try {
+    // Lecture rapide via raw URL
+    const rawUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/main/data/' + collection + '.json?t=' + Date.now();
+    const res = await fetch(rawUrl, { cache: 'no-store' });
+    if(res.ok){
+      const remoteData = await res.json();
+
+      // Ne pas écraser si les données locales sont plus récentes (< 60s)
+      const localAge = Date.now() - localTs;
+      if(localTs > 0 && localAge < 60000){
+        // Fusionner : garder les entrées locales non présentes sur GitHub
+        const remoteIds = new Set(remoteData.map(function(d){ return d.id; }));
+        const localOnly = localData.filter(function(d){ return !remoteIds.has(d.id); });
+        if(localOnly.length > 0){
+          const merged = localOnly.concat(remoteData);
+          localStorage.setItem('synapse_' + collection, JSON.stringify(merged));
+          return merged;
+        }
+      }
+
+      localStorage.setItem('synapse_' + collection, JSON.stringify(remoteData));
+      return remoteData;
+    }
+  } catch(e) {}
+
+  return localData;
 }
 
 // Ajouter un enregistrement dans une collection
@@ -107,6 +134,7 @@ async function add(collection, entry){
     const existing = JSON.parse(localStorage.getItem('synapse_' + collection) || '[]');
     existing.unshift(entry);
     localStorage.setItem('synapse_' + collection, JSON.stringify(existing));
+    localStorage.setItem('synapse_' + collection + '_ts', String(Date.now()));
     return true;
   }
   const { data, sha } = await readFile(collection + '.json');
