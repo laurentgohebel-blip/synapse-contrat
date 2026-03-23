@@ -8,36 +8,33 @@
   const GH_REPO   = 'synapse-contrat';
   const DB_PATH   = 'data/database.json';
   const CACHE_KEY = 'synapse_db_cache';
-  const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+  const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
   // ── Chargement de la base ──────────────────────────────────────────────
-  async function loadDB() {
+  async function loadDB(forceRemote) {
     // 1. Cache mémoire (session)
-    if (window._synapseDB) return window._synapseDB;
+    if (window._synapseDB && !forceRemote) return window._synapseDB;
 
-    // 2. Cache localStorage (< 5 min)
+    // 2. localStorage immédiat + sync GitHub en arrière-plan
     const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
+    if (cached && !forceRemote) {
       try {
         const { data, ts } = JSON.parse(cached);
-        if (Date.now() - ts < CACHE_TTL) {
-          window._synapseDB = data;
-          return data;
+        window._synapseDB = data;
+        // Sync en arrière-plan si cache > 30s
+        if (Date.now() - ts > 30000) {
+          syncFromGitHub();
         }
+        return data;
       } catch (e) {}
     }
 
-    // 3. Fetch depuis GitHub
-    const token = localStorage.getItem('synapse_gh_token') || '';
-    const headers = token ? { 'Authorization': 'token ' + token } : {};
+    // 3. Fetch via raw URL (rapide, pas de base64)
     try {
-      const res = await fetch(
-        'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + DB_PATH,
-        { headers }
-      );
+      const rawUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/main/' + DB_PATH + '?t=' + Date.now();
+      const res = await fetch(rawUrl, { cache: 'no-store' });
       if (res.ok) {
-        const json = await res.json();
-        const db = JSON.parse(atob(json.content.replace(/\n/g, '')));
+        const db = await res.json();
         window._synapseDB = db;
         localStorage.setItem(CACHE_KEY, JSON.stringify({ data: db, ts: Date.now() }));
         return db;
@@ -53,6 +50,20 @@
     }
 
     return null;
+  }
+
+
+  // ── Sync silencieuse en arrière-plan ──────────────────────────────────
+  async function syncFromGitHub() {
+    try {
+      const rawUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/main/' + DB_PATH + '?t=' + Date.now();
+      const res = await fetch(rawUrl, { cache: 'no-store' });
+      if (res.ok) {
+        const db = await res.json();
+        window._synapseDB = db;
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data: db, ts: Date.now() }));
+      }
+    } catch (e) {}
   }
 
   // ── Sauvegarde de la base ─────────────────────────────────────────────

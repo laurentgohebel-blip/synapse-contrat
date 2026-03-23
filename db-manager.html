@@ -205,10 +205,11 @@ async function loadDB(){
   const hdrs=token?{'Authorization':'token '+token}:{};
 
   try{
-    const res=await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/data/database.json',{headers:hdrs});
+    // Lecture via raw URL (rapide)
+    const rawUrl='https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/main/data/database.json?t='+Date.now();
+    const res=await fetch(rawUrl,{cache:'no-store'});
     if(res.ok){
-      const json=await res.json();
-      DB=JSON.parse(atob(json.content.replace(/\n/g,'')));
+      DB=await res.json();
       document.getElementById('sync-dot').style.background='var(--green)';
       document.getElementById('sync-msg').textContent='Connecté à GitHub ✓';
       document.getElementById('sync-ts').textContent=new Date().toLocaleTimeString('fr-FR');
