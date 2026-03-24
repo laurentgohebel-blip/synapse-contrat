@@ -44,6 +44,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-top{padding:5px 12px;background:white;border:1px solid var(--g200);border-radius:var(--r);font-size:11.5px;cursor:pointer;color:var(--g500)}
 .btn-top:hover{border-color:var(--blue);color:var(--blue)}
 .btn-top-red{color:var(--red);border-color:var(--red-l)}
+.btn-top-demo{background:linear-gradient(135deg,#7C3AED,#2E75B6);color:white;border-color:transparent;font-weight:600}
+.btn-top-demo:hover{opacity:.9;border-color:transparent;color:white}
 .tabs{display:flex;border-bottom:1px solid var(--g200);background:white;padding:0 20px;overflow-x:auto}
 .tab{padding:12px 14px;font-size:12.5px;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:6px;user-select:none}
 .tab:hover{color:var(--g700)}
@@ -217,6 +219,7 @@ tr:hover td{background:var(--g50)}
       <button class="filter-toggle" id="filterToggleBtn" onclick="toggleFilters()">
         🔍 Filtres <span class="f-count" id="filterCount">0</span>
       </button>
+      <button class="btn-top btn-top-demo" onclick="loadDemoData()" id="demoBtn">🎭 Charger démo</button>
       <button class="btn-top" onclick="loadFromSupabase()">↻ Actualiser</button>
       <button class="btn-top btn-top-red" onclick="clearAll()">🗑 Tout effacer</button>
     </div>
@@ -995,6 +998,220 @@ function renderAcomptes(acomptes){
   mk('chartAMotifs',{type:'doughnut',data:{labels:mKeys.length?mKeys:['Aucun'],datasets:[{data:mKeys.length?mKeys.map(function(k){return motifs[k];}): [1],backgroundColor:mKeys.length?COLORS.slice(0,mKeys.length):['#E5E7EB'],borderWidth:2,borderColor:'white'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8}}},cutout:'60%'}});
   var withAmount = acomptes.filter(function(d){ return d.montant; });
   mk('chartAMontants',{type:'bar',data:{labels:withAmount.map(function(d){return d.employe.split(' ')[0];}),datasets:[{data:withAmount.map(function(d){return d.montant;}),backgroundColor:'rgba(217,119,6,.7)',borderColor:'#D97706',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID},ticks:{callback:function(v){return v.toLocaleString('fr-FR')+'€';}}},x:{grid:{display:false}}}}});
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  DEMO DATA GENERATOR — 200+ entries per category
+// ══════════════════════════════════════════════════════════════════════
+function loadDemoData(){
+  if(!confirm('Charger ~650 demandes de démonstration ?\n(Les données actuelles seront remplacées)')) return;
+  const btn = document.getElementById('demoBtn');
+  btn.textContent = '⏳ Génération…'; btn.disabled = true;
+  setTimeout(function(){
+    const data = generateDemoData();
+    save('contrats', data.contrats);
+    save('conges', data.conges);
+    save('acomptes', data.acomptes);
+    render();
+    toast('✓ '+data.contrats.length+' contrats, '+data.conges.length+' congés, '+data.acomptes.length+' acomptes chargés','ok');
+    btn.textContent = '🎭 Charger démo'; btn.disabled = false;
+    // Also push to Supabase if available
+    if(window.SynapseStorage){
+      data.contrats.forEach(e => window.SynapseStorage.add('contrats',e).catch(()=>{}));
+      data.conges.forEach(e => window.SynapseStorage.add('conges',e).catch(()=>{}));
+      data.acomptes.forEach(e => window.SynapseStorage.add('acomptes',e).catch(()=>{}));
+    }
+  }, 80);
+}
+
+function generateDemoData(){
+  // ── Utilities ──
+  function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function pick(arr){ return arr[rnd(0,arr.length-1)]; }
+  function pickW(arr,weights){ const t=weights.reduce((a,b)=>a+b,0); let r=Math.random()*t; for(let i=0;i<arr.length;i++){ r-=weights[i]; if(r<=0) return arr[i]; } return arr[arr.length-1]; }
+  function dateISO(y,m,d){ return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
+  function rndDate(from,to){ const f=new Date(from).getTime(), t=new Date(to).getTime(); const d=new Date(f+Math.random()*(t-f)); return dateISO(d.getFullYear(),d.getMonth()+1,d.getDate()); }
+  function addDays(iso,n){ const d=new Date(iso); d.setDate(d.getDate()+n); return dateISO(d.getFullYear(),d.getMonth()+1,d.getDate()); }
+  let idSeq = Date.now();
+  function nextId(){ return idSeq++; }
+
+  // ── 45 Employees ──
+  const NOMS = ['DUPONT','MARTIN','BERNARD','THOMAS','PETIT','ROBERT','RICHARD','DURAND','LEROY','MOREAU','SIMON','LAURENT','LEFEBVRE','MICHEL','GARCIA','DAVID','BERTRAND','ROUX','VINCENT','FOURNIER','MOREL','GIRARD','ANDRE','MERCIER','BLANC','GUERIN','BOYER','GARNIER','CHEVALIER','ROBIN','MASSON','MULLER','LEFEVRE','FONTAINE','ROUSSEAU','LAMBERT','BONNET','FRANCOIS','MARTINEZ','HENRY','BARBIER','GIRAUD','PICARD','ROGER','SCHMITT','LEMOINE','DUVAL','DENIS','RIVIERE','LUCAS'];
+  const PRENOMS_F = ['Marie','Sophie','Julie','Camille','Léa','Nadia','Fatima','Amina','Lucie','Émilie','Sarah','Laura','Chloé','Manon','Inès','Emma','Clara','Aurélie','Marion','Charlotte','Nathalie','Sandrine','Valérie','Isabelle','Patricia'];
+  const PRENOMS_M = ['Jean','Pierre','Thomas','Lucas','Ahmed','Mohamed','Karim','Youssef','Marc','Nicolas','Julien','Antoine','Hugo','Arthur','Louis','Alexandre','Maxime','Mathieu','David','Paul','Sébastien','Christophe','Laurent','Frédéric','Philippe'];
+  const SERVICES = ['Opérations','Opérations','Opérations','Opérations','Administratif','Commercial','Logistique','Qualité'];
+  const VILLES = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Rennes','Nice','Montpellier','Rouen','Bayonne','Pau','Biarritz'];
+
+  const POSTES = [
+    { intitule:'Agent de service professionnel', salaire:[1767,1850], weight:30 },
+    { intitule:'Agent de propreté',              salaire:[1767,1830], weight:25 },
+    { intitule:'Agent machiniste',               salaire:[1780,1870], weight:10 },
+    { intitule:'Laveur de vitres',               salaire:[1820,1920], weight:8 },
+    { intitule:"Chef d'équipe",                  salaire:[1900,2100], weight:12 },
+    { intitule:'Responsable de secteur',         salaire:[2200,2600], weight:5 },
+    { intitule:'Assistante RH',                  salaire:[2000,2300], weight:3 },
+    { intitule:'Chargé(e) de clientèle',         salaire:[2100,2500], weight:3 },
+    { intitule:'Contrôleur qualité',             salaire:[2000,2200], weight:2 },
+    { intitule:'Technicien logistique',          salaire:[1850,2100], weight:2 },
+  ];
+  const POSTE_WEIGHTS = POSTES.map(p=>p.weight);
+
+  // Build employee pool
+  const employees = [];
+  const usedNames = new Set();
+  for(let i=0; i<45; i++){
+    let nom,prenom,isFemale;
+    do {
+      nom = pick(NOMS);
+      isFemale = Math.random() > 0.55;
+      prenom = isFemale ? pick(PRENOMS_F) : pick(PRENOMS_M);
+    } while(usedNames.has(prenom+' '+nom));
+    usedNames.add(prenom+' '+nom);
+    const poste = pickW(POSTES, POSTE_WEIGHTS);
+    const service = poste.intitule.includes('RH') ? 'Administratif'
+                  : poste.intitule.includes('clientèle') ? 'Commercial'
+                  : poste.intitule.includes('logistique') ? 'Logistique'
+                  : poste.intitule.includes('qualité') ? 'Qualité'
+                  : pick(SERVICES);
+    employees.push({
+      fullName: prenom+' '+nom,
+      prenom, nom, isFemale, service,
+      poste: poste.intitule,
+      email: prenom[0].toLowerCase()+'.'+nom.toLowerCase()+'@triangle.fr',
+      salaire: rnd(poste.salaire[0], poste.salaire[1]),
+      ville: pick(VILLES),
+      manager: null // set after
+    });
+  }
+  // Assign managers (chefs d'équipe and responsables)
+  const managers = employees.filter(e => e.poste.includes("Chef") || e.poste.includes("Responsable"));
+  employees.forEach(e => {
+    if(!e.poste.includes("Chef") && !e.poste.includes("Responsable") && managers.length){
+      e.manager = pick(managers).fullName;
+    }
+  });
+
+  const EMPLOYEURS = [
+    'TRIANGLE PROPRETÉ SAS',
+    'TRIANGLE PROPRETÉ SAS',
+    'TRIANGLE PROPRETÉ SAS',
+    'TRIANGLE SERVICES SAS',
+    'TRIANGLE MULTISERVICES SARL',
+  ];
+
+  // ── CONTRATS (~220) ──
+  const TYPE_CONTRATS = ['CDI','CDI','CDI','CDI','CDI','CDD','CDD','CDD','Alternance','Alternance'];
+  const contrats = [];
+  // Each employee gets 1-3 contrats (renouvellements, changements de poste)
+  employees.forEach(function(emp){
+    const nbContrats = emp.poste.includes('Agent') ? rnd(1,4) : rnd(1,2);
+    for(let c=0; c<nbContrats; c++){
+      const type = c===0 ? pick(TYPE_CONTRATS) : (Math.random()>0.7 ? 'CDD' : 'CDI');
+      const dateDebut = rndDate('2024-07-01','2026-03-15');
+      const entry = {
+        id: nextId(),
+        dateISO: dateDebut,
+        date: fmtDate(dateDebut),
+        employe: emp.fullName,
+        employeur: pick(EMPLOYEURS),
+        type: type,
+        poste: emp.poste,
+        service: emp.service,
+        salaireBrut: emp.salaire + rnd(-50, 100) * c,
+        dateDebut: dateDebut,
+        essai: type==='CDI' ? '2 mois' : type==='CDD' ? '1 mois' : '—',
+        teletravail: emp.poste.includes('RH')||emp.poste.includes('clientèle') ? pick(['1j/sem','2j/sem','Non']) : 'Non',
+      };
+      if(type==='CDD' || type==='Alternance'){
+        entry.dateFin = addDays(dateDebut, type==='Alternance' ? rnd(330,365) : rnd(90,240));
+      }
+      contrats.push(entry);
+    }
+  });
+
+  // ── CONGÉS (~250) ──
+  const TYPE_CONGES = ['CP','CP','CP','CP','RTT','RTT','RTT','Maladie','Maladie','Récup','Récup','Sans solde','Maternité','Paternité','Formation'];
+  const CONGE_WEIGHTS = [20,20,20,20,12,12,12,8,8,6,6,2,1,1,2];
+  const STATUTS_CONGE = ['Accordé','Accordé','Accordé','Accordé','En attente','En attente','En attente','Refusé'];
+  // More "En attente" for recent dates
+  const conges = [];
+  const congeMotifs = ['Vacances familiales','Voyage prévu','Repos','Rendez-vous médical','Événement familial','Déménagement','Raisons personnelles','Récupération heures sup','Formation externe',''];
+  for(let i=0; i<250; i++){
+    const emp = pick(employees);
+    const type = pickW(TYPE_CONGES, CONGE_WEIGHTS);
+    // Seasonal: more CP in Jul/Aug/Dec, more Maladie in Jan/Feb
+    let dateDebut;
+    if(type==='CP' && Math.random()>0.4){
+      // Summer or Christmas period
+      const summer = Math.random()>0.3;
+      if(summer) dateDebut = rndDate('2025-06-15','2026-08-31');
+      else dateDebut = rndDate('2025-12-20','2026-12-31');
+    } else {
+      dateDebut = rndDate('2025-01-01','2026-09-30');
+    }
+    const dureeJours = type==='CP' ? rnd(1,15) : type==='RTT' ? 1 : type==='Maladie' ? rnd(1,10) : type==='Récup' ? rnd(1,2) : type==='Sans solde' ? rnd(1,5) : type==='Maternité' ? 112 : type==='Paternité' ? 28 : rnd(1,5);
+    const dateFin = addDays(dateDebut, Math.max(0, dureeJours-1));
+    const dateISO = addDays(dateDebut, -rnd(5,45)); // request date before start
+    // Recent requests more likely "En attente"
+    const isRecent = dateISO > '2026-02-15';
+    const statut = isRecent ? (Math.random()>0.35 ? 'En attente' : pick(['Accordé','Accordé','Refusé'])) : pick(STATUTS_CONGE);
+    const ref = 'CNG-'+String(2025000+i);
+
+    conges.push({
+      id: nextId(),
+      ref: ref,
+      dateISO: dateISO,
+      date: fmtDate(dateISO),
+      employe: emp.fullName,
+      email: emp.email,
+      service: emp.service,
+      manager: emp.manager || pick(managers).fullName,
+      type: type,
+      dateDebut: dateDebut,
+      dateFin: dateFin,
+      duree: dureeJours+'j',
+      motif: type==='Maladie' ? 'Certificat médical' : pick(congeMotifs),
+      statut: statut,
+    });
+  }
+
+  // ── ACOMPTES (~200) ──
+  const MOTIFS_ACOMPTE = ['Frais médicaux','Déménagement','Urgence personnelle','Travaux logement','Avance vacances','Frais de garde','Réparation véhicule','Facture énergie','Frais de scolarité','Divorce/séparation','Obsèques familiales','Achat matériel professionnel'];
+  const MOTIF_WEIGHTS =  [15,10,12,8,12,6,10,8,5,3,3,8];
+  const REMB_MODES = ['1 mois','2 mois','3 mois','4 mois','6 mois','Retenue sur salaire unique'];
+  const acomptes = [];
+  for(let i=0; i<200; i++){
+    const emp = pick(employees);
+    const montant = pick([100,150,200,250,300,350,400,450,500,600,700,800,1000,1200,1500]);
+    const dateISO = rndDate('2025-01-01','2026-03-24');
+    const isRecent = dateISO > '2026-02-01';
+    const statut = isRecent ? (Math.random()>0.4 ? 'En attente' : pick(['Accordé','Refusé'])) : pickW(['Accordé','Refusé','En attente'],[55,15,30]);
+    const ref = 'ACP-'+String(2025000+i);
+
+    acomptes.push({
+      id: nextId(),
+      ref: ref,
+      dateISO: dateISO,
+      date: fmtDate(dateISO),
+      employe: emp.fullName,
+      email: emp.email,
+      service: emp.service,
+      manager: emp.manager || pick(managers).fullName,
+      montant: montant,
+      remboursement: pick(REMB_MODES),
+      motif: pickW(MOTIFS_ACOMPTE, MOTIF_WEIGHTS),
+      motifDetail: Math.random()>0.5 ? pick(['Justificatif fourni','Sur présentation de facture','Demande urgente','Situation exceptionnelle','Complément nécessaire']) : '',
+      salaireBrut: emp.salaire,
+      statut: statut,
+    });
+  }
+
+  // Sort all by dateISO desc
+  contrats.sort((a,b) => b.dateISO.localeCompare(a.dateISO));
+  conges.sort((a,b) => b.dateISO.localeCompare(a.dateISO));
+  acomptes.sort((a,b) => b.dateISO.localeCompare(a.dateISO));
+
+  return { contrats, conges, acomptes };
 }
 
 // ══════════════════════════════════════════════════════════════════════
